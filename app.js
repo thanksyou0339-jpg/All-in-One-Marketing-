@@ -1,233 +1,493 @@
 /* =========================================================
-   ALL IN ONE MARKETING
-   JANJUA DIGITAL MARKETING PLATFORM
-   FUNCTIONAL APP.JS
+   JANJUA - ALL IN ONE MARKETING
+   Provider & Company Management
    ========================================================= */
 
-const STORAGE_KEY = "all_in_one_marketing_v2";
+const STORAGE_KEY = "all_in_one_marketing_v3";
 
-
-/* =========================================================
+/* =========================
    DEFAULT DATA
-   ========================================================= */
+========================= */
 
-const DEFAULT_CATEGORIES = [
-    {
-        id: "banks-finance",
-        name: "Banks & Finance",
-        icon: "🏦",
-        description: "Banking, cards, accounts and financial offers.",
-        status: "active"
-    },
-    {
-        id: "motorcycles",
-        name: "Motorcycles",
-        icon: "🏍️",
-        description: "Motorcycles, financing and related offers.",
-        status: "active"
-    },
-    {
-        id: "cars-vehicles",
-        name: "Cars & Vehicles",
-        icon: "🚗",
-        description: "Cars, vehicles, leasing and financing.",
-        status: "active"
-    },
-    {
-        id: "spare-parts",
-        name: "Spare Parts",
-        icon: "⚙️",
-        description: "Automotive spare parts and accessories.",
-        status: "active"
-    },
-    {
-        id: "food-restaurants",
-        name: "Food & Restaurants",
-        icon: "🍔",
-        description: "Food delivery, restaurants and food offers.",
-        status: "active"
-    },
-    {
-        id: "hotels",
-        name: "Hotels",
-        icon: "🏨",
-        description: "Hotels, accommodation and travel stays.",
-        status: "active"
-    },
-    {
-        id: "factories",
-        name: "Factories",
-        icon: "🏭",
-        description: "Factory jobs, services and opportunities.",
-        status: "active"
-    },
-    {
-        id: "weddings",
-        name: "Weddings",
-        icon: "💍",
-        description: "Wedding services, venues and vendors.",
-        status: "coming-soon"
-    },
-    {
-        id: "travel",
-        name: "Travel",
-        icon: "✈️",
-        description: "Travel, flights, tours and packages.",
-        status: "coming-soon"
-    },
-    {
-        id: "property",
-        name: "Property",
-        icon: "🏠",
-        description: "Property and real estate offers.",
-        status: "coming-soon"
-    },
-    {
-        id: "loans-financing",
-        name: "Loans & Financing",
-        icon: "💳",
-        description: "Loans, financing and installment programs.",
-        status: "active"
-    },
-    {
-        id: "education",
-        name: "Education",
-        icon: "🎓",
-        description: "Courses, institutes and education programs.",
-        status: "coming-soon"
-    },
-    {
-        id: "healthcare",
-        name: "Healthcare",
-        icon: "🏥",
-        description: "Healthcare services and offers.",
-        status: "coming-soon"
-    },
-    {
-        id: "freelance-services",
-        name: "Freelance & Services",
-        icon: "💻",
-        description: "Freelancing and professional services.",
-        status: "coming-soon"
-    }
-];
-
-
-const DEFAULT_DATA = {
-    categories: DEFAULT_CATEGORIES,
+const defaultData = {
+    categories: [
+        { id: "cat_1", name: "Banks & Finance", visible: true },
+        { id: "cat_2", name: "Motorcycles", visible: true },
+        { id: "cat_3", name: "Cars & Vehicles", visible: true },
+        { id: "cat_4", name: "Spare Parts", visible: true },
+        { id: "cat_5", name: "Food & Restaurants", visible: true },
+        { id: "cat_6", name: "Hotels", visible: true },
+        { id: "cat_7", name: "Factories", visible: true },
+        { id: "cat_8", name: "Weddings", visible: true },
+        { id: "cat_9", name: "Travel & Tourism", visible: true },
+        { id: "cat_10", name: "Property", visible: true },
+        { id: "cat_11", name: "Loans & Financing", visible: true },
+        { id: "cat_12", name: "Education", visible: true },
+        { id: "cat_13", name: "Healthcare", visible: true },
+        { id: "cat_14", name: "Freelance & Services", visible: true }
+    ],
 
     providers: [],
-
     programs: [],
-
     promoters: [],
-
     assignments: [],
-
     trackingLinks: [],
-
     clicks: [],
-
     orders: [],
-
     commissions: [],
-
     payments: [],
 
     settings: {
-        platformName: "All in One Marketing",
-        brandName: "JANJUA",
-        availability: "AVAILABLE 24 HOURS",
-        currency: "PKR"
+        brand: "JANJUA",
+        subtitle: "Janjua Digital Marketing Platform Online",
+        status: "AVAILABLE 24 HOURS"
     }
 };
 
 
-/* =========================================================
+/* =========================
    LOAD DATA
-   ========================================================= */
+========================= */
+
+let data = loadData();
 
 function loadData() {
 
-    const saved =
-        localStorage.getItem(STORAGE_KEY);
-
-    if (!saved) {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(DEFAULT_DATA)
-        );
-
-        return clone(DEFAULT_DATA);
-    }
-
     try {
 
-        const data = JSON.parse(saved);
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (!saved) {
+            return JSON.parse(JSON.stringify(defaultData));
+        }
+
+        const parsed = JSON.parse(saved);
 
         return {
-            ...clone(DEFAULT_DATA),
-            ...data
+            ...defaultData,
+            ...parsed,
+            categories: parsed.categories || [],
+            providers: parsed.providers || [],
+            programs: parsed.programs || [],
+            promoters: parsed.promoters || [],
+            assignments: parsed.assignments || [],
+            trackingLinks: parsed.trackingLinks || [],
+            clicks: parsed.clicks || [],
+            orders: parsed.orders || [],
+            commissions: parsed.commissions || [],
+            payments: parsed.payments || []
         };
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Data loading error:", error);
 
-        return clone(DEFAULT_DATA);
+        return JSON.parse(JSON.stringify(defaultData));
     }
 }
 
-
-/* =========================================================
-   GLOBAL DATA
-   ========================================================= */
-
-let appData = loadData();
-
-
-/* =========================================================
-   SAVE DATA
-   ========================================================= */
 
 function saveData() {
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(appData)
+        JSON.stringify(data)
     );
 }
 
 
-/* =========================================================
-   INIT
-   ========================================================= */
+/* =========================
+   ID GENERATOR
+========================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+function makeId(prefix = "id") {
 
-        renderCategories();
+    return (
+        prefix +
+        "_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).substring(2, 8)
+    );
+}
 
-        updateDashboardStats();
 
-        handleTrackingLink();
+/* =========================
+   ESCAPE HTML
+========================= */
 
+function escapeHTML(value) {
+
+    if (value === null || value === undefined) {
+        return "";
     }
-);
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
 
-/* =========================================================
+/* =========================
+   PAGE INITIALIZATION
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    addAnimatedBranding();
+
+    renderCategories();
+
+    attachDashboardEvents();
+
+});
+
+
+/* =========================
+   ANIMATED BRANDING
+========================= */
+
+function addAnimatedBranding() {
+
+    const header = document.querySelector("header");
+
+    if (!header) {
+        return;
+    }
+
+    /*
+       We do not replace your existing header.
+       We simply add an animated layer.
+    */
+
+    if (document.getElementById("janjuaAnimatedBrand")) {
+        return;
+    }
+
+    const brandBox = document.createElement("div");
+
+    brandBox.id = "janjuaAnimatedBrand";
+
+    brandBox.innerHTML = `
+        <div class="janjua-brand-animation">
+
+            <div class="brand-orbit orbit-one"></div>
+            <div class="brand-orbit orbit-two"></div>
+            <div class="brand-orbit orbit-three"></div>
+
+            <div class="brand-main">
+                <div class="brand-title">
+                    JANJUA
+                </div>
+
+                <div class="brand-subtitle">
+                    Janjua Digital Marketing Platform Online
+                </div>
+
+                <div class="brand-status">
+                    <span class="status-dot"></span>
+                    AVAILABLE 24 HOURS
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    header.prepend(brandBox);
+
+    addBrandAnimationCSS();
+}
+
+
+/* =========================
+   ANIMATION CSS
+========================= */
+
+function addBrandAnimationCSS() {
+
+    if (document.getElementById("janjuaAnimationCSS")) {
+        return;
+    }
+
+    const style = document.createElement("style");
+
+    style.id = "janjuaAnimationCSS";
+
+    style.textContent = `
+
+        #janjuaAnimatedBrand {
+            width:100%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:18px 10px 12px;
+            overflow:hidden;
+        }
+
+        .janjua-brand-animation {
+            position:relative;
+            min-height:145px;
+            width:min(900px,96%);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden;
+            border-radius:22px;
+            background:
+                radial-gradient(circle at center,
+                rgba(0,200,255,.16),
+                transparent 45%),
+                rgba(0,0,0,.12);
+            box-shadow:
+                0 0 30px rgba(0,200,255,.10),
+                inset 0 0 25px rgba(255,255,255,.04);
+        }
+
+        .brand-main {
+            position:relative;
+            z-index:5;
+            text-align:center;
+            animation:brandFloat 4s ease-in-out infinite;
+        }
+
+        .brand-title {
+            font-size:clamp(38px,8vw,72px);
+            font-weight:900;
+            letter-spacing:8px;
+            line-height:1;
+            background:linear-gradient(
+                90deg,
+                #ffffff,
+                #00d9ff,
+                #ffffff,
+                #00d9ff,
+                #ffffff
+            );
+            background-size:300% 100%;
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation:
+                brandShine 4s linear infinite,
+                brandPulse 2.5s ease-in-out infinite;
+            text-shadow:
+                0 0 18px rgba(0,220,255,.35);
+        }
+
+        .brand-subtitle {
+            margin-top:10px;
+            font-size:clamp(14px,2.5vw,22px);
+            font-weight:700;
+            letter-spacing:2px;
+            opacity:.95;
+            animation:subtitleFade 3s ease-in-out infinite;
+        }
+
+        .brand-status {
+            margin-top:10px;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:2px;
+            padding:6px 12px;
+            border-radius:50px;
+            background:rgba(0,255,140,.08);
+            border:1px solid rgba(0,255,140,.25);
+            animation:statusGlow 2s ease-in-out infinite;
+        }
+
+        .status-dot {
+            width:9px;
+            height:9px;
+            border-radius:50%;
+            background:#00ff88;
+            box-shadow:
+                0 0 7px #00ff88,
+                0 0 15px #00ff88;
+            animation:dotBlink 1.2s infinite;
+        }
+
+        .brand-orbit {
+            position:absolute;
+            border:1px solid rgba(0,220,255,.22);
+            border-radius:50%;
+            pointer-events:none;
+        }
+
+        .orbit-one {
+            width:230px;
+            height:230px;
+            animation:orbitRotate 9s linear infinite;
+        }
+
+        .orbit-two {
+            width:420px;
+            height:150px;
+            transform:rotate(25deg);
+            animation:orbitRotateReverse 12s linear infinite;
+        }
+
+        .orbit-three {
+            width:650px;
+            height:210px;
+            transform:rotate(-18deg);
+            animation:orbitRotate 16s linear infinite;
+        }
+
+        @keyframes brandShine {
+            0% {
+                background-position:0% 50%;
+            }
+
+            100% {
+                background-position:300% 50%;
+            }
+        }
+
+        @keyframes brandPulse {
+
+            0%,100% {
+                transform:scale(1);
+            }
+
+            50% {
+                transform:scale(1.04);
+            }
+        }
+
+        @keyframes brandFloat {
+
+            0%,100% {
+                transform:translateY(0);
+            }
+
+            50% {
+                transform:translateY(-5px);
+            }
+        }
+
+        @keyframes subtitleFade {
+
+            0%,100% {
+                opacity:.65;
+            }
+
+            50% {
+                opacity:1;
+            }
+        }
+
+        @keyframes statusGlow {
+
+            0%,100% {
+                box-shadow:0 0 0 rgba(0,255,140,0);
+            }
+
+            50% {
+                box-shadow:0 0 20px rgba(0,255,140,.16);
+            }
+        }
+
+        @keyframes dotBlink {
+
+            0%,100% {
+                opacity:1;
+                transform:scale(1);
+            }
+
+            50% {
+                opacity:.35;
+                transform:scale(.75);
+            }
+        }
+
+        @keyframes orbitRotate {
+
+            from {
+                transform:rotate(0deg);
+            }
+
+            to {
+                transform:rotate(360deg);
+            }
+        }
+
+        @keyframes orbitRotateReverse {
+
+            from {
+                transform:rotate(360deg);
+            }
+
+            to {
+                transform:rotate(0deg);
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .janjua-brand-animation {
+                min-height:125px;
+            }
+
+            .brand-title {
+                letter-spacing:5px;
+            }
+
+            .brand-subtitle {
+                letter-spacing:1px;
+            }
+
+            .orbit-three {
+                width:420px;
+            }
+        }
+
+    `;
+
+    document.head.appendChild(style);
+}
+
+
+/* =========================
+   DASHBOARD EVENTS
+========================= */
+
+function attachDashboardEvents() {
+
+    document.addEventListener("click", function(event) {
+
+        const card = event.target.closest(
+            "[data-module]"
+        );
+
+        if (!card) {
+            return;
+        }
+
+        const module = card.dataset.module;
+
+        if (module) {
+            openModule(module);
+        }
+
+    });
+
+}
+
+
+/* =========================
    CATEGORY RENDER
-   ========================================================= */
+========================= */
 
 function renderCategories() {
 
     const container =
-        document.getElementById(
-            "categoryList"
-        );
+        document.getElementById("categoryList");
 
     if (!container) {
         return;
@@ -235,2334 +495,1765 @@ function renderCategories() {
 
     container.innerHTML = "";
 
-    appData.categories.forEach(
-        function (category) {
+    data.categories.forEach(category => {
 
-            const card =
-                document.createElement(
-                    "div"
-                );
+        const div = document.createElement("div");
 
-            card.className =
-                "category-card";
+        div.className =
+            "category-card" +
+            (category.visible ? "" : " hidden-category");
 
-            const status =
-                category.status ===
-                "coming-soon";
+        div.innerHTML = `
 
+            <div class="category-title">
+                ${escapeHTML(category.name)}
+            </div>
 
-            card.innerHTML = `
+            <div class="category-actions">
 
-                <div class="category-icon">
-                    ${category.icon}
-                </div>
+                <button
+                    onclick="editCategory('${category.id}')">
+                    Edit
+                </button>
 
-                <h3>
-                    ${escapeHTML(category.name)}
-                </h3>
+                <button
+                    onclick="toggleCategory('${category.id}')">
+                    ${category.visible ? "Hide" : "Show"}
+                </button>
 
-                <p>
-                    ${escapeHTML(category.description)}
-                </p>
+                <button
+                    onclick="deleteCategory('${category.id}')">
+                    Delete
+                </button>
 
-                ${
-                    status
+            </div>
 
-                    ?
+        `;
 
-                    `
-                    <span class="coming-soon">
-                        COMING SOON
-                    </span>
-                    `
+        container.appendChild(div);
 
-                    :
+    });
 
-                    `
-                    <button
-                        onclick="openCategory('${category.id}')"
-                        style="
-                            margin-top:12px;
-                            border:none;
-                            padding:8px 13px;
-                            border-radius:8px;
-                            background:#102a43;
-                            color:white;
-                            cursor:pointer;
-                        "
-                    >
-                        Open
-                    </button>
-                    `
-                }
-
-            `;
-
-
-            container.appendChild(card);
-
-        }
-    );
 }
 
 
-/* =========================================================
-   OPEN CATEGORY
-   ========================================================= */
-
-function openCategory(id) {
-
-    const category =
-        appData.categories.find(
-            item =>
-                item.id === id
-        );
-
-    if (!category) {
-        return;
-    }
-
-
-    if (
-        category.status ===
-        "coming-soon"
-    ) {
-
-        alert(
-            category.name +
-            " ابھی Coming Soon ہے۔"
-        );
-
-        return;
-    }
-
-
-    openModulePanel(
-        "category",
-        category
-    );
-}
-
-
-/* =========================================================
-   OPEN MODULE
-   ========================================================= */
+/* =========================
+   MODULE OPEN
+========================= */
 
 function openModule(module) {
 
-    const titles = {
-
-        dashboard:
-            "Dashboard",
-
-        categories:
-            "Categories",
-
-        providers:
-            "Providers & Companies",
-
-        programs:
-            "Programs & Offers",
-
-        promoters:
-            "Promoters / Workers",
-
-        tracking:
-            "Tracking Links",
-
-        orders:
-            "Orders & Clicks",
-
-        payments:
-            "Commission & Payments",
-
-        reports:
-            "Reports & Analytics"
-    };
-
-
-    openModulePanel(
-        module,
-        {
-            title:
-                titles[module] ||
-                "Module"
-        }
-    );
-}
-
-
-/* =========================================================
-   MODULE PANEL
-   ========================================================= */
-
-function openModulePanel(
-    type,
-    data
-) {
-
-    closeModulePanel();
-
-
-    const overlay =
-        document.createElement(
-            "div"
-        );
-
-
-    overlay.id =
-        "moduleOverlay";
-
-
-    overlay.style.cssText = `
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.65);
-        z-index:9999;
-        padding:20px;
-        overflow:auto;
-    `;
-
-
-    const panel =
-        document.createElement(
-            "div"
-        );
-
-
-    panel.style.cssText = `
-        max-width:1100px;
-        margin:20px auto;
-        background:white;
-        border-radius:20px;
-        padding:25px;
-        min-height:500px;
-        box-shadow:0 20px 60px rgba(0,0,0,0.25);
-    `;
-
-
-    panel.innerHTML =
-        getModuleHTML(
-            type,
-            data
-        );
-
-
-    overlay.appendChild(panel);
-
-    document.body.appendChild(
-        overlay
-    );
-}
-
-
-/* =========================================================
-   MODULE HTML
-   ========================================================= */
-
-function getModuleHTML(
-    type,
-    data
-) {
-
-    if (type === "dashboard") {
-
-        return dashboardHTML();
-
-    }
-
-
-    if (type === "categories") {
-
-        return categoriesHTML();
-
-    }
-
-
-    if (type === "providers") {
-
-        return providersHTML();
-
-    }
-
-
-    if (type === "programs") {
-
-        return programsHTML();
-
-    }
-
-
-    if (type === "promoters") {
-
-        return promotersHTML();
-
-    }
-
-
-    if (type === "tracking") {
-
-        return trackingHTML();
-
-    }
-
-
-    if (type === "orders") {
-
-        return ordersHTML();
-
-    }
-
-
-    if (type === "payments") {
-
-        return paymentsHTML();
-
-    }
-
-
-    if (type === "reports") {
-
-        return reportsHTML();
-
-    }
-
-
-    if (type === "category") {
-
-        return categoryHTML(
-            data
-        );
-
-    }
-
-
-    return `
-        <h2>Module</h2>
-        <p>Module loading...</p>
-    `;
-}
-
-
-/* =========================================================
-   CLOSE MODULE
-   ========================================================= */
-
-function closeModulePanel() {
-
-    const old =
-        document.getElementById(
-            "moduleOverlay"
-        );
+    const old = document.getElementById("modulePanel");
 
     if (old) {
         old.remove();
     }
+
+    const panel = document.createElement("div");
+
+    panel.id = "modulePanel";
+
+    panel.innerHTML = `
+
+        <div class="module-overlay">
+
+            <div class="module-window">
+
+                <div class="module-header">
+
+                    <h2>
+                        ${escapeHTML(module)}
+                    </h2>
+
+                    <button
+                        class="module-close"
+                        onclick="closeModule()">
+                        ×
+                    </button>
+
+                </div>
+
+                <div
+                    id="moduleContent"
+                    class="module-content">
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(panel);
+
+    addModuleCSS();
+
+    const content =
+        document.getElementById("moduleContent");
+
+    if (module === "Categories") {
+        renderCategoryModule(content);
+    }
+
+    else if (
+        module === "Providers & Companies"
+    ) {
+        renderProviderModule(content);
+    }
+
+    else if (
+        module === "Programs & Offers"
+    ) {
+        renderProgramModule(content);
+    }
+
+    else if (
+        module === "Promoters / Workers"
+    ) {
+        renderPromoterModule(content);
+    }
+
+    else if (
+        module === "Tracking Links"
+    ) {
+        renderTrackingModule(content);
+    }
+
+    else if (
+        module === "Orders & Clicks"
+    ) {
+        renderOrdersModule(content);
+    }
+
+    else if (
+        module === "Commission & Payments"
+    ) {
+        renderCommissionModule(content);
+    }
+
+    else if (
+        module === "Reports & Analytics"
+    ) {
+        renderReportsModule(content);
+    }
+
+    else {
+
+        content.innerHTML = `
+            <div class="empty-module">
+                <h3>${escapeHTML(module)}</h3>
+                <p>Module is ready for the next integration.</p>
+            </div>
+        `;
+    }
+
 }
 
 
-/* =========================================================
-   DASHBOARD
-   ========================================================= */
+function closeModule() {
 
-function dashboardHTML() {
+    const panel =
+        document.getElementById("modulePanel");
 
-    const categories =
-        appData.categories.length;
-
-    const providers =
-        appData.providers.length;
-
-    const programs =
-        appData.programs.length;
-
-    const promoters =
-        appData.promoters.length;
-
-    const clicks =
-        appData.clicks.length;
-
-    const orders =
-        appData.orders.length;
+    if (panel) {
+        panel.remove();
+    }
+}
 
 
-    return `
+/* =========================
+   PROVIDER MODULE
+========================= */
 
-        ${moduleHeader(
-            "📊 Dashboard"
-        )}
+function renderProviderModule(container) {
 
-        <div class="aim-stats">
+    container.innerHTML = `
 
-            ${statBox(
-                "📂",
-                "Categories",
-                categories
-            )}
+        <div class="module-toolbar">
 
-            ${statBox(
-                "🏢",
-                "Providers",
-                providers
-            )}
-
-            ${statBox(
-                "🎯",
-                "Programs",
-                programs
-            )}
-
-            ${statBox(
-                "👥",
-                "Promoters",
-                promoters
-            )}
-
-            ${statBox(
-                "👆",
-                "Clicks",
-                clicks
-            )}
-
-            ${statBox(
-                "🛒",
-                "Orders",
-                orders
-            )}
+            <button
+                class="primary-btn"
+                onclick="showProviderForm()">
+                + Add Provider / Company
+            </button>
 
         </div>
 
-        <div class="aim-section">
-
-            <h3>Platform Status</h3>
-
-            <p>
-                JANJUA Digital Marketing Platform
-                is ready for configuration.
-            </p>
-
-            <p>
-                اگلے مراحل میں Providers،
-                Programs، Promoters اور Tracking
-                آپس میں connect کیے جائیں گے۔
-            </p>
-
+        <div
+            id="providerFormArea">
         </div>
 
+        <div
+            id="providerList"
+            class="data-list">
+        </div>
+    `;
+
+    renderProviders();
+}
+
+
+function renderProviders() {
+
+    const list =
+        document.getElementById("providerList");
+
+    if (!list) {
+        return;
+    }
+
+    if (data.providers.length === 0) {
+
+        list.innerHTML = `
+            <div class="empty-module">
+                <h3>No Providers Added</h3>
+                <p>
+                    Click "Add Provider / Company"
+                    to create your first provider.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    list.innerHTML = data.providers.map(provider => {
+
+        return `
+
+            <div class="data-card">
+
+                <div class="data-card-main">
+
+                    <h3>
+                        ${escapeHTML(provider.name)}
+                    </h3>
+
+                    <p>
+                        Website:
+                        ${escapeHTML(provider.website || "-")}
+                    </p>
+
+                    <p>
+                        Affiliate ID:
+                        ${escapeHTML(provider.affiliateId || "-")}
+                    </p>
+
+                    <p>
+                        SubID:
+                        ${escapeHTML(provider.subId || "-")}
+                    </p>
+
+                    <p>
+                        ClickID:
+                        ${escapeHTML(provider.clickId || "-")}
+                    </p>
+
+                    <p>
+                        API:
+                        ${provider.api ? "YES" : "NO"}
+                        &nbsp;&nbsp;
+                        Webhook:
+                        ${provider.webhook ? "YES" : "NO"}
+                    </p>
+
+                    <p>
+                        Status:
+                        <strong>
+                            ${provider.visible ? "ACTIVE" : "HIDDEN"}
+                        </strong>
+                    </p>
+
+                </div>
+
+                <div class="data-card-actions">
+
+                    <button
+                        onclick="editProvider('${provider.id}')">
+                        Edit
+                    </button>
+
+                    <button
+                        onclick="toggleProvider('${provider.id}')">
+                        ${provider.visible ? "Hide" : "Show"}
+                    </button>
+
+                    <button
+                        class="danger-btn"
+                        onclick="deleteProvider('${provider.id}')">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+
+/* =========================
+   PROVIDER FORM
+========================= */
+
+function showProviderForm(providerId = null) {
+
+    const area =
+        document.getElementById("providerFormArea");
+
+    if (!area) {
+        return;
+    }
+
+    const provider =
+        providerId
+            ? data.providers.find(
+                p => p.id === providerId
+              )
+            : null;
+
+    area.innerHTML = `
+
+        <div class="form-card">
+
+            <h3>
+                ${provider
+                    ? "Edit Provider / Company"
+                    : "Add Provider / Company"}
+            </h3>
+
+            <div class="form-grid">
+
+                <label>
+                    Company / Provider Name
+
+                    <input
+                        id="providerName"
+                        value="${escapeHTML(provider?.name || "")}"
+                        placeholder="e.g. Foodpanda">
+                </label>
+
+                <label>
+                    Website
+
+                    <input
+                        id="providerWebsite"
+                        value="${escapeHTML(provider?.website || "")}"
+                        placeholder="https://example.com">
+                </label>
+
+                <label>
+                    Original Affiliate Link
+
+                    <input
+                        id="providerAffiliateLink"
+                        value="${escapeHTML(provider?.affiliateLink || "")}"
+                        placeholder="Original affiliate URL">
+                </label>
+
+                <label>
+                    Affiliate / Account ID
+
+                    <input
+                        id="providerAffiliateId"
+                        value="${escapeHTML(provider?.affiliateId || "")}"
+                        placeholder="Affiliate ID">
+                </label>
+
+                <label>
+                    SubID Support
+
+                    <select id="providerSubId">
+
+                        <option value="No"
+                            ${provider?.subId === "No" ? "selected" : ""}>
+                            No
+                        </option>
+
+                        <option value="Yes"
+                            ${provider?.subId === "Yes" ? "selected" : ""}>
+                            Yes
+                        </option>
+
+                    </select>
+                </label>
+
+                <label>
+                    ClickID Support
+
+                    <select id="providerClickId">
+
+                        <option value="No"
+                            ${provider?.clickId === "No" ? "selected" : ""}>
+                            No
+                        </option>
+
+                        <option value="Yes"
+                            ${provider?.clickId === "Yes" ? "selected" : ""}>
+                            Yes
+                        </option>
+
+                    </select>
+                </label>
+
+                <label>
+                    API Available
+
+                    <select id="providerApi">
+
+                        <option value="No"
+                            ${provider?.api === false ? "selected" : ""}>
+                            No
+                        </option>
+
+                        <option value="Yes"
+                            ${provider?.api === true ? "selected" : ""}>
+                            Yes
+                        </option>
+
+                    </select>
+                </label>
+
+                <label>
+                    Webhook Available
+
+                    <select id="providerWebhook">
+
+                        <option value="No"
+                            ${provider?.webhook === false ? "selected" : ""}>
+                            No
+                        </option>
+
+                        <option value="Yes"
+                            ${provider?.webhook === true ? "selected" : ""}>
+                            Yes
+                        </option>
+
+                    </select>
+                </label>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    class="primary-btn"
+                    onclick="saveProvider('${providerId || ""}')">
+                    Save Provider
+                </button>
+
+                <button
+                    onclick="cancelProviderForm()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
     `;
 }
 
 
-/* =========================================================
-   CATEGORIES
-   ========================================================= */
+/* =========================
+   SAVE PROVIDER
+========================= */
 
-function categoriesHTML() {
+function saveProvider(providerId) {
 
-    let rows = "";
+    const name =
+        document.getElementById("providerName").value.trim();
 
-    appData.categories.forEach(
-        function (category) {
+    const website =
+        document.getElementById("providerWebsite").value.trim();
 
-            rows += `
+    const affiliateLink =
+        document
+            .getElementById("providerAffiliateLink")
+            .value
+            .trim();
 
-                <tr>
+    const affiliateId =
+        document
+            .getElementById("providerAffiliateId")
+            .value
+            .trim();
 
-                    <td>
-                        ${category.icon}
-                    </td>
+    const subId =
+        document
+            .getElementById("providerSubId")
+            .value;
 
-                    <td>
-                        ${escapeHTML(
-                            category.name
-                        )}
-                    </td>
+    const clickId =
+        document
+            .getElementById("providerClickId")
+            .value;
 
-                    <td>
-                        ${
-                            category.status ===
-                            "active"
-                            ? "ACTIVE"
-                            : "COMING SOON"
-                        }
-                    </td>
+    const api =
+        document
+            .getElementById("providerApi")
+            .value === "Yes";
 
-                    <td>
+    const webhook =
+        document
+            .getElementById("providerWebhook")
+            .value === "Yes";
 
-                        <button
-                            onclick="editCategory('${category.id}')"
-                        >
-                            Edit
-                        </button>
 
-                        <button
-                            onclick="toggleCategory('${category.id}')"
-                        >
-                            ${
-                                category.status ===
-                                "active"
-                                ? "Hide"
-                                : "Show"
-                            }
-                        </button>
+    if (!name) {
 
-                        <button
-                            onclick="deleteCategory('${category.id}')"
-                        >
-                            Delete
-                        </button>
+        alert("Please enter Company / Provider Name.");
 
-                    </td>
+        return;
+    }
 
-                </tr>
-            `;
+
+    if (providerId) {
+
+        const provider =
+            data.providers.find(
+                p => p.id === providerId
+            );
+
+        if (provider) {
+
+            provider.name = name;
+            provider.website = website;
+            provider.affiliateLink = affiliateLink;
+            provider.affiliateId = affiliateId;
+            provider.subId = subId;
+            provider.clickId = clickId;
+            provider.api = api;
+            provider.webhook = webhook;
         }
-    );
+
+    } else {
+
+        data.providers.push({
+
+            id: makeId("provider"),
+
+            name,
+
+            website,
+
+            affiliateLink,
+
+            affiliateId,
+
+            subId,
+
+            clickId,
+
+            api,
+
+            webhook,
+
+            visible: true,
+
+            createdAt: new Date().toISOString()
+        });
+
+    }
 
 
-    return `
+    saveData();
 
-        ${moduleHeader(
-            "📂 Categories"
-        )}
+    document.getElementById(
+        "providerFormArea"
+    ).innerHTML = "";
 
-        <div class="aim-toolbar">
+    renderProviders();
+
+    alert("Provider saved successfully.");
+}
+
+
+/* =========================
+   EDIT PROVIDER
+========================= */
+
+function editProvider(id) {
+
+    showProviderForm(id);
+}
+
+
+/* =========================
+   DELETE PROVIDER
+========================= */
+
+function deleteProvider(id) {
+
+    const provider =
+        data.providers.find(
+            p => p.id === id
+        );
+
+    if (!provider) {
+        return;
+    }
+
+    if (
+        !confirm(
+            `Delete "${provider.name}"?`
+        )
+    ) {
+        return;
+    }
+
+    data.providers =
+        data.providers.filter(
+            p => p.id !== id
+        );
+
+    saveData();
+
+    renderProviders();
+}
+
+
+/* =========================
+   TOGGLE PROVIDER
+========================= */
+
+function toggleProvider(id) {
+
+    const provider =
+        data.providers.find(
+            p => p.id === id
+        );
+
+    if (!provider) {
+        return;
+    }
+
+    provider.visible =
+        !provider.visible;
+
+    saveData();
+
+    renderProviders();
+}
+
+
+/* =========================
+   CANCEL PROVIDER
+========================= */
+
+function cancelProviderForm() {
+
+    const area =
+        document.getElementById(
+            "providerFormArea"
+        );
+
+    if (area) {
+        area.innerHTML = "";
+    }
+}
+
+
+/* =========================
+   CATEGORY MODULE
+========================= */
+
+function renderCategoryModule(container) {
+
+    container.innerHTML = `
+
+        <div class="module-toolbar">
 
             <button
-                class="aim-primary"
-                onclick="addCategory()"
-            >
+                class="primary-btn"
+                onclick="addCategory()">
                 + Add Category
             </button>
 
         </div>
 
-
-        <div class="aim-table-wrap">
-
-            <table class="aim-table">
-
-                <thead>
-
-                    <tr>
-                        <th>Icon</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-                    ${rows}
-                </tbody>
-
-            </table>
-
+        <div
+            id="moduleCategoryList"
+            class="data-list">
         </div>
-
     `;
+
+    renderModuleCategories();
 }
 
 
-/* =========================================================
-   ADD CATEGORY
-   ========================================================= */
+function renderModuleCategories() {
+
+    const list =
+        document.getElementById(
+            "moduleCategoryList"
+        );
+
+    if (!list) {
+        return;
+    }
+
+    list.innerHTML =
+        data.categories.map(category => `
+
+            <div class="data-card">
+
+                <div>
+
+                    <h3>
+                        ${escapeHTML(category.name)}
+                    </h3>
+
+                    <p>
+                        Status:
+                        ${category.visible
+                            ? "ACTIVE"
+                            : "HIDDEN"}
+                    </p>
+
+                </div>
+
+                <div class="data-card-actions">
+
+                    <button
+                        onclick="editCategory('${category.id}')">
+                        Edit
+                    </button>
+
+                    <button
+                        onclick="toggleCategory('${category.id}')">
+                        ${category.visible
+                            ? "Hide"
+                            : "Show"}
+                    </button>
+
+                    <button
+                        class="danger-btn"
+                        onclick="deleteCategory('${category.id}')">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+}
+
+
+/* =========================
+   CATEGORY ACTIONS
+========================= */
 
 function addCategory() {
 
     const name =
-        prompt(
-            "Category کا نام:"
-        );
+        prompt("Enter category name:");
 
     if (!name) {
         return;
     }
 
+    data.categories.push({
 
-    const description =
-        prompt(
-            "Category کی description:"
-        ) ||
-        "";
+        id: makeId("cat"),
 
+        name: name.trim(),
 
-    const icon =
-        prompt(
-            "Category کا icon/emoji:",
-            "📁"
-        ) ||
-        "📁";
-
-
-    appData.categories.push({
-
-        id:
-            "cat-" +
-            Date.now(),
-
-        name:
-            name.trim(),
-
-        description:
-            description.trim(),
-
-        icon:
-            icon.trim(),
-
-        status:
-            "active"
+        visible: true
     });
-
 
     saveData();
 
     renderCategories();
 
-    refreshModule(
-        "categories"
-    );
+    renderModuleCategories();
 }
 
-
-/* =========================================================
-   EDIT CATEGORY
-   ========================================================= */
 
 function editCategory(id) {
 
     const category =
-        appData.categories.find(
-            item =>
-                item.id === id
+        data.categories.find(
+            c => c.id === id
         );
 
     if (!category) {
         return;
     }
 
-
     const name =
         prompt(
-            "Category کا نیا نام:",
+            "Edit category name:",
             category.name
         );
-
 
     if (!name) {
         return;
     }
-
-
-    const description =
-        prompt(
-            "Description:",
-            category.description
-        );
-
 
     category.name =
         name.trim();
 
-    category.description =
-        description ||
-        category.description;
-
-
     saveData();
 
     renderCategories();
 
-    refreshModule(
-        "categories"
-    );
+    renderModuleCategories();
 }
 
-
-/* =========================================================
-   HIDE / SHOW CATEGORY
-   ========================================================= */
 
 function toggleCategory(id) {
 
     const category =
-        appData.categories.find(
-            item =>
-                item.id === id
+        data.categories.find(
+            c => c.id === id
         );
 
     if (!category) {
         return;
     }
 
-
-    category.status =
-        category.status ===
-        "active"
-
-        ? "coming-soon"
-
-        : "active";
-
+    category.visible =
+        !category.visible;
 
     saveData();
 
     renderCategories();
 
-    refreshModule(
-        "categories"
-    );
+    renderModuleCategories();
 }
 
-
-/* =========================================================
-   DELETE CATEGORY
-   ========================================================= */
 
 function deleteCategory(id) {
 
-    const category =
-        appData.categories.find(
-            item =>
-                item.id === id
-        );
-
-
-    if (!category) {
+    if (
+        !confirm(
+            "Delete this category?"
+        )
+    ) {
         return;
     }
 
-
-    const ok =
-        confirm(
-            "کیا آپ " +
-            category.name +
-            " کو Delete کرنا چاہتے ہیں؟"
+    data.categories =
+        data.categories.filter(
+            c => c.id !== id
         );
-
-
-    if (!ok) {
-        return;
-    }
-
-
-    appData.categories =
-        appData.categories.filter(
-            item =>
-                item.id !== id
-        );
-
 
     saveData();
 
     renderCategories();
 
-    refreshModule(
-        "categories"
-    );
+    renderModuleCategories();
 }
 
 
-/* =========================================================
-   PROVIDERS
-   ========================================================= */
+/* =========================
+   PROGRAM MODULE
+========================= */
 
-function providersHTML() {
+function renderProgramModule(container) {
 
-    return `
+    container.innerHTML = `
 
-        ${moduleHeader(
-            "🏢 Providers & Companies"
-        )}
-
-        <div class="aim-form">
-
-            <input
-                id="providerName"
-                placeholder="Company / Provider Name"
-            >
-
-            <input
-                id="providerWebsite"
-                placeholder="Website"
-            >
-
-            <input
-                id="providerAffiliate"
-                placeholder="Original Affiliate Link"
-            >
-
-            <input
-                id="providerAffiliateId"
-                placeholder="Affiliate / Account ID"
-            >
-
-            <label>
-                <input
-                    type="checkbox"
-                    id="providerSubId"
-                >
-                SubID Support
-            </label>
-
-            <label>
-                <input
-                    type="checkbox"
-                    id="providerClickId"
-                >
-                ClickID Support
-            </label>
-
-            <label>
-                <input
-                    type="checkbox"
-                    id="providerApi"
-                >
-                API Support
-            </label>
-
-            <label>
-                <input
-                    type="checkbox"
-                    id="providerWebhook"
-                >
-                Webhook Support
-            </label>
+        <div class="module-toolbar">
 
             <button
-                class="aim-primary"
-                onclick="saveProviderFromForm()"
-            >
-                Save Provider
+                class="primary-btn"
+                onclick="showProgramForm()">
+                + Add Program / Offer
             </button>
 
         </div>
 
+        <div id="programFormArea"></div>
 
-        <div class="aim-section">
-
-            <h3>
-                Saved Providers:
-                ${appData.providers.length}
-            </h3>
-
-            ${providerListHTML()}
-
+        <div
+            id="programList"
+            class="data-list">
         </div>
-
     `;
+
+    renderPrograms();
 }
 
 
-/* =========================================================
-   SAVE PROVIDER
-   ========================================================= */
+function renderPrograms() {
 
-function saveProviderFromForm() {
-
-    const name =
+    const list =
         document.getElementById(
-            "providerName"
-        ).value.trim();
-
-
-    if (!name) {
-
-        alert(
-            "Provider کا نام ضروری ہے۔"
+            "programList"
         );
+
+    if (!list) {
+        return;
+    }
+
+    if (data.programs.length === 0) {
+
+        list.innerHTML = `
+            <div class="empty-module">
+                <h3>No Programs Yet</h3>
+                <p>
+                    Add your first Program / Offer.
+                </p>
+            </div>
+        `;
 
         return;
     }
 
+    list.innerHTML =
+        data.programs.map(program => {
 
-    appData.providers.push({
+            const provider =
+                data.providers.find(
+                    p => p.id === program.providerId
+                );
 
-        id:
-            "provider-" +
-            Date.now(),
+            return `
 
-        name:
-            name,
+                <div class="data-card">
 
-        website:
-            document.getElementById(
-                "providerWebsite"
-            ).value.trim(),
+                    <div>
 
-        affiliateLink:
-            document.getElementById(
-                "providerAffiliate"
-            ).value.trim(),
+                        <h3>
+                            ${escapeHTML(program.name)}
+                        </h3>
 
-        affiliateId:
-            document.getElementById(
-                "providerAffiliateId"
-            ).value.trim(),
+                        <p>
+                            Provider:
+                            ${escapeHTML(
+                                provider?.name || "-"
+                            )}
+                        </p>
 
-        subIdSupport:
-            document.getElementById(
-                "providerSubId"
-            ).checked,
+                        <p>
+                            Category:
+                            ${escapeHTML(
+                                program.category || "-"
+                            )}
+                        </p>
 
-        clickIdSupport:
-            document.getElementById(
-                "providerClickId"
-            ).checked,
+                        <p>
+                            Commission:
+                            ${escapeHTML(
+                                program.commission || "0"
+                            )}%
+                        </p>
 
-        apiSupport:
-            document.getElementById(
-                "providerApi"
-            ).checked,
+                    </div>
 
-        webhookSupport:
-            document.getElementById(
-                "providerWebhook"
-            ).checked,
+                    <div class="data-card-actions">
 
-        createdAt:
-            new Date().toISOString()
+                        <button
+                            onclick="editProgram('${program.id}')">
+                            Edit
+                        </button>
 
-    });
+                        <button
+                            class="danger-btn"
+                            onclick="deleteProgram('${program.id}')">
+                            Delete
+                        </button>
 
+                    </div>
 
-    saveData();
+                </div>
+            `;
 
-    refreshModule(
-        "providers"
-    );
+        }).join("");
 }
 
 
-/* =========================================================
-   PROVIDER LIST
-   ========================================================= */
+function showProgramForm(programId = null) {
 
-function providerListHTML() {
+    const area =
+        document.getElementById(
+            "programFormArea"
+        );
 
-    if (
-        appData.providers.length ===
-        0
-    ) {
-
-        return `
-            <p>
-                ابھی کوئی Provider شامل نہیں۔
-            </p>
-        `;
+    if (!area) {
+        return;
     }
 
+    const program =
+        programId
+            ? data.programs.find(
+                p => p.id === programId
+              )
+            : null;
 
-    return `
-        <ul>
-            ${
-                appData.providers.map(
-                    p =>
-                        `<li>
-                            <strong>
-                                ${escapeHTML(p.name)}
-                            </strong>
-                        </li>`
-                ).join("")
-            }
-        </ul>
-    `;
-}
+    area.innerHTML = `
 
-
-/* =========================================================
-   PROGRAMS
-   ========================================================= */
-
-function programsHTML() {
-
-    const providerOptions =
-        appData.providers.map(
-            p =>
-                `
-                <option value="${p.id}">
-                    ${escapeHTML(p.name)}
-                </option>
-                `
-        ).join("");
-
-
-    const categoryOptions =
-        appData.categories.map(
-            c =>
-                `
-                <option value="${c.id}">
-                    ${escapeHTML(c.name)}
-                </option>
-                `
-        ).join("");
-
-
-    return `
-
-        ${moduleHeader(
-            "🎯 Programs & Offers"
-        )}
-
-        <div class="aim-form">
-
-            <input
-                id="programName"
-                placeholder="Program / Offer Name"
-            >
-
-            <select id="programProvider">
-                <option value="">
-                    Select Provider
-                </option>
-                ${providerOptions}
-            </select>
-
-            <select id="programCategory">
-                <option value="">
-                    Select Category
-                </option>
-                ${categoryOptions}
-            </select>
-
-            <input
-                id="programAffiliate"
-                placeholder="Original Affiliate Link"
-            >
-
-            <input
-                id="programCommission"
-                type="number"
-                placeholder="Commission %"
-            >
-
-            <input
-                id="programCookie"
-                type="number"
-                placeholder="Cookie Days"
-            >
-
-            <button
-                class="aim-primary"
-                onclick="saveProgramFromForm()"
-            >
-                Save Program
-            </button>
-
-        </div>
-
-
-        <div class="aim-section">
+        <div class="form-card">
 
             <h3>
-                Programs:
-                ${appData.programs.length}
+                ${program
+                    ? "Edit Program / Offer"
+                    : "Add Program / Offer"}
             </h3>
 
-            ${programListHTML()}
+            <div class="form-grid">
+
+                <label>
+                    Program Name
+
+                    <input
+                        id="programName"
+                        value="${escapeHTML(program?.name || "")}"
+                        placeholder="Program name">
+                </label>
+
+                <label>
+                    Provider / Company
+
+                    <select id="programProvider">
+
+                        <option value="">
+                            Select Provider
+                        </option>
+
+                        ${data.providers
+                            .filter(p => p.visible)
+                            .map(p => `
+                                <option
+                                    value="${p.id}"
+                                    ${program?.providerId === p.id
+                                        ? "selected"
+                                        : ""}>
+                                    ${escapeHTML(p.name)}
+                                </option>
+                            `)
+                            .join("")}
+
+                    </select>
+
+                </label>
+
+                <label>
+                    Category
+
+                    <select id="programCategory">
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        ${data.categories
+                            .filter(c => c.visible)
+                            .map(c => `
+                                <option
+                                    value="${escapeHTML(c.name)}"
+                                    ${program?.category === c.name
+                                        ? "selected"
+                                        : ""}>
+                                    ${escapeHTML(c.name)}
+                                </option>
+                            `)
+                            .join("")}
+
+                    </select>
+
+                </label>
+
+                <label>
+                    Affiliate Link
+
+                    <input
+                        id="programAffiliateLink"
+                        value="${escapeHTML(program?.affiliateLink || "")}"
+                        placeholder="Original affiliate link">
+                </label>
+
+                <label>
+                    Commission %
+
+                    <input
+                        id="programCommission"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="${escapeHTML(program?.commission || "")}"
+                        placeholder="e.g. 5">
+                </label>
+
+                <label>
+                    Cookie Days
+
+                    <input
+                        id="programCookie"
+                        type="number"
+                        min="0"
+                        value="${escapeHTML(program?.cookieDays || "")}"
+                        placeholder="e.g. 7">
+                </label>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    class="primary-btn"
+                    onclick="saveProgram('${programId || ""}')">
+                    Save Program
+                </button>
+
+                <button
+                    onclick="cancelProgramForm()">
+                    Cancel
+                </button>
+
+            </div>
 
         </div>
-
     `;
 }
 
 
-/* =========================================================
-   SAVE PROGRAM
-   ========================================================= */
-
-function saveProgramFromForm() {
+function saveProgram(programId) {
 
     const name =
         document.getElementById(
             "programName"
         ).value.trim();
 
-
-    if (!name) {
-
-        alert(
-            "Program کا نام ضروری ہے۔"
-        );
-
-        return;
-    }
-
-
-    appData.programs.push({
-
-        id:
-            "program-" +
-            Date.now(),
-
-        name:
-            name,
-
-        providerId:
-            document.getElementById(
-                "programProvider"
-            ).value,
-
-        categoryId:
-            document.getElementById(
-                "programCategory"
-            ).value,
-
-        originalAffiliateLink:
-            document.getElementById(
-                "programAffiliate"
-            ).value.trim(),
-
-        commission:
-            Number(
-                document.getElementById(
-                    "programCommission"
-                ).value || 0
-            ),
-
-        cookieDays:
-            Number(
-                document.getElementById(
-                    "programCookie"
-                ).value || 0
-            ),
-
-        createdAt:
-            new Date().toISOString()
-
-    });
-
-
-    saveData();
-
-    refreshModule(
-        "programs"
-    );
-}
-
-
-/* =========================================================
-   PROGRAM LIST
-   ========================================================= */
-
-function programListHTML() {
-
-    if (
-        appData.programs.length ===
-        0
-    ) {
-
-        return `
-            <p>
-                ابھی کوئی Program شامل نہیں۔
-            </p>
-        `;
-    }
-
-
-    return `
-        <div class="aim-list">
-
-            ${
-                appData.programs.map(
-                    p =>
-                        `
-                        <div class="aim-list-item">
-
-                            <strong>
-                                ${escapeHTML(p.name)}
-                            </strong>
-
-                            <span>
-                                Commission:
-                                ${p.commission}%
-                            </span>
-
-                        </div>
-                        `
-                ).join("")
-            }
-
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   PROMOTERS
-   ========================================================= */
-
-function promotersHTML() {
-
-    return `
-
-        ${moduleHeader(
-            "👥 Promoters / Workers"
-        )}
-
-        <div class="aim-form">
-
-            <input
-                id="promoterName"
-                placeholder="Promoter Name"
-            >
-
-            <input
-                id="promoterPhone"
-                placeholder="Phone"
-            >
-
-            <input
-                id="promoterEmail"
-                placeholder="Email"
-            >
-
-            <select id="promoterPayment">
-
-                <option value="">
-                    Payment Method
-                </option>
-
-                <option>
-                    Bank
-                </option>
-
-                <option>
-                    JazzCash
-                </option>
-
-                <option>
-                    Easypaisa
-                </option>
-
-            </select>
-
-            <input
-                id="promoterAccount"
-                placeholder="Payment Account"
-            >
-
-            <button
-                class="aim-primary"
-                onclick="savePromoterFromForm()"
-            >
-                Save Promoter
-            </button>
-
-        </div>
-
-
-        <div class="aim-section">
-
-            <h3>
-                Promoters:
-                ${appData.promoters.length}
-            </h3>
-
-            ${promoterListHTML()}
-
-        </div>
-
-    `;
-}
-
-
-/* =========================================================
-   SAVE PROMOTER
-   ========================================================= */
-
-function savePromoterFromForm() {
-
-    const name =
+    const providerId =
         document.getElementById(
-            "promoterName"
+            "programProvider"
+        ).value;
+
+    const category =
+        document.getElementById(
+            "programCategory"
+        ).value;
+
+    const affiliateLink =
+        document.getElementById(
+            "programAffiliateLink"
         ).value.trim();
 
+    const commission =
+        document.getElementById(
+            "programCommission"
+        ).value;
+
+    const cookieDays =
+        document.getElementById(
+            "programCookie"
+        ).value;
+
 
     if (!name) {
 
-        alert(
-            "Promoter کا نام ضروری ہے۔"
-        );
+        alert("Enter Program Name.");
 
         return;
     }
 
 
-    appData.promoters.push({
+    if (!providerId) {
 
-        id:
-            "promoter-" +
-            Date.now(),
+        alert("Select Provider.");
 
-        name:
+        return;
+    }
+
+
+    if (programId) {
+
+        const program =
+            data.programs.find(
+                p => p.id === programId
+            );
+
+        if (program) {
+
+            program.name = name;
+            program.providerId = providerId;
+            program.category = category;
+            program.affiliateLink = affiliateLink;
+            program.commission = commission;
+            program.cookieDays = cookieDays;
+        }
+
+    } else {
+
+        data.programs.push({
+
+            id: makeId("program"),
+
             name,
 
-        phone:
-            document.getElementById(
-                "promoterPhone"
-            ).value.trim(),
+            providerId,
 
-        email:
-            document.getElementById(
-                "promoterEmail"
-            ).value.trim(),
+            category,
 
-        paymentMethod:
-            document.getElementById(
-                "promoterPayment"
-            ).value,
+            affiliateLink,
 
-        paymentAccount:
-            document.getElementById(
-                "promoterAccount"
-            ).value.trim(),
+            commission,
 
-        createdAt:
-            new Date().toISOString()
+            cookieDays,
 
-    });
+            createdAt:
+                new Date().toISOString()
+        });
+    }
 
 
     saveData();
 
-    refreshModule(
-        "promoters"
-    );
+    document.getElementById(
+        "programFormArea"
+    ).innerHTML = "";
+
+    renderPrograms();
+
+    alert("Program saved successfully.");
 }
 
 
-/* =========================================================
-   PROMOTER LIST
-   ========================================================= */
+function editProgram(id) {
 
-function promoterListHTML() {
+    showProgramForm(id);
+}
+
+
+function deleteProgram(id) {
 
     if (
-        appData.promoters.length ===
-        0
+        !confirm(
+            "Delete this program?"
+        )
     ) {
-
-        return `
-            <p>
-                ابھی کوئی Promoter شامل نہیں۔
-            </p>
-        `;
+        return;
     }
 
+    data.programs =
+        data.programs.filter(
+            p => p.id !== id
+        );
 
-    return `
-        <div class="aim-list">
+    saveData();
 
-            ${
-                appData.promoters.map(
-                    p =>
-                        `
-                        <div class="aim-list-item">
-
-                            <strong>
-                                ${escapeHTML(p.name)}
-                            </strong>
-
-                            <span>
-                                ${escapeHTML(
-                                    p.phone || ""
-                                )}
-                            </span>
-
-                        </div>
-                        `
-                ).join("")
-            }
-
-        </div>
-    `;
+    renderPrograms();
 }
 
 
-/* =========================================================
-   TRACKING
-   ========================================================= */
+function cancelProgramForm() {
 
-function trackingHTML() {
+    const area =
+        document.getElementById(
+            "programFormArea"
+        );
 
-    return `
-
-        ${moduleHeader(
-            "🔗 Tracking Links"
-        )}
-
-        <div class="aim-form">
-
-            <select id="trackingPromoter">
-
-                <option value="">
-                    Select Promoter
-                </option>
-
-                ${
-                    appData.promoters.map(
-                        p =>
-                            `
-                            <option value="${p.id}">
-                                ${escapeHTML(p.name)}
-                            </option>
-                            `
-                    ).join("")
-                }
-
-            </select>
+    if (area) {
+        area.innerHTML = "";
+    }
+}
 
 
-            <select id="trackingProgram">
+/* =========================
+   PROMOTER MODULE
+========================= */
 
-                <option value="">
-                    Select Program
-                </option>
+function renderPromoterModule(container) {
 
-                ${
-                    appData.programs.map(
-                        p =>
-                            `
-                            <option value="${p.id}">
-                                ${escapeHTML(p.name)}
-                            </option>
-                            `
-                    ).join("")
-                }
+    container.innerHTML = `
 
-            </select>
-
+        <div class="module-toolbar">
 
             <button
-                class="aim-primary"
-                onclick="generateTrackingLink()"
-            >
-                Generate Tracking Link
+                class="primary-btn"
+                onclick="addPromoter()">
+                + Add Promoter / Worker
             </button>
 
         </div>
 
+        <div class="data-list">
 
-        <div class="aim-section">
+            ${
+                data.promoters.length
+                ? data.promoters.map(p => `
 
-            <h3>
-                Tracking Links:
-                ${appData.trackingLinks.length}
-            </h3>
+                    <div class="data-card">
 
-            ${trackingListHTML()}
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(p.name)}
+                            </h3>
+
+                            <p>
+                                Phone:
+                                ${escapeHTML(p.phone || "-")}
+                            </p>
+
+                            <p>
+                                Email:
+                                ${escapeHTML(p.email || "-")}
+                            </p>
+
+                            <p>
+                                Payment:
+                                ${escapeHTML(
+                                    p.paymentMethod || "-"
+                                )}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                `).join("")
+                :
+                `
+                    <div class="empty-module">
+                        No promoters added yet.
+                    </div>
+                `
+            }
 
         </div>
-
     `;
 }
 
 
-/* =========================================================
-   GENERATE TRACKING LINK
-   ========================================================= */
+function addPromoter() {
 
-function generateTrackingLink() {
+    const name =
+        prompt("Promoter / Worker Name:");
 
-    const promoterId =
-        document.getElementById(
-            "trackingPromoter"
-        ).value;
-
-
-    const programId =
-        document.getElementById(
-            "trackingProgram"
-        ).value;
-
-
-    if (
-        !promoterId ||
-        !programId
-    ) {
-
-        alert(
-            "Promoter اور Program دونوں select کریں۔"
-        );
-
+    if (!name) {
         return;
     }
 
+    const phone =
+        prompt("Phone:");
 
-    const program =
-        appData.programs.find(
-            p =>
-                p.id === programId
+    const email =
+        prompt("Email:");
+
+    const paymentMethod =
+        prompt(
+            "Payment Method (Bank/JazzCash/Easypaisa):"
         );
 
+    data.promoters.push({
 
-    if (!program) {
-        return;
-    }
+        id: makeId("promoter"),
 
+        name: name.trim(),
 
-    const code =
-        "AIM-" +
-        Date.now()
-            .toString(36)
-            .toUpperCase();
+        phone: phone || "",
 
+        email: email || "",
 
-    const publicLink =
-        window.location.origin +
-        window.location.pathname +
-        "?ref=" +
-        code;
+        paymentMethod:
+            paymentMethod || "",
 
-
-    appData.trackingLinks.push({
-
-        id:
-            "link-" +
-            Date.now(),
-
-        trackingCode:
-            code,
-
-        promoterId:
-            promoterId,
-
-        programId:
-            programId,
-
-        originalAffiliateLink:
-            program.originalAffiliateLink,
-
-        publicLink:
-            publicLink,
-
-        clicks:
-            0,
-
-        orders:
-            0,
-
-        sales:
-            0,
-
-        commission:
-            0,
+        paymentAccount: "",
 
         createdAt:
             new Date().toISOString()
-
     });
-
 
     saveData();
 
-    refreshModule(
-        "tracking"
+    renderPromoterModule(
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
-/* =========================================================
-   TRACKING LIST
-   ========================================================= */
+/* =========================
+   TRACKING MODULE
+========================= */
 
-function trackingListHTML() {
+function renderTrackingModule(container) {
 
-    if (
-        appData.trackingLinks.length ===
-        0
-    ) {
+    container.innerHTML = `
 
-        return `
+        <div class="empty-module">
+
+            <h3>
+                Tracking System
+            </h3>
+
             <p>
-                ابھی کوئی Tracking Link نہیں۔
+                The next integration will connect
+                Promoters → Programs → Unique Tracking Links.
             </p>
-        `;
-    }
-
-
-    return `
-        <div class="aim-list">
-
-            ${
-                appData.trackingLinks.map(
-                    link =>
-                        `
-                        <div class="aim-list-item">
-
-                            <strong>
-                                ${escapeHTML(
-                                    link.trackingCode
-                                )}
-                            </strong>
-
-                            <span>
-                                Clicks:
-                                ${link.clicks}
-                            </span>
-
-                            <button
-                                onclick="copyTrackingLink('${link.publicLink}')"
-                            >
-                                Copy Link
-                            </button>
-
-                        </div>
-                        `
-                ).join("")
-            }
 
         </div>
     `;
 }
 
 
-/* =========================================================
-   COPY TRACKING LINK
-   ========================================================= */
-
-function copyTrackingLink(link) {
-
-    navigator.clipboard
-        .writeText(link)
-        .then(
-            function () {
-
-                alert(
-                    "Tracking Link Copy ہو گیا۔"
-                );
-
-            }
-        )
-        .catch(
-            function () {
-
-                prompt(
-                    "Link Copy کریں:",
-                    link
-                );
-
-            }
-        );
-}
-
-
-/* =========================================================
+/* =========================
    ORDERS
-   ========================================================= */
+========================= */
 
-function ordersHTML() {
+function renderOrdersModule(container) {
 
-    return `
+    container.innerHTML = `
 
-        ${moduleHeader(
-            "🛒 Orders & Clicks"
-        )}
-
-        <div class="aim-stats">
-
-            ${statBox(
-                "👆",
-                "Total Clicks",
-                appData.clicks.length
-            )}
-
-            ${statBox(
-                "🛒",
-                "Total Orders",
-                appData.orders.length
-            )}
-
-            ${statBox(
-                "💰",
-                "Total Sales",
-                totalSales()
-            )}
-
-        </div>
-
-
-        <div class="aim-section">
+        <div class="empty-module">
 
             <h3>
-                Orders
-            </h3>
-
-            ${
-                appData.orders.length === 0
-
-                ?
-
-                `<p>
-                    ابھی کوئی Order موجود نہیں۔
-                </p>`
-
-                :
-
-                `
-                <div class="aim-list">
-
-                    ${
-                        appData.orders.map(
-                            order =>
-                                `
-                                <div class="aim-list-item">
-
-                                    <strong>
-                                        ${escapeHTML(
-                                            order.orderReference
-                                        )}
-                                    </strong>
-
-                                    <span>
-                                        Sale:
-                                        PKR ${order.saleAmount}
-                                    </span>
-
-                                </div>
-                                `
-                        ).join("")
-                    }
-
-                </div>
-                `
-            }
-
-        </div>
-
-    `;
-}
-
-
-/* =========================================================
-   PAYMENTS
-   ========================================================= */
-
-function paymentsHTML() {
-
-    return `
-
-        ${moduleHeader(
-            "💰 Commission & Payments"
-        )}
-
-        <div class="aim-stats">
-
-            ${statBox(
-                "💵",
-                "Commission",
-                totalCommission()
-            )}
-
-            ${statBox(
-                "✅",
-                "Paid",
-                totalPaid()
-            )}
-
-        </div>
-
-
-        <div class="aim-section">
-
-            <h3>
-                Payment Records
-            </h3>
-
-            ${
-                appData.payments.length === 0
-
-                ?
-
-                `<p>
-                    ابھی کوئی Payment record نہیں۔
-                </p>`
-
-                :
-
-                `
-                <div class="aim-list">
-
-                    ${
-                        appData.payments.map(
-                            payment =>
-                                `
-                                <div class="aim-list-item">
-
-                                    <strong>
-                                        PKR ${payment.amount}
-                                    </strong>
-
-                                    <span>
-                                        ${escapeHTML(
-                                            payment.method
-                                        )}
-                                    </span>
-
-                                </div>
-                                `
-                        ).join("")
-                    }
-
-                </div>
-                `
-            }
-
-        </div>
-
-    `;
-}
-
-
-/* =========================================================
-   REPORTS
-   ========================================================= */
-
-function reportsHTML() {
-
-    const clicks =
-        appData.clicks.length;
-
-
-    const orders =
-        appData.orders.length;
-
-
-    const sales =
-        totalSales();
-
-
-    const commission =
-        totalCommission();
-
-
-    const conversion =
-        clicks > 0
-        ? ((orders / clicks) * 100).toFixed(2)
-        : "0.00";
-
-
-    return `
-
-        ${moduleHeader(
-            "📈 Reports & Analytics"
-        )}
-
-        <div class="aim-stats">
-
-            ${statBox(
-                "👆",
-                "Clicks",
-                clicks
-            )}
-
-            ${statBox(
-                "🛒",
-                "Orders",
-                orders
-            )}
-
-            ${statBox(
-                "💵",
-                "Sales",
-                "PKR " + sales
-            )}
-
-            ${statBox(
-                "💰",
-                "Commission",
-                "PKR " + commission
-            )}
-
-            ${statBox(
-                "📊",
-                "Conversion",
-                conversion + "%"
-            )}
-
-        </div>
-
-
-        <div class="aim-section">
-
-            <h3>
-                Performance Summary
+                Orders & Clicks
             </h3>
 
             <p>
-                Conversion Rate:
+                Orders:
                 <strong>
-                    ${conversion}%
+                    ${data.orders.length}
+                </strong>
+            </p>
+
+            <p>
+                Clicks:
+                <strong>
+                    ${data.clicks.length}
                 </strong>
             </p>
 
         </div>
-
     `;
 }
 
 
-/* =========================================================
-   CATEGORY DETAIL
-   ========================================================= */
+/* =========================
+   COMMISSION
+========================= */
 
-function categoryHTML(
-    category
-) {
+function renderCommissionModule(container) {
 
-    const programs =
-        appData.programs.filter(
-            p =>
-                p.categoryId ===
-                category.id
-        );
+    container.innerHTML = `
 
-
-    return `
-
-        ${moduleHeader(
-            category.icon +
-            " " +
-            category.name
-        )}
-
-        <div class="aim-section">
+        <div class="empty-module">
 
             <h3>
-                Category Overview
+                Commission & Payments
             </h3>
 
             <p>
-                ${escapeHTML(
-                    category.description
-                )}
+                Commissions:
+                <strong>
+                    ${data.commissions.length}
+                </strong>
+            </p>
+
+            <p>
+                Payments:
+                <strong>
+                    ${data.payments.length}
+                </strong>
             </p>
 
         </div>
-
-
-        <div class="aim-section">
-
-            <h3>
-                Programs in this Category
-            </h3>
-
-            ${
-                programs.length === 0
-
-                ?
-
-                `
-                <p>
-                    ابھی اس category میں
-                    کوئی Program شامل نہیں۔
-                </p>
-                `
-
-                :
-
-                `
-                <div class="aim-list">
-
-                    ${
-                        programs.map(
-                            p =>
-                                `
-                                <div class="aim-list-item">
-
-                                    <strong>
-                                        ${escapeHTML(
-                                            p.name
-                                        )}
-                                    </strong>
-
-                                    <span>
-                                        Commission:
-                                        ${p.commission}%
-                                    </span>
-
-                                </div>
-                                `
-                        ).join("")
-                    }
-
-                </div>
-                `
-            }
-
-        </div>
-
     `;
 }
 
 
-/* =========================================================
-   MODULE HEADER
-   ========================================================= */
+/* =========================
+   REPORTS
+========================= */
 
-function moduleHeader(
-    title
-) {
+function renderReportsModule(container) {
 
-    return `
+    container.innerHTML = `
 
-        <div style="
+        <div class="report-grid">
+
+            <div class="report-card">
+
+                <h3>
+                    Providers
+                </h3>
+
+                <strong>
+                    ${data.providers.length}
+                </strong>
+
+            </div>
+
+            <div class="report-card">
+
+                <h3>
+                    Programs
+                </h3>
+
+                <strong>
+                    ${data.programs.length}
+                </strong>
+
+            </div>
+
+            <div class="report-card">
+
+                <h3>
+                    Promoters
+                </h3>
+
+                <strong>
+                    ${data.promoters.length}
+                </strong>
+
+            </div>
+
+            <div class="report-card">
+
+                <h3>
+                    Orders
+                </h3>
+
+                <strong>
+                    ${data.orders.length}
+                </strong>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   MODULE CSS
+========================= */
+
+function addModuleCSS() {
+
+    if (
+        document.getElementById(
+            "moduleCSS"
+        )
+    ) {
+        return;
+    }
+
+    const style =
+        document.createElement("style");
+
+    style.id = "moduleCSS";
+
+    style.textContent = `
+
+        .module-overlay {
+            position:fixed;
+            inset:0;
+            z-index:99999;
+            background:rgba(0,0,0,.72);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:15px;
+        }
+
+        .module-window {
+            width:min(1050px,100%);
+            max-height:92vh;
+            overflow:auto;
+            background:#ffffff;
+            color:#17202a;
+            border-radius:18px;
+            box-shadow:0 20px 70px rgba(0,0,0,.4);
+        }
+
+        .module-header {
+            position:sticky;
+            top:0;
+            z-index:2;
             display:flex;
             justify-content:space-between;
             align-items:center;
-            gap:15px;
-            margin-bottom:25px;
-            border-bottom:1px solid #e5e7eb;
-            padding-bottom:15px;
-        ">
+            padding:16px 20px;
+            background:#17202a;
+            color:#ffffff;
+        }
 
-            <h2>
-                ${title}
-            </h2>
+        .module-header h2 {
+            margin:0;
+            font-size:20px;
+        }
 
-            <button
-                onclick="closeModulePanel()"
-                style="
-                    border:none;
-                    background:#dc2626;
-                    color:white;
-                    padding:9px 15px;
-                    border-radius:8px;
-                    cursor:pointer;
-                "
-            >
-                Close
-            </button>
+        .module-close {
+            border:0;
+            background:transparent;
+            color:#ffffff;
+            font-size:32px;
+            cursor:pointer;
+            line-height:1;
+        }
 
-        </div>
+        .module-content {
+            padding:20px;
+        }
 
-    `;
-}
+        .module-toolbar {
+            display:flex;
+            justify-content:flex-end;
+            margin-bottom:18px;
+        }
 
+        .primary-btn {
+            border:0;
+            border-radius:10px;
+            padding:11px 16px;
+            background:#17202a;
+            color:white;
+            cursor:pointer;
+            font-weight:700;
+        }
 
-/* =========================================================
-   STAT BOX
-   ========================================================= */
+        .danger-btn {
+            background:#b42318 !important;
+            color:white !important;
+        }
 
-function statBox(
-    icon,
-    label,
-    value
-) {
-
-    return `
-
-        <div style="
-            background:#f7f9fc;
-            border:1px solid #e5e7eb;
-            border-radius:14px;
+        .form-card {
             padding:18px;
-        ">
+            margin-bottom:20px;
+            border:1px solid #e1e5e8;
+            border-radius:15px;
+            background:#f8fafb;
+        }
 
-            <div style="
-                font-size:28px;
-                margin-bottom:5px;
-            ">
-                ${icon}
-            </div>
+        .form-card h3 {
+            margin-top:0;
+        }
 
-            <strong>
-                ${label}
-            </strong>
+        .form-grid {
+            display:grid;
+            grid-template-columns:
+                repeat(2,minmax(0,1fr));
+            gap:14px;
+        }
 
-            <div style="
-                font-size:24px;
-                font-weight:bold;
-                margin-top:5px;
-            ">
-                ${value}
-            </div>
+        .form-grid label {
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            font-weight:700;
+            font-size:13px;
+        }
 
-        </div>
+        .form-grid input,
+        .form-grid select {
+            width:100%;
+            padding:11px;
+            border:1px solid #ccd3d8;
+            border-radius:9px;
+            background:white;
+            color:#17202a;
+        }
+
+        .form-actions {
+            display:flex;
+            gap:10px;
+            margin-top:18px;
+        }
+
+        .form-actions button {
+            padding:10px 15px;
+            border:0;
+            border-radius:9px;
+            cursor:pointer;
+            font-weight:700;
+        }
+
+        .data-list {
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+
+        .data-card {
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            padding:16px;
+            border:1px solid #e1e5e8;
+            border-radius:14px;
+            background:#ffffff;
+        }
+
+        .data-card h3 {
+            margin:0 0 8px;
+        }
+
+        .data-card p {
+            margin:5px 0;
+            font-size:13px;
+        }
+
+        .data-card-actions {
+            display:flex;
+            align-items:center;
+            gap:7px;
+            flex-wrap:wrap;
+        }
+
+        .data-card-actions button {
+            padding:8px 11px;
+            border:0;
+            border-radius:8px;
+            cursor:pointer;
+            background:#eef2f5;
+            font-weight:700;
+        }
+
+        .empty-module {
+            padding:45px 20px;
+            text-align:center;
+        }
+
+        .report-grid {
+            display:grid;
+            grid-template-columns:
+                repeat(4,minmax(0,1fr));
+            gap:15px;
+        }
+
+        .report-card {
+            padding:22px;
+            text-align:center;
+            border:1px solid #e1e5e8;
+            border-radius:14px;
+        }
+
+        .report-card strong {
+            display:block;
+            font-size:30px;
+            margin-top:10px;
+        }
+
+        @media(max-width:700px) {
+
+            .form-grid {
+                grid-template-columns:1fr;
+            }
+
+            .data-card {
+                flex-direction:column;
+            }
+
+            .report-grid {
+                grid-template-columns:
+                    repeat(2,minmax(0,1fr));
+            }
+
+        }
 
     `;
+
+    document.head.appendChild(style);
 }
 
 
 /* =========================================================
-   REFRESH MODULE
-   ========================================================= */
-
-function refreshModule(
-    type
-) {
-
-    const overlay =
-        document.getElementById(
-            "moduleOverlay"
-        );
-
-
-    if (!overlay) {
-        return;
-    }
-
-
-    const panel =
-        overlay.querySelector(
-            "div"
-        );
-
-
-    if (!panel) {
-        return;
-    }
-
-
-    panel.innerHTML =
-        getModuleHTML(
-            type,
-            {}
-        );
-}
-
-
-/* =========================================================
-   TOTAL SALES
-   ========================================================= */
-
-function totalSales() {
-
-    return appData.orders.reduce(
-        function (
-            total,
-            order
-        ) {
-
-            return (
-                total +
-                Number(
-                    order.saleAmount || 0
-                )
-            );
-
-        },
-        0
-    );
-}
-
-
-/* =========================================================
-   TOTAL COMMISSION
-   ========================================================= */
-
-function totalCommission() {
-
-    return appData.orders.reduce(
-        function (
-            total,
-            order
-        ) {
-
-            return (
-                total +
-                Number(
-                    order.commission || 0
-                )
-            );
-
-        },
-        0
-    );
-}
-
-
-/* =========================================================
-   TOTAL PAID
-   ========================================================= */
-
-function totalPaid() {
-
-    return appData.payments.reduce(
-        function (
-            total,
-            payment
-        ) {
-
-            return (
-                total +
-                Number(
-                    payment.amount || 0
-                )
-            );
-
-        },
-        0
-    );
-}
-
-
-/* =========================================================
-   TRACKING URL HANDLER
-   ========================================================= */
-
-function handleTrackingLink() {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-
-    const ref =
-        params.get("ref");
-
-
-    if (!ref) {
-        return;
-    }
-
-
-    const link =
-        appData.trackingLinks.find(
-            item =>
-                item.trackingCode ===
-                ref
-        );
-
-
-    if (!link) {
-        return;
-    }
-
-
-    link.clicks =
-        Number(link.clicks || 0) + 1;
-
-
-    appData.clicks.push({
-
-        id:
-            "click-" +
-            Date.now(),
-
-        trackingCode:
-            ref,
-
-        date:
-            new Date().toISOString()
-
-    });
-
-
-    saveData();
-
-
-    /*
-       Production version میں یہاں
-       secure backend redirect استعمال ہوگا۔
-    */
-
-    if (
-        link.originalAffiliateLink
-    ) {
-
-        setTimeout(
-            function () {
-
-                window.location.href =
-                    link.originalAffiliateLink;
-
-            },
-            500
-        );
-
-    }
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHTML(
-    value
-) {
-
-    return String(value || "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
-
-
-/* =========================================================
-   CLONE
-   ========================================================= */
-
-function clone(
-    object
-) {
-
-    return JSON.parse(
-        JSON.stringify(object)
-    );
-}
-
-
-/* =========================================================
-   GLOBAL FUNCTIONS
-   ========================================================= */
-
-window.openModule =
-    openModule;
-
-window.openCategory =
-    openCategory;
-
-window.addCategory =
-    addCategory;
-
-window.editCategory =
-    editCategory;
-
-window.toggleCategory =
-    toggleCategory;
-
-window.deleteCategory =
-    deleteCategory;
-
-window.closeModulePanel =
-    closeModulePanel;
-
-window.saveProviderFromForm =
-    saveProviderFromForm;
-
-window.saveProgramFromForm =
-    saveProgramFromForm;
-
-window.savePromoterFromForm =
-    savePromoterFromForm;
-
-window.generateTrackingLink =
-    generateTrackingLink;
-
-window.copyTrackingLink =
-    copyTrackingLink;
-
-window.refreshModule =
-    refreshModule;
+   END
+========================================================= */
