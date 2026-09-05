@@ -209,11 +209,11 @@ function escapeHTML(value){
     }
 
     return String(value)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
@@ -332,6 +332,7 @@ function attachDashboardEvents(){
 
 /* =========================================================
    ANIMATED BRANDING
+   OLD STATIC BRANDING IS HIDDEN
 ========================================================= */
 
 function addAnimatedBranding(){
@@ -343,15 +344,54 @@ function addAnimatedBranding(){
         return;
     }
 
-    if(
-        document.getElementById(
-            "janjuaAnimatedBrand"
-        )
-    ){
 
-        return;
+    /* -----------------------------------------
+       HIDE ORIGINAL STATIC BRANDING
+    ----------------------------------------- */
+
+    const oldBrand =
+        header.querySelector(".brand-area");
+
+    if(oldBrand){
+
+        oldBrand.style.display = "none";
 
     }
+
+
+    /* -----------------------------------------
+       HIDE ORIGINAL STATIC STATUS
+    ----------------------------------------- */
+
+    const oldStatus =
+        header.querySelector(".header-status");
+
+    if(oldStatus){
+
+        oldStatus.style.display = "none";
+
+    }
+
+
+    /* -----------------------------------------
+       REMOVE OLD ANIMATED BRAND IF EXISTS
+    ----------------------------------------- */
+
+    const oldAnimated =
+        document.getElementById(
+            "janjuaAnimatedBrand"
+        );
+
+    if(oldAnimated){
+
+        oldAnimated.remove();
+
+    }
+
+
+    /* -----------------------------------------
+       CREATE NEW ANIMATED BRAND
+    ----------------------------------------- */
 
     const box =
         document.createElement("div");
@@ -364,8 +404,11 @@ function addAnimatedBranding(){
         <div class="janjua-brand-animation">
 
             <div class="brand-orbit orbit-one"></div>
+
             <div class="brand-orbit orbit-two"></div>
+
             <div class="brand-orbit orbit-three"></div>
+
 
             <div class="brand-main">
 
@@ -373,9 +416,11 @@ function addAnimatedBranding(){
                     JANJUA
                 </div>
 
+
                 <div class="brand-subtitle">
                     Janjua Digital Marketing Platform Online
                 </div>
+
 
                 <div class="brand-status">
 
@@ -391,7 +436,13 @@ function addAnimatedBranding(){
 
     `;
 
+
+    /* Put animated branding at top */
+
     header.prepend(box);
+
+
+    /* Add animation CSS */
 
     addBrandAnimationCSS();
 
@@ -410,268 +461,467 @@ function addBrandAnimationCSS(){
 
     }
 
+
     const style =
         document.createElement("style");
+
 
     style.id =
         "janjuaAnimationCSS";
 
+
     style.textContent = `
 
         #janjuaAnimatedBrand{
+
             width:100%;
+
             display:flex;
+
             justify-content:center;
+
             align-items:center;
+
             padding:18px 10px 12px;
+
             overflow:hidden;
+
         }
+
 
         .janjua-brand-animation{
+
             position:relative;
+
             width:min(900px,96%);
+
             min-height:145px;
+
             display:flex;
+
             justify-content:center;
+
             align-items:center;
+
             overflow:hidden;
+
             border-radius:22px;
+
             background:
+
                 radial-gradient(
+
                     circle at center,
+
                     rgba(0,200,255,.16),
+
                     transparent 45%
+
                 ),
+
                 rgba(0,0,0,.12);
+
             box-shadow:
-                0 0 30px rgba(0,200,255,.10),
-                inset 0 0 25px rgba(255,255,255,.04);
+
+                0 0 30px
+                rgba(0,200,255,.10),
+
+                inset 0 0 25px
+                rgba(255,255,255,.04);
+
         }
+
 
         .brand-main{
+
             position:relative;
+
             z-index:5;
+
             text-align:center;
+
             animation:
-                brandFloat 4s ease-in-out infinite;
+                brandFloat
+                4s
+                ease-in-out
+                infinite;
+
         }
+
 
         .brand-title{
+
             font-size:
                 clamp(38px,8vw,72px);
+
             font-weight:900;
+
             letter-spacing:8px;
+
             line-height:1;
+
             background:
+
                 linear-gradient(
+
                     90deg,
+
                     #ffffff,
+
                     #00d9ff,
+
                     #ffffff,
+
                     #00d9ff,
+
                     #ffffff
+
                 );
+
             background-size:300% 100%;
+
             -webkit-background-clip:text;
+
             background-clip:text;
+
             color:transparent;
+
             animation:
-                brandShine 4s linear infinite,
-                brandPulse 2.5s ease-in-out infinite;
+
+                brandShine
+                4s
+                linear
+                infinite,
+
+                brandPulse
+                2.5s
+                ease-in-out
+                infinite;
+
         }
+
 
         .brand-subtitle{
+
             margin-top:10px;
+
             font-size:
                 clamp(14px,2.5vw,22px);
+
             font-weight:700;
+
             letter-spacing:2px;
+
             animation:
-                subtitleFade 3s ease-in-out infinite;
+
+                subtitleFade
+                3s
+                ease-in-out
+                infinite;
+
         }
+
 
         .brand-status{
+
             margin-top:10px;
+
             display:inline-flex;
+
             align-items:center;
+
             gap:8px;
+
             padding:6px 12px;
+
             border-radius:50px;
+
             font-size:12px;
+
             font-weight:800;
+
             letter-spacing:2px;
+
             border:1px solid
                 rgba(0,255,140,.25);
+
             animation:
-                statusGlow 2s ease-in-out infinite;
+
+                statusGlow
+                2s
+                ease-in-out
+                infinite;
+
         }
+
 
         .status-dot{
+
             width:9px;
+
             height:9px;
+
             border-radius:50%;
+
             background:#00ff88;
+
             box-shadow:
+
                 0 0 7px #00ff88,
+
                 0 0 15px #00ff88;
+
             animation:
-                dotBlink 1.2s infinite;
+
+                dotBlink
+                1.2s
+                infinite;
+
         }
+
 
         .brand-orbit{
+
             position:absolute;
+
             border:1px solid
                 rgba(0,220,255,.22);
+
             border-radius:50%;
+
         }
+
 
         .orbit-one{
+
             width:230px;
+
             height:230px;
+
             animation:
-                orbitRotate 9s linear infinite;
+
+                orbitRotate
+                9s
+                linear
+                infinite;
+
         }
+
 
         .orbit-two{
+
             width:420px;
+
             height:150px;
+
             transform:rotate(25deg);
+
             animation:
+
                 orbitRotateReverse
-                12s linear infinite;
+                12s
+                linear
+                infinite;
+
         }
 
+
         .orbit-three{
+
             width:650px;
+
             height:210px;
+
             transform:rotate(-18deg);
+
             animation:
+
                 orbitRotate
-                16s linear infinite;
+                16s
+                linear
+                infinite;
+
         }
+
 
         @keyframes brandShine{
 
             0%{
+
                 background-position:0% 50%;
+
             }
 
             100%{
+
                 background-position:300% 50%;
+
             }
 
         }
+
 
         @keyframes brandPulse{
 
             0%,100%{
+
                 transform:scale(1);
+
             }
 
             50%{
+
                 transform:scale(1.04);
+
             }
 
         }
+
 
         @keyframes brandFloat{
 
             0%,100%{
+
                 transform:translateY(0);
+
             }
 
             50%{
+
                 transform:translateY(-5px);
+
             }
 
         }
+
 
         @keyframes subtitleFade{
 
             0%,100%{
+
                 opacity:.65;
+
             }
 
             50%{
+
                 opacity:1;
+
             }
 
         }
+
 
         @keyframes statusGlow{
 
             0%,100%{
+
                 box-shadow:
-                    0 0 0 rgba(0,255,140,0);
+                    0 0 0
+                    rgba(0,255,140,0);
+
             }
 
             50%{
+
                 box-shadow:
+
                     0 0 20px
                     rgba(0,255,140,.16);
+
             }
 
         }
+
 
         @keyframes dotBlink{
 
             0%,100%{
+
                 opacity:1;
+
                 transform:scale(1);
+
             }
 
             50%{
+
                 opacity:.35;
+
                 transform:scale(.75);
+
             }
 
         }
+
 
         @keyframes orbitRotate{
 
             from{
+
                 transform:rotate(0deg);
+
             }
 
             to{
+
                 transform:rotate(360deg);
+
             }
 
         }
+
 
         @keyframes orbitRotateReverse{
 
             from{
+
                 transform:rotate(360deg);
+
             }
 
             to{
+
                 transform:rotate(0deg);
+
             }
 
         }
 
+
         @media(max-width:600px){
 
             .janjua-brand-animation{
+
                 min-height:125px;
+
             }
+
 
             .brand-title{
+
                 letter-spacing:5px;
+
             }
+
 
             .brand-subtitle{
+
                 letter-spacing:1px;
+
             }
 
+
             .orbit-three{
+
                 width:420px;
+
             }
 
         }
 
     `;
+
 
     document.head.appendChild(style);
 
@@ -685,6 +935,7 @@ function addBrandAnimationCSS(){
 function openModule(module){
 
     closeModule();
+
 
     const titles = {
 
@@ -717,14 +968,18 @@ function openModule(module){
 
     };
 
+
     const title =
         titles[module] || module;
+
 
     const panel =
         document.createElement("div");
 
+
     panel.id =
         "modulePanel";
+
 
     panel.innerHTML = `
 
@@ -738,13 +993,17 @@ function openModule(module){
                         ${escapeHTML(title)}
                     </h2>
 
+
                     <button
                         class="module-close"
                         onclick="closeModule()">
+
                         ×
+
                     </button>
 
                 </div>
+
 
                 <div
                     id="moduleContent"
@@ -757,20 +1016,18 @@ function openModule(module){
 
     `;
 
+
     document.body.appendChild(panel);
 
+
     addModuleCSS();
+
 
     const content =
         document.getElementById(
             "moduleContent"
         );
 
-
-    /* IMPORTANT:
-       Dashboard uses lowercase IDs
-       from index.html.
-    */
 
     switch(module){
 
@@ -888,6 +1145,7 @@ function closeModule(){
         document.getElementById(
             "modulePanel"
         );
+
 
     if(panel){
 
@@ -1091,6 +1349,7 @@ function renderProviderModule(container){
 
     `;
 
+
     renderProviders();
 
 }
@@ -1102,6 +1361,7 @@ function renderProviders(){
         document.getElementById(
             "providerList"
         );
+
 
     if(!list){
         return;
@@ -1147,12 +1407,14 @@ function renderProviders(){
                         )}
                     </h3>
 
+
                     <p>
                         Website:
                         ${escapeHTML(
                             provider.website || "-"
                         )}
                     </p>
+
 
                     <p>
                         Affiliate ID:
@@ -1161,7 +1423,9 @@ function renderProviders(){
                         )}
                     </p>
 
+
                     <p>
+
                         SubID:
                         ${escapeHTML(
                             provider.subId || "No"
@@ -1173,9 +1437,12 @@ function renderProviders(){
                         ${escapeHTML(
                             provider.clickId || "No"
                         )}
+
                     </p>
 
+
                     <p>
+
                         API:
                         ${provider.api
                             ? "YES"
@@ -1187,9 +1454,12 @@ function renderProviders(){
                         ${provider.webhook
                             ? "YES"
                             : "NO"}
+
                     </p>
 
+
                     <p>
+
                         Status:
 
                         <strong>
@@ -1249,6 +1519,7 @@ function showProviderForm(id=null){
         document.getElementById(
             "providerFormArea"
         );
+
 
     if(!area){
         return;
@@ -1527,6 +1798,7 @@ function saveProvider(id){
                 p => p.id === id
             );
 
+
         if(provider){
 
             Object.assign(
@@ -1560,6 +1832,7 @@ function saveProvider(id){
 
     cancelProviderForm();
 
+
     alert(
         "Provider saved successfully."
     );
@@ -1581,12 +1854,15 @@ function toggleProvider(id){
             p => p.id === id
         );
 
+
     if(!provider){
         return;
     }
 
+
     provider.visible =
         !provider.visible;
+
 
     saveData();
 
@@ -1634,6 +1910,7 @@ function cancelProviderForm(){
             "providerFormArea"
         );
 
+
     if(area){
 
         area.innerHTML = "";
@@ -1674,6 +1951,7 @@ function renderProgramModule(container){
 
     `;
 
+
     renderPrograms();
 
 }
@@ -1685,6 +1963,7 @@ function renderPrograms(){
         document.getElementById(
             "programList"
         );
+
 
     if(!list){
         return;
@@ -1730,6 +2009,7 @@ function renderPrograms(){
                         )}
                     </h3>
 
+
                     <p>
 
                         Provider:
@@ -1742,6 +2022,7 @@ function renderPrograms(){
 
                     </p>
 
+
                     <p>
 
                         Category:
@@ -1751,6 +2032,7 @@ function renderPrograms(){
                         )}
 
                     </p>
+
 
                     <p>
 
@@ -1762,6 +2044,7 @@ function renderPrograms(){
 
                     </p>
 
+
                     <p>
 
                         Cookie:
@@ -1769,6 +2052,7 @@ function renderPrograms(){
                         ${escapeHTML(
                             program.cookieDays || "0"
                         )}
+
                         days
 
                     </p>
@@ -1810,6 +2094,7 @@ function showProgramForm(id=null){
         document.getElementById(
             "programFormArea"
         );
+
 
     if(!area){
         return;
@@ -2075,6 +2360,7 @@ function saveProgram(id){
                 p => p.id === id
             );
 
+
         if(program){
 
             Object.assign(
@@ -2105,6 +2391,7 @@ function saveProgram(id){
     renderPrograms();
 
     cancelProgramForm();
+
 
     alert(
         "Program saved successfully."
@@ -2165,6 +2452,7 @@ function cancelProgramForm(){
             "programFormArea"
         );
 
+
     if(area){
 
         area.innerHTML = "";
@@ -2205,6 +2493,7 @@ function renderPromoterModule(container){
 
     `;
 
+
     renderPromoters();
 
 }
@@ -2216,6 +2505,7 @@ function renderPromoters(){
         document.getElementById(
             "promoterList"
         );
+
 
     if(!list){
         return;
@@ -2261,6 +2551,7 @@ function renderPromoters(){
                         )}
                     </h3>
 
+
                     <p>
 
                         Phone:
@@ -2270,6 +2561,7 @@ function renderPromoters(){
                         )}
 
                     </p>
+
 
                     <p>
 
@@ -2281,6 +2573,7 @@ function renderPromoters(){
 
                     </p>
 
+
                     <p>
 
                         Payment:
@@ -2290,6 +2583,7 @@ function renderPromoters(){
                         )}
 
                     </p>
+
 
                     <p>
 
@@ -2338,6 +2632,7 @@ function showPromoterForm(id=null){
         document.getElementById(
             "promoterFormArea"
         );
+
 
     if(!area){
         return;
@@ -2548,6 +2843,7 @@ function savePromoter(id){
                 p => p.id === id
             );
 
+
         if(promoter){
 
             Object.assign(
@@ -2578,6 +2874,7 @@ function savePromoter(id){
     renderPromoters();
 
     cancelPromoterForm();
+
 
     alert(
         "Promoter saved successfully."
@@ -2638,6 +2935,7 @@ function cancelPromoterForm(){
             "promoterFormArea"
         );
 
+
     if(area){
 
         area.innerHTML = "";
@@ -2678,6 +2976,7 @@ function renderTrackingModule(container){
 
     `;
 
+
     renderTrackingLinks();
 
 }
@@ -2689,6 +2988,7 @@ function showAssignmentForm(){
         document.getElementById(
             "assignmentFormArea"
         );
+
 
     if(!area){
         return;
@@ -2726,9 +3026,7 @@ function showAssignmentForm(){
         <div class="form-card">
 
             <h3>
-
                 Assign Program & Create Tracking Link
-
             </h3>
 
 
@@ -2999,6 +3297,7 @@ function createTrackingAssignment(){
 
     cancelAssignmentForm();
 
+
     alert(
         "Tracking link created successfully."
     );
@@ -3012,6 +3311,7 @@ function renderTrackingLinks(){
         document.getElementById(
             "trackingList"
         );
+
 
     if(!list){
         return;
@@ -3170,6 +3470,7 @@ function copyTrackingLink(id){
             t => t.id === id
         );
 
+
     if(!link){
         return;
     }
@@ -3223,6 +3524,7 @@ function testTrackingLink(id){
             t => t.id === id
         );
 
+
     if(!link){
         return;
     }
@@ -3242,6 +3544,7 @@ function toggleTrackingLink(id){
         data.trackingLinks.find(
             t => t.id === id
         );
+
 
     if(!link){
         return;
@@ -3265,6 +3568,7 @@ function cancelAssignmentForm(){
         document.getElementById(
             "assignmentFormArea"
         );
+
 
     if(area){
 
@@ -3308,11 +3612,6 @@ function handlePublicTracking(){
         return;
     }
 
-
-    /*
-       Prevent counting the same page load
-       repeatedly in one browser tab.
-    */
 
     const sessionKey =
         "janjua_click_" + ref;
@@ -3426,7 +3725,9 @@ function renderOrdersModule(container){
                 </h3>
 
                 <strong>
-                    Rs. ${formatMoney(
+
+                    Rs.
+                    ${formatMoney(
                         data.orders.reduce(
                             (sum,o) =>
                                 sum +
@@ -3436,6 +3737,7 @@ function renderOrdersModule(container){
                             0
                         )
                     )}
+
                 </strong>
 
             </div>
@@ -3446,7 +3748,6 @@ function renderOrdersModule(container){
         <div
             id="orderList"
             class="data-list">
-
         </div>
 
     `;
@@ -3463,6 +3764,7 @@ function showOrderForm(){
         document.getElementById(
             "orderFormArea"
         );
+
 
     if(!area){
         return;
@@ -3705,11 +4007,6 @@ function saveOrder(){
     data.orders.push(order);
 
 
-    /*
-       Commission is calculated only for
-       Confirmed orders.
-    */
-
     if(
         status === "Confirmed"
     ){
@@ -3726,6 +4023,7 @@ function saveOrder(){
     renderOrders();
 
     cancelOrderForm();
+
 
     alert(
         "Order saved successfully."
@@ -3817,6 +4115,7 @@ function renderOrders(){
         document.getElementById(
             "orderList"
         );
+
 
     if(!list){
         return;
@@ -3910,10 +4209,12 @@ function renderOrders(){
                         Amount:
 
                         <strong>
+
                             Rs.
                             ${formatMoney(
                                 order.amount
                             )}
+
                         </strong>
 
                     </p>
@@ -3947,6 +4248,7 @@ function cancelOrderForm(){
         document.getElementById(
             "orderFormArea"
         );
+
 
     if(area){
 
@@ -4018,10 +4320,12 @@ function renderCommissionModule(container){
                 </h3>
 
                 <strong>
+
                     Rs.
                     ${formatMoney(
                         totalCommission
                     )}
+
                 </strong>
 
             </div>
@@ -4034,10 +4338,12 @@ function renderCommissionModule(container){
                 </h3>
 
                 <strong>
+
                     Rs.
                     ${formatMoney(
                         paidCommission
                     )}
+
                 </strong>
 
             </div>
@@ -4050,10 +4356,12 @@ function renderCommissionModule(container){
                 </h3>
 
                 <strong>
+
                     Rs.
                     ${formatMoney(
                         pendingCommission
                     )}
+
                 </strong>
 
             </div>
@@ -4080,7 +4388,6 @@ function renderCommissionModule(container){
         <div
             id="commissionList"
             class="data-list">
-
         </div>
 
     `;
@@ -4097,6 +4404,7 @@ function renderCommissions(){
         document.getElementById(
             "commissionList"
         );
+
 
     if(!list){
         return;
@@ -4250,6 +4558,7 @@ function showPaymentForm(){
         document.getElementById(
             "paymentFormArea"
         );
+
 
     if(!area){
         return;
@@ -4466,6 +4775,7 @@ function savePayment(){
 
     saveData();
 
+
     renderCommissionModule(
         document.getElementById(
             "moduleContent"
@@ -4486,6 +4796,7 @@ function markCommissionPaid(id){
         data.commissions.find(
             c => c.id === id
         );
+
 
     if(!commission){
         return;
@@ -4545,6 +4856,7 @@ function cancelPaymentForm(){
         document.getElementById(
             "paymentFormArea"
         );
+
 
     if(area){
 
@@ -4685,10 +4997,12 @@ function renderReportsModule(container){
                 </h3>
 
                 <strong>
+
                     Rs.
                     ${formatMoney(
                         sales
                     )}
+
                 </strong>
 
             </div>
@@ -4701,10 +5015,12 @@ function renderReportsModule(container){
                 </h3>
 
                 <strong>
+
                     Rs.
                     ${formatMoney(
                         commissions
                     )}
+
                 </strong>
 
             </div>
@@ -4749,6 +5065,7 @@ function renderCategories(){
             "categoryList"
         );
 
+
     if(!container){
         return;
     }
@@ -4773,6 +5090,7 @@ function renderCategories(){
 
                     </div>
 
+
                     <div class="category-actions">
 
                         <button
@@ -4782,12 +5100,14 @@ function renderCategories(){
 
                         </button>
 
+
                         <button
                             onclick="toggleCategory('${category.id}')">
 
                             Hide
 
                         </button>
+
 
                         <button
                             onclick="deleteCategory('${category.id}')">
@@ -4843,6 +5163,7 @@ function renderModuleCategories(){
         document.getElementById(
             "moduleCategoryList"
         );
+
 
     if(!list){
         return;
@@ -5135,270 +5456,429 @@ function addModuleCSS(){
     style.textContent = `
 
         .module-overlay{
+
             position:fixed;
+
             inset:0;
+
             z-index:99999;
+
             background:rgba(0,0,0,.72);
+
             display:flex;
+
             justify-content:center;
+
             align-items:center;
+
             padding:15px;
+
         }
 
 
         .module-window{
+
             width:min(1100px,100%);
+
             max-height:92vh;
+
             overflow:auto;
+
             background:#fff;
+
             color:#17202a;
+
             border-radius:18px;
+
             box-shadow:
+
                 0 20px 70px
                 rgba(0,0,0,.4);
+
         }
 
 
         .module-header{
+
             position:sticky;
+
             top:0;
+
             z-index:2;
+
             display:flex;
+
             justify-content:space-between;
+
             align-items:center;
+
             padding:16px 20px;
+
             background:#17202a;
+
             color:#fff;
+
         }
 
 
         .module-header h2{
+
             margin:0;
+
             font-size:20px;
+
         }
 
 
         .module-close{
+
             border:0;
+
             background:transparent;
+
             color:#fff;
+
             font-size:32px;
+
             cursor:pointer;
+
             line-height:1;
+
         }
 
 
         .module-content{
+
             padding:20px;
+
         }
 
 
         .dashboard-module-title{
+
             margin-bottom:20px;
+
         }
 
 
         .dashboard-module-title h2{
+
             margin:0 0 6px;
+
         }
 
 
         .dashboard-module-title p{
+
             margin:0;
+
             color:#667085;
+
         }
 
 
         .module-toolbar{
+
             display:flex;
+
             justify-content:flex-end;
+
             margin-bottom:18px;
+
         }
 
 
         .primary-btn{
+
             border:0;
+
             border-radius:10px;
+
             padding:11px 16px;
+
             background:#17202a;
+
             color:#fff;
+
             cursor:pointer;
+
             font-weight:700;
+
         }
 
 
         .primary-btn:hover{
+
             opacity:.9;
+
         }
 
 
         .danger-btn{
+
             background:#b42318 !important;
+
             color:#fff !important;
+
         }
 
 
         .form-card{
+
             padding:18px;
+
             margin-bottom:20px;
+
             border:1px solid #e1e5e8;
+
             border-radius:15px;
+
             background:#f8fafb;
+
         }
 
 
         .form-card h3{
+
             margin-top:0;
+
         }
 
 
         .form-grid{
+
             display:grid;
+
             grid-template-columns:
                 repeat(2,minmax(0,1fr));
+
             gap:14px;
+
         }
 
 
         .form-grid label{
+
             display:flex;
+
             flex-direction:column;
+
             gap:6px;
+
             font-weight:700;
+
             font-size:13px;
+
         }
 
 
         .form-grid input,
+
         .form-grid select{
+
             width:100%;
+
             padding:11px;
+
             border:1px solid #ccd3d8;
+
             border-radius:9px;
+
             background:#fff;
+
             color:#17202a;
+
         }
 
 
         .form-grid input:focus,
+
         .form-grid select:focus{
+
             outline:2px solid
                 rgba(0,150,255,.15);
+
         }
 
 
         .form-actions{
+
             display:flex;
+
             gap:10px;
+
             margin-top:18px;
+
             flex-wrap:wrap;
+
         }
 
 
         .form-actions button{
+
             padding:10px 15px;
+
             border:0;
+
             border-radius:9px;
+
             cursor:pointer;
+
             font-weight:700;
+
         }
 
 
         .data-list{
+
             display:flex;
+
             flex-direction:column;
+
             gap:12px;
+
         }
 
 
         .data-card{
+
             display:flex;
+
             justify-content:space-between;
+
             gap:15px;
+
             padding:16px;
+
             border:1px solid #e1e5e8;
+
             border-radius:14px;
+
             background:#fff;
+
         }
 
 
         .data-card h3{
+
             margin:0 0 8px;
+
         }
 
 
         .data-card p{
+
             margin:5px 0;
+
             font-size:13px;
+
         }
 
 
         .data-card-actions{
+
             display:flex;
+
             align-items:center;
+
             gap:7px;
+
             flex-wrap:wrap;
+
         }
 
 
         .data-card-actions button{
+
             padding:8px 11px;
+
             border:0;
+
             border-radius:8px;
+
             cursor:pointer;
+
             background:#eef2f5;
+
             font-weight:700;
+
         }
 
 
         .tracking-url{
+
             word-break:break-all;
+
             color:#667085;
+
         }
 
 
         .empty-module{
+
             padding:45px 20px;
+
             text-align:center;
+
         }
 
 
         .report-grid{
+
             display:grid;
+
             grid-template-columns:
                 repeat(4,minmax(0,1fr));
+
             gap:15px;
+
             margin-bottom:20px;
+
         }
 
 
         .report-card{
+
             padding:22px;
+
             text-align:center;
+
             border:1px solid #e1e5e8;
+
             border-radius:14px;
+
             background:#fff;
+
         }
 
 
         .report-card h3{
+
             margin:0;
+
             font-size:14px;
+
         }
 
 
         .report-card strong{
+
             display:block;
+
             font-size:28px;
+
             margin-top:10px;
+
         }
 
 
         @media(max-width:850px){
 
             .report-grid{
+
                 grid-template-columns:
                     repeat(2,minmax(0,1fr));
+
             }
 
         }
@@ -5407,17 +5887,23 @@ function addModuleCSS(){
         @media(max-width:700px){
 
             .form-grid{
+
                 grid-template-columns:1fr;
+
             }
 
 
             .data-card{
+
                 flex-direction:column;
+
             }
 
 
             .report-grid{
+
                 grid-template-columns:1fr 1fr;
+
             }
 
         }
@@ -5426,17 +5912,23 @@ function addModuleCSS(){
         @media(max-width:450px){
 
             .module-content{
+
                 padding:12px;
+
             }
 
 
             .report-grid{
+
                 grid-template-columns:1fr;
+
             }
 
 
             .module-header{
+
                 padding:13px 15px;
+
             }
 
         }
