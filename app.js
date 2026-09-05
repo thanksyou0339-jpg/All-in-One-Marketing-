@@ -1,17 +1,17 @@
 /* =========================================================
    ALL IN ONE MARKETING
    JANJUA DIGITAL MARKETING PLATFORM
-   Main Application JavaScript
+   FUNCTIONAL APP.JS
    ========================================================= */
 
-const STORAGE_KEY = "all_in_one_marketing_v1";
+const STORAGE_KEY = "all_in_one_marketing_v2";
 
 
 /* =========================================================
-   DEFAULT CATEGORIES
+   DEFAULT DATA
    ========================================================= */
 
-const defaultCategories = [
+const DEFAULT_CATEGORIES = [
     {
         id: "banks-finance",
         name: "Banks & Finance",
@@ -58,7 +58,7 @@ const defaultCategories = [
         id: "factories",
         name: "Factories",
         icon: "🏭",
-        description: "Factory jobs, services and business opportunities.",
+        description: "Factory jobs, services and opportunities.",
         status: "active"
     },
     {
@@ -79,7 +79,7 @@ const defaultCategories = [
         id: "property",
         name: "Property",
         icon: "🏠",
-        description: "Property, real estate and housing offers.",
+        description: "Property and real estate offers.",
         status: "coming-soon"
     },
     {
@@ -100,25 +100,21 @@ const defaultCategories = [
         id: "healthcare",
         name: "Healthcare",
         icon: "🏥",
-        description: "Healthcare services and related offers.",
+        description: "Healthcare services and offers.",
         status: "coming-soon"
     },
     {
         id: "freelance-services",
         name: "Freelance & Services",
         icon: "💻",
-        description: "Freelancing, digital and professional services.",
+        description: "Freelancing and professional services.",
         status: "coming-soon"
     }
 ];
 
 
-/* =========================================================
-   DEFAULT APPLICATION DATA
-   ========================================================= */
-
-const defaultData = {
-    categories: defaultCategories,
+const DEFAULT_DATA = {
+    categories: DEFAULT_CATEGORIES,
 
     providers: [],
 
@@ -153,70 +149,33 @@ const defaultData = {
 
 function loadData() {
 
+    const saved =
+        localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(DEFAULT_DATA)
+        );
+
+        return clone(DEFAULT_DATA);
+    }
+
     try {
 
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        if (!saved) {
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(defaultData)
-            );
-
-            return JSON.parse(
-                JSON.stringify(defaultData)
-            );
-        }
-
-        const parsed = JSON.parse(saved);
+        const data = JSON.parse(saved);
 
         return {
-            ...defaultData,
-            ...parsed
+            ...clone(DEFAULT_DATA),
+            ...data
         };
 
     } catch (error) {
 
-        console.error(
-            "Data loading error:",
-            error
-        );
+        console.error(error);
 
-        return JSON.parse(
-            JSON.stringify(defaultData)
-        );
-    }
-}
-
-
-/* =========================================================
-   SAVE DATA
-   ========================================================= */
-
-function saveData(data) {
-
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(data)
-        );
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "Data saving error:",
-            error
-        );
-
-        alert(
-            "Data save نہیں ہو سکا۔"
-        );
-
-        return false;
+        return clone(DEFAULT_DATA);
     }
 }
 
@@ -229,7 +188,20 @@ let appData = loadData();
 
 
 /* =========================================================
-   INITIALIZE
+   SAVE DATA
+   ========================================================= */
+
+function saveData() {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(appData)
+    );
+}
+
+
+/* =========================================================
+   INIT
    ========================================================= */
 
 document.addEventListener(
@@ -240,44 +212,28 @@ document.addEventListener(
 
         updateDashboardStats();
 
+        handleTrackingLink();
+
     }
 );
 
 
 /* =========================================================
-   RENDER CATEGORIES
+   CATEGORY RENDER
    ========================================================= */
 
 function renderCategories() {
 
-    const categoryList =
+    const container =
         document.getElementById(
             "categoryList"
         );
 
-    if (!categoryList) {
+    if (!container) {
         return;
     }
 
-    categoryList.innerHTML = "";
-
-    if (
-        !appData.categories ||
-        appData.categories.length === 0
-    ) {
-
-        categoryList.innerHTML = `
-            <div class="category-card">
-                <h3>No Categories</h3>
-                <p>
-                    ابھی کوئی category موجود نہیں ہے۔
-                </p>
-            </div>
-        `;
-
-        return;
-    }
-
+    container.innerHTML = "";
 
     appData.categories.forEach(
         function (category) {
@@ -290,42 +246,13 @@ function renderCategories() {
             card.className =
                 "category-card";
 
-
-            let statusHTML = "";
-
-            if (
+            const status =
                 category.status ===
-                "coming-soon"
-            ) {
-
-                statusHTML = `
-                    <span class="coming-soon">
-                        COMING SOON
-                    </span>
-                `;
-
-            } else {
-
-                statusHTML = `
-                    <button
-                        onclick="openCategory('${category.id}')"
-                        style="
-                            margin-top:12px;
-                            border:none;
-                            padding:8px 13px;
-                            border-radius:8px;
-                            background:#102a43;
-                            color:white;
-                            cursor:pointer;
-                        "
-                    >
-                        Open Category
-                    </button>
-                `;
-            }
+                "coming-soon";
 
 
             card.innerHTML = `
+
                 <div class="category-icon">
                     ${category.icon}
                 </div>
@@ -338,11 +265,41 @@ function renderCategories() {
                     ${escapeHTML(category.description)}
                 </p>
 
-                ${statusHTML}
+                ${
+                    status
+
+                    ?
+
+                    `
+                    <span class="coming-soon">
+                        COMING SOON
+                    </span>
+                    `
+
+                    :
+
+                    `
+                    <button
+                        onclick="openCategory('${category.id}')"
+                        style="
+                            margin-top:12px;
+                            border:none;
+                            padding:8px 13px;
+                            border-radius:8px;
+                            background:#102a43;
+                            color:white;
+                            cursor:pointer;
+                        "
+                    >
+                        Open
+                    </button>
+                    `
+                }
+
             `;
 
 
-            categoryList.appendChild(card);
+            container.appendChild(card);
 
         }
     );
@@ -353,22 +310,15 @@ function renderCategories() {
    OPEN CATEGORY
    ========================================================= */
 
-function openCategory(categoryId) {
+function openCategory(id) {
 
     const category =
         appData.categories.find(
-            function (item) {
-                return item.id === categoryId;
-            }
+            item =>
+                item.id === id
         );
-
 
     if (!category) {
-
-        alert(
-            "Category نہیں ملی۔"
-        );
-
         return;
     }
 
@@ -387,69 +337,9 @@ function openCategory(categoryId) {
     }
 
 
-    alert(
-        "Category Opened: " +
-        category.name +
-        "\n\nاس category کے اندر Programs, Providers, Promoters اور Tracking Links manage کیے جائیں گے۔"
-    );
-}
-
-
-/* =========================================================
-   ADD CATEGORY
-   ========================================================= */
-
-function addCategory() {
-
-    const name =
-        prompt(
-            "نئی Category کا نام لکھیں:"
-        );
-
-
-    if (!name) {
-        return;
-    }
-
-
-    const description =
-        prompt(
-            "Category کی مختصر تفصیل لکھیں:"
-        ) ||
-        "Marketing category";
-
-
-    const newCategory = {
-
-        id:
-            "category-" +
-            Date.now(),
-
-        name:
-            name.trim(),
-
-        icon:
-            "📁",
-
-        description:
-            description.trim(),
-
-        status:
-            "active"
-    };
-
-
-    appData.categories.push(
-        newCategory
-    );
-
-
-    saveData(appData);
-
-    renderCategories();
-
-    alert(
-        "Category کامیابی سے شامل ہو گئی۔"
+    openModulePanel(
+        "category",
+        category
     );
 }
 
@@ -458,7 +348,7 @@ function addCategory() {
    OPEN MODULE
    ========================================================= */
 
-function openModule(moduleName) {
+function openModule(module) {
 
     const titles = {
 
@@ -491,124 +381,1350 @@ function openModule(moduleName) {
     };
 
 
-    const title =
-        titles[moduleName] ||
-        moduleName;
-
-
-    alert(
-        title +
-        "\n\nیہ module اگلے مرحلے میں مکمل طور پر functional بنایا جائے گا۔"
+    openModulePanel(
+        module,
+        {
+            title:
+                titles[module] ||
+                "Module"
+        }
     );
 }
 
 
 /* =========================================================
-   DASHBOARD STATS
+   MODULE PANEL
    ========================================================= */
 
-function updateDashboardStats() {
-
-    const totalCategories =
-        appData.categories
-            ? appData.categories.length
-            : 0;
-
-    const totalProviders =
-        appData.providers
-            ? appData.providers.length
-            : 0;
-
-    const totalPrograms =
-        appData.programs
-            ? appData.programs.length
-            : 0;
-
-    const totalPromoters =
-        appData.promoters
-            ? appData.promoters.length
-            : 0;
-
-
-    console.log(
-        "All in One Marketing Stats"
-    );
-
-    console.log(
-        "Categories:",
-        totalCategories
-    );
-
-    console.log(
-        "Providers:",
-        totalProviders
-    );
-
-    console.log(
-        "Programs:",
-        totalPrograms
-    );
-
-    console.log(
-        "Promoters:",
-        totalPromoters
-    );
-}
-
-
-/* =========================================================
-   CREATE TRACKING CODE
-   ========================================================= */
-
-function generateTrackingCode(
-    promoterId,
-    programId
+function openModulePanel(
+    type,
+    data
 ) {
 
-    const random =
-        Math.random()
-            .toString(36)
-            .substring(2, 8)
-            .toUpperCase();
+    closeModulePanel();
 
 
-    return (
-        "AIM-" +
-        String(promoterId)
-            .substring(0, 4)
-            .toUpperCase() +
-        "-" +
-        String(programId)
-            .substring(0, 4)
-            .toUpperCase() +
-        "-" +
-        random
-    );
-}
-
-
-/* =========================================================
-   CREATE PUBLIC TRACKING LINK
-   ========================================================= */
-
-function createTrackingLink(
-    promoterId,
-    programId,
-    originalAffiliateLink
-) {
-
-    const trackingCode =
-        generateTrackingCode(
-            promoterId,
-            programId
+    const overlay =
+        document.createElement(
+            "div"
         );
 
 
-    const trackingRecord = {
+    overlay.id =
+        "moduleOverlay";
+
+
+    overlay.style.cssText = `
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.65);
+        z-index:9999;
+        padding:20px;
+        overflow:auto;
+    `;
+
+
+    const panel =
+        document.createElement(
+            "div"
+        );
+
+
+    panel.style.cssText = `
+        max-width:1100px;
+        margin:20px auto;
+        background:white;
+        border-radius:20px;
+        padding:25px;
+        min-height:500px;
+        box-shadow:0 20px 60px rgba(0,0,0,0.25);
+    `;
+
+
+    panel.innerHTML =
+        getModuleHTML(
+            type,
+            data
+        );
+
+
+    overlay.appendChild(panel);
+
+    document.body.appendChild(
+        overlay
+    );
+}
+
+
+/* =========================================================
+   MODULE HTML
+   ========================================================= */
+
+function getModuleHTML(
+    type,
+    data
+) {
+
+    if (type === "dashboard") {
+
+        return dashboardHTML();
+
+    }
+
+
+    if (type === "categories") {
+
+        return categoriesHTML();
+
+    }
+
+
+    if (type === "providers") {
+
+        return providersHTML();
+
+    }
+
+
+    if (type === "programs") {
+
+        return programsHTML();
+
+    }
+
+
+    if (type === "promoters") {
+
+        return promotersHTML();
+
+    }
+
+
+    if (type === "tracking") {
+
+        return trackingHTML();
+
+    }
+
+
+    if (type === "orders") {
+
+        return ordersHTML();
+
+    }
+
+
+    if (type === "payments") {
+
+        return paymentsHTML();
+
+    }
+
+
+    if (type === "reports") {
+
+        return reportsHTML();
+
+    }
+
+
+    if (type === "category") {
+
+        return categoryHTML(
+            data
+        );
+
+    }
+
+
+    return `
+        <h2>Module</h2>
+        <p>Module loading...</p>
+    `;
+}
+
+
+/* =========================================================
+   CLOSE MODULE
+   ========================================================= */
+
+function closeModulePanel() {
+
+    const old =
+        document.getElementById(
+            "moduleOverlay"
+        );
+
+    if (old) {
+        old.remove();
+    }
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function dashboardHTML() {
+
+    const categories =
+        appData.categories.length;
+
+    const providers =
+        appData.providers.length;
+
+    const programs =
+        appData.programs.length;
+
+    const promoters =
+        appData.promoters.length;
+
+    const clicks =
+        appData.clicks.length;
+
+    const orders =
+        appData.orders.length;
+
+
+    return `
+
+        ${moduleHeader(
+            "📊 Dashboard"
+        )}
+
+        <div class="aim-stats">
+
+            ${statBox(
+                "📂",
+                "Categories",
+                categories
+            )}
+
+            ${statBox(
+                "🏢",
+                "Providers",
+                providers
+            )}
+
+            ${statBox(
+                "🎯",
+                "Programs",
+                programs
+            )}
+
+            ${statBox(
+                "👥",
+                "Promoters",
+                promoters
+            )}
+
+            ${statBox(
+                "👆",
+                "Clicks",
+                clicks
+            )}
+
+            ${statBox(
+                "🛒",
+                "Orders",
+                orders
+            )}
+
+        </div>
+
+        <div class="aim-section">
+
+            <h3>Platform Status</h3>
+
+            <p>
+                JANJUA Digital Marketing Platform
+                is ready for configuration.
+            </p>
+
+            <p>
+                اگلے مراحل میں Providers،
+                Programs، Promoters اور Tracking
+                آپس میں connect کیے جائیں گے۔
+            </p>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+function categoriesHTML() {
+
+    let rows = "";
+
+    appData.categories.forEach(
+        function (category) {
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${category.icon}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(
+                            category.name
+                        )}
+                    </td>
+
+                    <td>
+                        ${
+                            category.status ===
+                            "active"
+                            ? "ACTIVE"
+                            : "COMING SOON"
+                        }
+                    </td>
+
+                    <td>
+
+                        <button
+                            onclick="editCategory('${category.id}')"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            onclick="toggleCategory('${category.id}')"
+                        >
+                            ${
+                                category.status ===
+                                "active"
+                                ? "Hide"
+                                : "Show"
+                            }
+                        </button>
+
+                        <button
+                            onclick="deleteCategory('${category.id}')"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+        }
+    );
+
+
+    return `
+
+        ${moduleHeader(
+            "📂 Categories"
+        )}
+
+        <div class="aim-toolbar">
+
+            <button
+                class="aim-primary"
+                onclick="addCategory()"
+            >
+                + Add Category
+            </button>
+
+        </div>
+
+
+        <div class="aim-table-wrap">
+
+            <table class="aim-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Icon</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   ADD CATEGORY
+   ========================================================= */
+
+function addCategory() {
+
+    const name =
+        prompt(
+            "Category کا نام:"
+        );
+
+    if (!name) {
+        return;
+    }
+
+
+    const description =
+        prompt(
+            "Category کی description:"
+        ) ||
+        "";
+
+
+    const icon =
+        prompt(
+            "Category کا icon/emoji:",
+            "📁"
+        ) ||
+        "📁";
+
+
+    appData.categories.push({
+
+        id:
+            "cat-" +
+            Date.now(),
+
+        name:
+            name.trim(),
+
+        description:
+            description.trim(),
+
+        icon:
+            icon.trim(),
+
+        status:
+            "active"
+    });
+
+
+    saveData();
+
+    renderCategories();
+
+    refreshModule(
+        "categories"
+    );
+}
+
+
+/* =========================================================
+   EDIT CATEGORY
+   ========================================================= */
+
+function editCategory(id) {
+
+    const category =
+        appData.categories.find(
+            item =>
+                item.id === id
+        );
+
+    if (!category) {
+        return;
+    }
+
+
+    const name =
+        prompt(
+            "Category کا نیا نام:",
+            category.name
+        );
+
+
+    if (!name) {
+        return;
+    }
+
+
+    const description =
+        prompt(
+            "Description:",
+            category.description
+        );
+
+
+    category.name =
+        name.trim();
+
+    category.description =
+        description ||
+        category.description;
+
+
+    saveData();
+
+    renderCategories();
+
+    refreshModule(
+        "categories"
+    );
+}
+
+
+/* =========================================================
+   HIDE / SHOW CATEGORY
+   ========================================================= */
+
+function toggleCategory(id) {
+
+    const category =
+        appData.categories.find(
+            item =>
+                item.id === id
+        );
+
+    if (!category) {
+        return;
+    }
+
+
+    category.status =
+        category.status ===
+        "active"
+
+        ? "coming-soon"
+
+        : "active";
+
+
+    saveData();
+
+    renderCategories();
+
+    refreshModule(
+        "categories"
+    );
+}
+
+
+/* =========================================================
+   DELETE CATEGORY
+   ========================================================= */
+
+function deleteCategory(id) {
+
+    const category =
+        appData.categories.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!category) {
+        return;
+    }
+
+
+    const ok =
+        confirm(
+            "کیا آپ " +
+            category.name +
+            " کو Delete کرنا چاہتے ہیں؟"
+        );
+
+
+    if (!ok) {
+        return;
+    }
+
+
+    appData.categories =
+        appData.categories.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveData();
+
+    renderCategories();
+
+    refreshModule(
+        "categories"
+    );
+}
+
+
+/* =========================================================
+   PROVIDERS
+   ========================================================= */
+
+function providersHTML() {
+
+    return `
+
+        ${moduleHeader(
+            "🏢 Providers & Companies"
+        )}
+
+        <div class="aim-form">
+
+            <input
+                id="providerName"
+                placeholder="Company / Provider Name"
+            >
+
+            <input
+                id="providerWebsite"
+                placeholder="Website"
+            >
+
+            <input
+                id="providerAffiliate"
+                placeholder="Original Affiliate Link"
+            >
+
+            <input
+                id="providerAffiliateId"
+                placeholder="Affiliate / Account ID"
+            >
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="providerSubId"
+                >
+                SubID Support
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="providerClickId"
+                >
+                ClickID Support
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="providerApi"
+                >
+                API Support
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    id="providerWebhook"
+                >
+                Webhook Support
+            </label>
+
+            <button
+                class="aim-primary"
+                onclick="saveProviderFromForm()"
+            >
+                Save Provider
+            </button>
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Saved Providers:
+                ${appData.providers.length}
+            </h3>
+
+            ${providerListHTML()}
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   SAVE PROVIDER
+   ========================================================= */
+
+function saveProviderFromForm() {
+
+    const name =
+        document.getElementById(
+            "providerName"
+        ).value.trim();
+
+
+    if (!name) {
+
+        alert(
+            "Provider کا نام ضروری ہے۔"
+        );
+
+        return;
+    }
+
+
+    appData.providers.push({
+
+        id:
+            "provider-" +
+            Date.now(),
+
+        name:
+            name,
+
+        website:
+            document.getElementById(
+                "providerWebsite"
+            ).value.trim(),
+
+        affiliateLink:
+            document.getElementById(
+                "providerAffiliate"
+            ).value.trim(),
+
+        affiliateId:
+            document.getElementById(
+                "providerAffiliateId"
+            ).value.trim(),
+
+        subIdSupport:
+            document.getElementById(
+                "providerSubId"
+            ).checked,
+
+        clickIdSupport:
+            document.getElementById(
+                "providerClickId"
+            ).checked,
+
+        apiSupport:
+            document.getElementById(
+                "providerApi"
+            ).checked,
+
+        webhookSupport:
+            document.getElementById(
+                "providerWebhook"
+            ).checked,
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+    refreshModule(
+        "providers"
+    );
+}
+
+
+/* =========================================================
+   PROVIDER LIST
+   ========================================================= */
+
+function providerListHTML() {
+
+    if (
+        appData.providers.length ===
+        0
+    ) {
+
+        return `
+            <p>
+                ابھی کوئی Provider شامل نہیں۔
+            </p>
+        `;
+    }
+
+
+    return `
+        <ul>
+            ${
+                appData.providers.map(
+                    p =>
+                        `<li>
+                            <strong>
+                                ${escapeHTML(p.name)}
+                            </strong>
+                        </li>`
+                ).join("")
+            }
+        </ul>
+    `;
+}
+
+
+/* =========================================================
+   PROGRAMS
+   ========================================================= */
+
+function programsHTML() {
+
+    const providerOptions =
+        appData.providers.map(
+            p =>
+                `
+                <option value="${p.id}">
+                    ${escapeHTML(p.name)}
+                </option>
+                `
+        ).join("");
+
+
+    const categoryOptions =
+        appData.categories.map(
+            c =>
+                `
+                <option value="${c.id}">
+                    ${escapeHTML(c.name)}
+                </option>
+                `
+        ).join("");
+
+
+    return `
+
+        ${moduleHeader(
+            "🎯 Programs & Offers"
+        )}
+
+        <div class="aim-form">
+
+            <input
+                id="programName"
+                placeholder="Program / Offer Name"
+            >
+
+            <select id="programProvider">
+                <option value="">
+                    Select Provider
+                </option>
+                ${providerOptions}
+            </select>
+
+            <select id="programCategory">
+                <option value="">
+                    Select Category
+                </option>
+                ${categoryOptions}
+            </select>
+
+            <input
+                id="programAffiliate"
+                placeholder="Original Affiliate Link"
+            >
+
+            <input
+                id="programCommission"
+                type="number"
+                placeholder="Commission %"
+            >
+
+            <input
+                id="programCookie"
+                type="number"
+                placeholder="Cookie Days"
+            >
+
+            <button
+                class="aim-primary"
+                onclick="saveProgramFromForm()"
+            >
+                Save Program
+            </button>
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Programs:
+                ${appData.programs.length}
+            </h3>
+
+            ${programListHTML()}
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   SAVE PROGRAM
+   ========================================================= */
+
+function saveProgramFromForm() {
+
+    const name =
+        document.getElementById(
+            "programName"
+        ).value.trim();
+
+
+    if (!name) {
+
+        alert(
+            "Program کا نام ضروری ہے۔"
+        );
+
+        return;
+    }
+
+
+    appData.programs.push({
+
+        id:
+            "program-" +
+            Date.now(),
+
+        name:
+            name,
+
+        providerId:
+            document.getElementById(
+                "programProvider"
+            ).value,
+
+        categoryId:
+            document.getElementById(
+                "programCategory"
+            ).value,
+
+        originalAffiliateLink:
+            document.getElementById(
+                "programAffiliate"
+            ).value.trim(),
+
+        commission:
+            Number(
+                document.getElementById(
+                    "programCommission"
+                ).value || 0
+            ),
+
+        cookieDays:
+            Number(
+                document.getElementById(
+                    "programCookie"
+                ).value || 0
+            ),
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+    refreshModule(
+        "programs"
+    );
+}
+
+
+/* =========================================================
+   PROGRAM LIST
+   ========================================================= */
+
+function programListHTML() {
+
+    if (
+        appData.programs.length ===
+        0
+    ) {
+
+        return `
+            <p>
+                ابھی کوئی Program شامل نہیں۔
+            </p>
+        `;
+    }
+
+
+    return `
+        <div class="aim-list">
+
+            ${
+                appData.programs.map(
+                    p =>
+                        `
+                        <div class="aim-list-item">
+
+                            <strong>
+                                ${escapeHTML(p.name)}
+                            </strong>
+
+                            <span>
+                                Commission:
+                                ${p.commission}%
+                            </span>
+
+                        </div>
+                        `
+                ).join("")
+            }
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   PROMOTERS
+   ========================================================= */
+
+function promotersHTML() {
+
+    return `
+
+        ${moduleHeader(
+            "👥 Promoters / Workers"
+        )}
+
+        <div class="aim-form">
+
+            <input
+                id="promoterName"
+                placeholder="Promoter Name"
+            >
+
+            <input
+                id="promoterPhone"
+                placeholder="Phone"
+            >
+
+            <input
+                id="promoterEmail"
+                placeholder="Email"
+            >
+
+            <select id="promoterPayment">
+
+                <option value="">
+                    Payment Method
+                </option>
+
+                <option>
+                    Bank
+                </option>
+
+                <option>
+                    JazzCash
+                </option>
+
+                <option>
+                    Easypaisa
+                </option>
+
+            </select>
+
+            <input
+                id="promoterAccount"
+                placeholder="Payment Account"
+            >
+
+            <button
+                class="aim-primary"
+                onclick="savePromoterFromForm()"
+            >
+                Save Promoter
+            </button>
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Promoters:
+                ${appData.promoters.length}
+            </h3>
+
+            ${promoterListHTML()}
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   SAVE PROMOTER
+   ========================================================= */
+
+function savePromoterFromForm() {
+
+    const name =
+        document.getElementById(
+            "promoterName"
+        ).value.trim();
+
+
+    if (!name) {
+
+        alert(
+            "Promoter کا نام ضروری ہے۔"
+        );
+
+        return;
+    }
+
+
+    appData.promoters.push({
+
+        id:
+            "promoter-" +
+            Date.now(),
+
+        name:
+            name,
+
+        phone:
+            document.getElementById(
+                "promoterPhone"
+            ).value.trim(),
+
+        email:
+            document.getElementById(
+                "promoterEmail"
+            ).value.trim(),
+
+        paymentMethod:
+            document.getElementById(
+                "promoterPayment"
+            ).value,
+
+        paymentAccount:
+            document.getElementById(
+                "promoterAccount"
+            ).value.trim(),
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+    refreshModule(
+        "promoters"
+    );
+}
+
+
+/* =========================================================
+   PROMOTER LIST
+   ========================================================= */
+
+function promoterListHTML() {
+
+    if (
+        appData.promoters.length ===
+        0
+    ) {
+
+        return `
+            <p>
+                ابھی کوئی Promoter شامل نہیں۔
+            </p>
+        `;
+    }
+
+
+    return `
+        <div class="aim-list">
+
+            ${
+                appData.promoters.map(
+                    p =>
+                        `
+                        <div class="aim-list-item">
+
+                            <strong>
+                                ${escapeHTML(p.name)}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(
+                                    p.phone || ""
+                                )}
+                            </span>
+
+                        </div>
+                        `
+                ).join("")
+            }
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   TRACKING
+   ========================================================= */
+
+function trackingHTML() {
+
+    return `
+
+        ${moduleHeader(
+            "🔗 Tracking Links"
+        )}
+
+        <div class="aim-form">
+
+            <select id="trackingPromoter">
+
+                <option value="">
+                    Select Promoter
+                </option>
+
+                ${
+                    appData.promoters.map(
+                        p =>
+                            `
+                            <option value="${p.id}">
+                                ${escapeHTML(p.name)}
+                            </option>
+                            `
+                    ).join("")
+                }
+
+            </select>
+
+
+            <select id="trackingProgram">
+
+                <option value="">
+                    Select Program
+                </option>
+
+                ${
+                    appData.programs.map(
+                        p =>
+                            `
+                            <option value="${p.id}">
+                                ${escapeHTML(p.name)}
+                            </option>
+                            `
+                    ).join("")
+                }
+
+            </select>
+
+
+            <button
+                class="aim-primary"
+                onclick="generateTrackingLink()"
+            >
+                Generate Tracking Link
+            </button>
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Tracking Links:
+                ${appData.trackingLinks.length}
+            </h3>
+
+            ${trackingListHTML()}
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   GENERATE TRACKING LINK
+   ========================================================= */
+
+function generateTrackingLink() {
+
+    const promoterId =
+        document.getElementById(
+            "trackingPromoter"
+        ).value;
+
+
+    const programId =
+        document.getElementById(
+            "trackingProgram"
+        ).value;
+
+
+    if (
+        !promoterId ||
+        !programId
+    ) {
+
+        alert(
+            "Promoter اور Program دونوں select کریں۔"
+        );
+
+        return;
+    }
+
+
+    const program =
+        appData.programs.find(
+            p =>
+                p.id === programId
+        );
+
+
+    if (!program) {
+        return;
+    }
+
+
+    const code =
+        "AIM-" +
+        Date.now()
+            .toString(36)
+            .toUpperCase();
+
+
+    const publicLink =
+        window.location.origin +
+        window.location.pathname +
+        "?ref=" +
+        code;
+
+
+    appData.trackingLinks.push({
 
         id:
             "link-" +
             Date.now(),
+
+        trackingCode:
+            code,
 
         promoterId:
             promoterId,
@@ -616,17 +1732,11 @@ function createTrackingLink(
         programId:
             programId,
 
-        trackingCode:
-            trackingCode,
-
         originalAffiliateLink:
-            originalAffiliateLink,
+            program.originalAffiliateLink,
 
         publicLink:
-            window.location.origin +
-            window.location.pathname +
-            "?ref=" +
-            trackingCode,
+            publicLink,
 
         clicks:
             0,
@@ -642,77 +1752,658 @@ function createTrackingLink(
 
         createdAt:
             new Date().toISOString()
-    };
+
+    });
 
 
-    appData.trackingLinks.push(
-        trackingRecord
+    saveData();
+
+    refreshModule(
+        "tracking"
     );
-
-
-    saveData(appData);
-
-
-    return trackingRecord;
 }
 
 
 /* =========================================================
-   TRACK CLICK
+   TRACKING LIST
    ========================================================= */
 
-function trackClick(
-    trackingCode
-) {
+function trackingListHTML() {
 
-    const link =
-        appData.trackingLinks.find(
-            function (item) {
+    if (
+        appData.trackingLinks.length ===
+        0
+    ) {
 
-                return (
-                    item.trackingCode ===
-                    trackingCode
+        return `
+            <p>
+                ابھی کوئی Tracking Link نہیں۔
+            </p>
+        `;
+    }
+
+
+    return `
+        <div class="aim-list">
+
+            ${
+                appData.trackingLinks.map(
+                    link =>
+                        `
+                        <div class="aim-list-item">
+
+                            <strong>
+                                ${escapeHTML(
+                                    link.trackingCode
+                                )}
+                            </strong>
+
+                            <span>
+                                Clicks:
+                                ${link.clicks}
+                            </span>
+
+                            <button
+                                onclick="copyTrackingLink('${link.publicLink}')"
+                            >
+                                Copy Link
+                            </button>
+
+                        </div>
+                        `
+                ).join("")
+            }
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   COPY TRACKING LINK
+   ========================================================= */
+
+function copyTrackingLink(link) {
+
+    navigator.clipboard
+        .writeText(link)
+        .then(
+            function () {
+
+                alert(
+                    "Tracking Link Copy ہو گیا۔"
+                );
+
+            }
+        )
+        .catch(
+            function () {
+
+                prompt(
+                    "Link Copy کریں:",
+                    link
                 );
 
             }
         );
-
-
-    if (!link) {
-        return false;
-    }
-
-
-    link.clicks =
-        Number(link.clicks || 0) + 1;
-
-
-    appData.clicks.push({
-
-        id:
-            "click-" +
-            Date.now(),
-
-        trackingCode:
-            trackingCode,
-
-        date:
-            new Date().toISOString()
-    });
-
-
-    saveData(appData);
-
-
-    return true;
 }
 
 
 /* =========================================================
-   PUBLIC LINK HANDLER
+   ORDERS
    ========================================================= */
 
-function handlePublicTracking() {
+function ordersHTML() {
+
+    return `
+
+        ${moduleHeader(
+            "🛒 Orders & Clicks"
+        )}
+
+        <div class="aim-stats">
+
+            ${statBox(
+                "👆",
+                "Total Clicks",
+                appData.clicks.length
+            )}
+
+            ${statBox(
+                "🛒",
+                "Total Orders",
+                appData.orders.length
+            )}
+
+            ${statBox(
+                "💰",
+                "Total Sales",
+                totalSales()
+            )}
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Orders
+            </h3>
+
+            ${
+                appData.orders.length === 0
+
+                ?
+
+                `<p>
+                    ابھی کوئی Order موجود نہیں۔
+                </p>`
+
+                :
+
+                `
+                <div class="aim-list">
+
+                    ${
+                        appData.orders.map(
+                            order =>
+                                `
+                                <div class="aim-list-item">
+
+                                    <strong>
+                                        ${escapeHTML(
+                                            order.orderReference
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        Sale:
+                                        PKR ${order.saleAmount}
+                                    </span>
+
+                                </div>
+                                `
+                        ).join("")
+                    }
+
+                </div>
+                `
+            }
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   PAYMENTS
+   ========================================================= */
+
+function paymentsHTML() {
+
+    return `
+
+        ${moduleHeader(
+            "💰 Commission & Payments"
+        )}
+
+        <div class="aim-stats">
+
+            ${statBox(
+                "💵",
+                "Commission",
+                totalCommission()
+            )}
+
+            ${statBox(
+                "✅",
+                "Paid",
+                totalPaid()
+            )}
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Payment Records
+            </h3>
+
+            ${
+                appData.payments.length === 0
+
+                ?
+
+                `<p>
+                    ابھی کوئی Payment record نہیں۔
+                </p>`
+
+                :
+
+                `
+                <div class="aim-list">
+
+                    ${
+                        appData.payments.map(
+                            payment =>
+                                `
+                                <div class="aim-list-item">
+
+                                    <strong>
+                                        PKR ${payment.amount}
+                                    </strong>
+
+                                    <span>
+                                        ${escapeHTML(
+                                            payment.method
+                                        )}
+                                    </span>
+
+                                </div>
+                                `
+                        ).join("")
+                    }
+
+                </div>
+                `
+            }
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   REPORTS
+   ========================================================= */
+
+function reportsHTML() {
+
+    const clicks =
+        appData.clicks.length;
+
+
+    const orders =
+        appData.orders.length;
+
+
+    const sales =
+        totalSales();
+
+
+    const commission =
+        totalCommission();
+
+
+    const conversion =
+        clicks > 0
+        ? ((orders / clicks) * 100).toFixed(2)
+        : "0.00";
+
+
+    return `
+
+        ${moduleHeader(
+            "📈 Reports & Analytics"
+        )}
+
+        <div class="aim-stats">
+
+            ${statBox(
+                "👆",
+                "Clicks",
+                clicks
+            )}
+
+            ${statBox(
+                "🛒",
+                "Orders",
+                orders
+            )}
+
+            ${statBox(
+                "💵",
+                "Sales",
+                "PKR " + sales
+            )}
+
+            ${statBox(
+                "💰",
+                "Commission",
+                "PKR " + commission
+            )}
+
+            ${statBox(
+                "📊",
+                "Conversion",
+                conversion + "%"
+            )}
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Performance Summary
+            </h3>
+
+            <p>
+                Conversion Rate:
+                <strong>
+                    ${conversion}%
+                </strong>
+            </p>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   CATEGORY DETAIL
+   ========================================================= */
+
+function categoryHTML(
+    category
+) {
+
+    const programs =
+        appData.programs.filter(
+            p =>
+                p.categoryId ===
+                category.id
+        );
+
+
+    return `
+
+        ${moduleHeader(
+            category.icon +
+            " " +
+            category.name
+        )}
+
+        <div class="aim-section">
+
+            <h3>
+                Category Overview
+            </h3>
+
+            <p>
+                ${escapeHTML(
+                    category.description
+                )}
+            </p>
+
+        </div>
+
+
+        <div class="aim-section">
+
+            <h3>
+                Programs in this Category
+            </h3>
+
+            ${
+                programs.length === 0
+
+                ?
+
+                `
+                <p>
+                    ابھی اس category میں
+                    کوئی Program شامل نہیں۔
+                </p>
+                `
+
+                :
+
+                `
+                <div class="aim-list">
+
+                    ${
+                        programs.map(
+                            p =>
+                                `
+                                <div class="aim-list-item">
+
+                                    <strong>
+                                        ${escapeHTML(
+                                            p.name
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        Commission:
+                                        ${p.commission}%
+                                    </span>
+
+                                </div>
+                                `
+                        ).join("")
+                    }
+
+                </div>
+                `
+            }
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   MODULE HEADER
+   ========================================================= */
+
+function moduleHeader(
+    title
+) {
+
+    return `
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-bottom:25px;
+            border-bottom:1px solid #e5e7eb;
+            padding-bottom:15px;
+        ">
+
+            <h2>
+                ${title}
+            </h2>
+
+            <button
+                onclick="closeModulePanel()"
+                style="
+                    border:none;
+                    background:#dc2626;
+                    color:white;
+                    padding:9px 15px;
+                    border-radius:8px;
+                    cursor:pointer;
+                "
+            >
+                Close
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   STAT BOX
+   ========================================================= */
+
+function statBox(
+    icon,
+    label,
+    value
+) {
+
+    return `
+
+        <div style="
+            background:#f7f9fc;
+            border:1px solid #e5e7eb;
+            border-radius:14px;
+            padding:18px;
+        ">
+
+            <div style="
+                font-size:28px;
+                margin-bottom:5px;
+            ">
+                ${icon}
+            </div>
+
+            <strong>
+                ${label}
+            </strong>
+
+            <div style="
+                font-size:24px;
+                font-weight:bold;
+                margin-top:5px;
+            ">
+                ${value}
+            </div>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   REFRESH MODULE
+   ========================================================= */
+
+function refreshModule(
+    type
+) {
+
+    const overlay =
+        document.getElementById(
+            "moduleOverlay"
+        );
+
+
+    if (!overlay) {
+        return;
+    }
+
+
+    const panel =
+        overlay.querySelector(
+            "div"
+        );
+
+
+    if (!panel) {
+        return;
+    }
+
+
+    panel.innerHTML =
+        getModuleHTML(
+            type,
+            {}
+        );
+}
+
+
+/* =========================================================
+   TOTAL SALES
+   ========================================================= */
+
+function totalSales() {
+
+    return appData.orders.reduce(
+        function (
+            total,
+            order
+        ) {
+
+            return (
+                total +
+                Number(
+                    order.saleAmount || 0
+                )
+            );
+
+        },
+        0
+    );
+}
+
+
+/* =========================================================
+   TOTAL COMMISSION
+   ========================================================= */
+
+function totalCommission() {
+
+    return appData.orders.reduce(
+        function (
+            total,
+            order
+        ) {
+
+            return (
+                total +
+                Number(
+                    order.commission || 0
+                )
+            );
+
+        },
+        0
+    );
+}
+
+
+/* =========================================================
+   TOTAL PAID
+   ========================================================= */
+
+function totalPaid() {
+
+    return appData.payments.reduce(
+        function (
+            total,
+            payment
+        ) {
+
+            return (
+                total +
+                Number(
+                    payment.amount || 0
+                )
+            );
+
+        },
+        0
+    );
+}
+
+
+/* =========================================================
+   TRACKING URL HANDLER
+   ========================================================= */
+
+function handleTrackingLink() {
 
     const params =
         new URLSearchParams(
@@ -731,14 +2422,9 @@ function handlePublicTracking() {
 
     const link =
         appData.trackingLinks.find(
-            function (item) {
-
-                return (
-                    item.trackingCode ===
-                    ref
-                );
-
-            }
+            item =>
+                item.trackingCode ===
+                ref
         );
 
 
@@ -747,575 +2433,48 @@ function handlePublicTracking() {
     }
 
 
-    trackClick(ref);
+    link.clicks =
+        Number(link.clicks || 0) + 1;
+
+
+    appData.clicks.push({
+
+        id:
+            "click-" +
+            Date.now(),
+
+        trackingCode:
+            ref,
+
+        date:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
 
 
     /*
-       Important:
-
-       This is the basic frontend
-       tracking mechanism.
-
-       For a secure production system,
-       the redirect and click tracking
-       should later be moved to a
-       server/backend.
+       Production version میں یہاں
+       secure backend redirect استعمال ہوگا۔
     */
-
 
     if (
         link.originalAffiliateLink
     ) {
 
-        window.location.href =
-            link.originalAffiliateLink;
+        setTimeout(
+            function () {
+
+                window.location.href =
+                    link.originalAffiliateLink;
+
+            },
+            500
+        );
+
     }
-}
-
-
-/* =========================================================
-   ADD PROVIDER
-   ========================================================= */
-
-function addProvider(provider) {
-
-    if (!provider) {
-        return null;
-    }
-
-
-    const record = {
-
-        id:
-            "provider-" +
-            Date.now(),
-
-        name:
-            provider.name || "",
-
-        website:
-            provider.website || "",
-
-        affiliateLink:
-            provider.affiliateLink || "",
-
-        affiliateId:
-            provider.affiliateId || "",
-
-        subIdSupport:
-            provider.subIdSupport || false,
-
-        clickIdSupport:
-            provider.clickIdSupport || false,
-
-        apiSupport:
-            provider.apiSupport || false,
-
-        webhookSupport:
-            provider.webhookSupport || false,
-
-        notes:
-            provider.notes || "",
-
-        createdAt:
-            new Date().toISOString()
-    };
-
-
-    appData.providers.push(
-        record
-    );
-
-
-    saveData(appData);
-
-
-    return record;
-}
-
-
-/* =========================================================
-   ADD PROGRAM
-   ========================================================= */
-
-function addProgram(program) {
-
-    if (!program) {
-        return null;
-    }
-
-
-    const record = {
-
-        id:
-            "program-" +
-            Date.now(),
-
-        providerId:
-            program.providerId || "",
-
-        categoryId:
-            program.categoryId || "",
-
-        name:
-            program.name || "",
-
-        originalAffiliateLink:
-            program.originalAffiliateLink || "",
-
-        commissionType:
-            program.commissionType || "percentage",
-
-        commissionValue:
-            Number(
-                program.commissionValue || 0
-            ),
-
-        cookieDays:
-            Number(
-                program.cookieDays || 0
-            ),
-
-        status:
-            program.status || "active",
-
-        createdAt:
-            new Date().toISOString()
-    };
-
-
-    appData.programs.push(
-        record
-    );
-
-
-    saveData(appData);
-
-
-    return record;
-}
-
-
-/* =========================================================
-   ADD PROMOTER
-   ========================================================= */
-
-function addPromoter(promoter) {
-
-    if (!promoter) {
-        return null;
-    }
-
-
-    const record = {
-
-        id:
-            "promoter-" +
-            Date.now(),
-
-        name:
-            promoter.name || "",
-
-        phone:
-            promoter.phone || "",
-
-        email:
-            promoter.email || "",
-
-        paymentMethod:
-            promoter.paymentMethod || "",
-
-        paymentAccount:
-            promoter.paymentAccount || "",
-
-        status:
-            promoter.status || "active",
-
-        createdAt:
-            new Date().toISOString()
-    };
-
-
-    appData.promoters.push(
-        record
-    );
-
-
-    saveData(appData);
-
-
-    return record;
-}
-
-
-/* =========================================================
-   ADD ASSIGNMENT
-   ========================================================= */
-
-function addAssignment(
-    promoterId,
-    programId
-) {
-
-    const assignment = {
-
-        id:
-            "assignment-" +
-            Date.now(),
-
-        promoterId:
-            promoterId,
-
-        programId:
-            programId,
-
-        assignedAt:
-            new Date().toISOString(),
-
-        status:
-            "active"
-    };
-
-
-    appData.assignments.push(
-        assignment
-    );
-
-
-    saveData(appData);
-
-
-    return assignment;
-}
-
-
-/* =========================================================
-   ADD ORDER
-   ========================================================= */
-
-function addOrder(order) {
-
-    if (!order) {
-        return null;
-    }
-
-
-    const record = {
-
-        id:
-            "order-" +
-            Date.now(),
-
-        trackingCode:
-            order.trackingCode || "",
-
-        orderReference:
-            order.orderReference || "",
-
-        customer:
-            order.customer || "",
-
-        saleAmount:
-            Number(
-                order.saleAmount || 0
-            ),
-
-        commission:
-            Number(
-                order.commission || 0
-            ),
-
-        status:
-            order.status || "pending",
-
-        createdAt:
-            new Date().toISOString()
-    };
-
-
-    appData.orders.push(
-        record
-    );
-
-
-    /*
-       Update tracking statistics
-    */
-
-    const link =
-        appData.trackingLinks.find(
-            function (item) {
-
-                return (
-                    item.trackingCode ===
-                    record.trackingCode
-                );
-
-            }
-        );
-
-
-    if (link) {
-
-        link.orders =
-            Number(link.orders || 0) + 1;
-
-        link.sales =
-            Number(link.sales || 0) +
-            record.saleAmount;
-
-        link.commission =
-            Number(link.commission || 0) +
-            record.commission;
-    }
-
-
-    saveData(appData);
-
-
-    return record;
-}
-
-
-/* =========================================================
-   ADD PAYMENT
-   ========================================================= */
-
-function addPayment(payment) {
-
-    if (!payment) {
-        return null;
-    }
-
-
-    const record = {
-
-        id:
-            "payment-" +
-            Date.now(),
-
-        promoterId:
-            payment.promoterId || "",
-
-        amount:
-            Number(
-                payment.amount || 0
-            ),
-
-        method:
-            payment.method || "",
-
-        transactionId:
-            payment.transactionId || "",
-
-        date:
-            payment.date ||
-            new Date().toISOString(),
-
-        status:
-            payment.status || "paid",
-
-        notes:
-            payment.notes || ""
-    };
-
-
-    appData.payments.push(
-        record
-    );
-
-
-    saveData(appData);
-
-
-    return record;
-}
-
-
-/* =========================================================
-   GET PROMOTER PERFORMANCE
-   ========================================================= */
-
-function getPromoterPerformance(
-    promoterId
-) {
-
-    const assignments =
-        appData.assignments.filter(
-            function (item) {
-
-                return (
-                    item.promoterId ===
-                    promoterId
-                );
-
-            }
-        );
-
-
-    const programIds =
-        assignments.map(
-            function (item) {
-
-                return item.programId;
-
-            }
-        );
-
-
-    const links =
-        appData.trackingLinks.filter(
-            function (item) {
-
-                return (
-                    item.promoterId ===
-                    promoterId
-                );
-
-            }
-        );
-
-
-    let clicks = 0;
-    let orders = 0;
-    let sales = 0;
-    let commission = 0;
-
-
-    links.forEach(
-        function (link) {
-
-            clicks +=
-                Number(
-                    link.clicks || 0
-                );
-
-            orders +=
-                Number(
-                    link.orders || 0
-                );
-
-            sales +=
-                Number(
-                    link.sales || 0
-                );
-
-            commission +=
-                Number(
-                    link.commission || 0
-                );
-        }
-    );
-
-
-    return {
-
-        promoterId:
-            promoterId,
-
-        assignedPrograms:
-            programIds.length,
-
-        clicks:
-            clicks,
-
-        orders:
-            orders,
-
-        sales:
-            sales,
-
-        commission:
-            commission
-    };
-}
-
-
-/* =========================================================
-   EXPORT DATA
-   ========================================================= */
-
-function exportAllData() {
-
-    const data =
-        JSON.stringify(
-            appData,
-            null,
-            2
-        );
-
-
-    const blob =
-        new Blob(
-            [data],
-            {
-                type:
-                    "application/json"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const a =
-        document.createElement(
-            "a"
-        );
-
-
-    a.href = url;
-
-    a.download =
-        "all-in-one-marketing-backup.json";
-
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-}
-
-
-/* =========================================================
-   RESET DATA
-   ========================================================= */
-
-function resetApplicationData() {
-
-    const confirmation =
-        confirm(
-            "کیا آپ تمام موجودہ local data ختم کرنا چاہتے ہیں؟"
-        );
-
-
-    if (!confirmation) {
-        return;
-    }
-
-
-    appData =
-        JSON.parse(
-            JSON.stringify(defaultData)
-        );
-
-
-    saveData(appData);
-
-    renderCategories();
-
-    updateDashboardStats();
-
-
-    alert(
-        "Application data reset ہو گیا ہے۔"
-    );
 }
 
 
@@ -1323,9 +2482,11 @@ function resetApplicationData() {
    ESCAPE HTML
    ========================================================= */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
-    return String(value)
+    return String(value || "")
         .replace(
             /&/g,
             "&amp;"
@@ -1350,57 +2511,58 @@ function escapeHTML(value) {
 
 
 /* =========================================================
-   START PUBLIC TRACKING
+   CLONE
    ========================================================= */
 
-handlePublicTracking();
+function clone(
+    object
+) {
+
+    return JSON.parse(
+        JSON.stringify(object)
+    );
+}
 
 
 /* =========================================================
-   GLOBAL ACCESS
+   GLOBAL FUNCTIONS
    ========================================================= */
-
-window.appData =
-    appData;
 
 window.openModule =
     openModule;
 
-window.addCategory =
-    addCategory;
-
 window.openCategory =
     openCategory;
 
-window.createTrackingLink =
-    createTrackingLink;
+window.addCategory =
+    addCategory;
 
-window.trackClick =
-    trackClick;
+window.editCategory =
+    editCategory;
 
-window.addProvider =
-    addProvider;
+window.toggleCategory =
+    toggleCategory;
 
-window.addProgram =
-    addProgram;
+window.deleteCategory =
+    deleteCategory;
 
-window.addPromoter =
-    addPromoter;
+window.closeModulePanel =
+    closeModulePanel;
 
-window.addAssignment =
-    addAssignment;
+window.saveProviderFromForm =
+    saveProviderFromForm;
 
-window.addOrder =
-    addOrder;
+window.saveProgramFromForm =
+    saveProgramFromForm;
 
-window.addPayment =
-    addPayment;
+window.savePromoterFromForm =
+    savePromoterFromForm;
 
-window.getPromoterPerformance =
-    getPromoterPerformance;
+window.generateTrackingLink =
+    generateTrackingLink;
 
-window.exportAllData =
-    exportAllData;
+window.copyTrackingLink =
+    copyTrackingLink;
 
-window.resetApplicationData =
-    resetApplicationData;
+window.refreshModule =
+    refreshModule;
