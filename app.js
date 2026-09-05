@@ -1,12 +1,10 @@
 /* =========================================================
-   JANJUA - ALL IN ONE MARKETING
-   V5
-   Complete Admin Marketing Platform
-   Providers + Programs + Promoters + Assignments
-   Tracking + Clicks + Orders + Commission + Payments
-   ========================================================= */
+   JANJUA - ALL IN ONE MARKETING PLATFORM
+   COMPLETE APP.JS
+   Social Media Link Automation Included
+========================================================= */
 
-const STORAGE_KEY = "all_in_one_marketing_v5";
+const STORAGE_KEY = "all_in_one_marketing_v4";
 
 
 /* =========================================================
@@ -17,38 +15,50 @@ const defaultData = {
 
     categories: [
 
-        {id:"cat_1", name:"Banks & Finance", visible:true},
-        {id:"cat_2", name:"Motorcycles", visible:true},
-        {id:"cat_3", name:"Cars & Vehicles", visible:true},
-        {id:"cat_4", name:"Spare Parts", visible:true},
-        {id:"cat_5", name:"Food & Restaurants", visible:true},
-        {id:"cat_6", name:"Hotels", visible:true},
-        {id:"cat_7", name:"Factories", visible:true},
-        {id:"cat_8", name:"Weddings", visible:true},
-        {id:"cat_9", name:"Travel & Tourism", visible:true},
-        {id:"cat_10", name:"Property", visible:true},
-        {id:"cat_11", name:"Loans & Financing", visible:true},
-        {id:"cat_12", name:"Education", visible:true},
-        {id:"cat_13", name:"Healthcare", visible:true},
-        {id:"cat_14", name:"Freelance & Services", visible:true}
+        { id: "cat1", name: "Banks & Finance", visible: true },
+        { id: "cat2", name: "Motorcycles", visible: true },
+        { id: "cat3", name: "Cars & Vehicles", visible: true },
+        { id: "cat4", name: "Spare Parts", visible: true },
+        { id: "cat5", name: "Food & Restaurants", visible: true },
+        { id: "cat6", name: "Hotels", visible: true },
+        { id: "cat7", name: "Factories", visible: true },
+        { id: "cat8", name: "Weddings", visible: true },
+        { id: "cat9", name: "Travel & Tourism", visible: true },
+        { id: "cat10", name: "Property", visible: true },
+        { id: "cat11", name: "Loans & Financing", visible: true },
+        { id: "cat12", name: "Education", visible: true },
+        { id: "cat13", name: "Healthcare", visible: true },
+        { id: "cat14", name: "Freelance & Services", visible: true }
 
     ],
 
     providers: [],
+
     programs: [],
+
     promoters: [],
+
     assignments: [],
+
     trackingLinks: [],
+
+    socialLinks: [],
+
     clicks: [],
+
     orders: [],
+
     commissions: [],
+
     payments: [],
 
     settings: {
 
-        brand:"JANJUA",
-        subtitle:"Janjua Digital Marketing Platform Online",
-        status:"AVAILABLE 24 HOURS"
+        brand: "JANJUA",
+
+        subtitle: "Janjua Digital Marketing Platform Online",
+
+        status: "AVAILABLE 24 HOURS"
 
     }
 
@@ -58,6 +68,9 @@ const defaultData = {
 /* =========================================================
    LOAD DATA
 ========================================================= */
+
+let data = loadData();
+
 
 function loadData(){
 
@@ -79,58 +92,45 @@ function loadData(){
 
         return {
 
-            ...defaultData,
+            ...JSON.parse(
+                JSON.stringify(defaultData)
+            ),
+
             ...parsed,
 
             categories:
-                Array.isArray(parsed.categories)
-                ? parsed.categories
-                : [],
+                parsed.categories ||
+                defaultData.categories,
 
             providers:
-                Array.isArray(parsed.providers)
-                ? parsed.providers
-                : [],
+                parsed.providers || [],
 
             programs:
-                Array.isArray(parsed.programs)
-                ? parsed.programs
-                : [],
+                parsed.programs || [],
 
             promoters:
-                Array.isArray(parsed.promoters)
-                ? parsed.promoters
-                : [],
+                parsed.promoters || [],
 
             assignments:
-                Array.isArray(parsed.assignments)
-                ? parsed.assignments
-                : [],
+                parsed.assignments || [],
 
             trackingLinks:
-                Array.isArray(parsed.trackingLinks)
-                ? parsed.trackingLinks
-                : [],
+                parsed.trackingLinks || [],
+
+            socialLinks:
+                parsed.socialLinks || [],
 
             clicks:
-                Array.isArray(parsed.clicks)
-                ? parsed.clicks
-                : [],
+                parsed.clicks || [],
 
             orders:
-                Array.isArray(parsed.orders)
-                ? parsed.orders
-                : [],
+                parsed.orders || [],
 
             commissions:
-                Array.isArray(parsed.commissions)
-                ? parsed.commissions
-                : [],
+                parsed.commissions || [],
 
             payments:
-                Array.isArray(parsed.payments)
-                ? parsed.payments
-                : []
+                parsed.payments || []
 
         };
 
@@ -150,30 +150,19 @@ function loadData(){
 }
 
 
-let data = loadData();
-
-
 /* =========================================================
    SAVE DATA
 ========================================================= */
 
 function saveData(){
 
-    try{
+    localStorage.setItem(
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(data)
-        );
+        STORAGE_KEY,
 
-    }catch(error){
+        JSON.stringify(data)
 
-        console.error(
-            "Data saving error:",
-            error
-        );
-
-    }
+    );
 
 }
 
@@ -182,102 +171,94 @@ function saveData(){
    HELPERS
 ========================================================= */
 
-function makeId(prefix){
+function makeId(prefix = "ID"){
 
     return (
+
         prefix +
+
         "_" +
+
         Date.now().toString(36) +
+
         "_" +
+
         Math.random()
             .toString(36)
             .substring(2,8)
-    );
+
+    ).toUpperCase();
 
 }
 
 
 function escapeHTML(value){
 
-    if(
-        value === null ||
-        value === undefined
-    ){
+    if(value === null || value === undefined){
 
         return "";
 
     }
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
 
 }
 
 
 function getProviderName(id){
 
-    const provider =
+    const item =
         data.providers.find(
-            p => p.id === id
+            x => x.id === id
         );
 
-    return provider
-        ? provider.name
-        : "-";
+    return item
+        ? item.name
+        : "Unknown Provider";
 
 }
 
 
 function getProgramName(id){
 
-    const program =
+    const item =
         data.programs.find(
-            p => p.id === id
+            x => x.id === id
         );
 
-    return program
-        ? program.name
-        : "-";
+    return item
+        ? item.name
+        : "Unknown Program";
 
 }
 
 
 function getPromoterName(id){
 
-    const promoter =
+    const item =
         data.promoters.find(
-            p => p.id === id
+            x => x.id === id
         );
 
-    return promoter
-        ? promoter.name
-        : "-";
-
-}
-
-
-function formatMoney(value){
-
-    const number =
-        Number(value) || 0;
-
-    return number.toLocaleString(
-        "en-PK",
-        {
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-        }
-    );
+    return item
+        ? item.name
+        : "Unknown Promoter";
 
 }
 
 
 /* =========================================================
-   INITIALIZATION
+   PAGE START
 ========================================================= */
 
 document.addEventListener(
@@ -286,11 +267,17 @@ document.addEventListener(
 
         addAnimatedBranding();
 
+        addBrandAnimationCSS();
+
+        addModuleCSS();
+
         renderCategories();
 
         attachDashboardEvents();
 
         handlePublicTracking();
+
+        handlePublicSocialLink();
 
     }
 );
@@ -302,37 +289,29 @@ document.addEventListener(
 
 function attachDashboardEvents(){
 
-    document.addEventListener(
-        "click",
-        function(event){
+    document
+        .querySelectorAll("[data-module]")
+        .forEach(card => {
 
-            const card =
-                event.target.closest(
-                    "[data-module]"
-                );
+            card.addEventListener(
+                "click",
+                function(){
 
-            if(!card){
-                return;
-            }
+                    openModule(
+                        this.dataset.module
+                    );
 
-            const module =
-                card.dataset.module;
+                }
+            );
 
-            if(module){
-
-                openModule(module);
-
-            }
-
-        }
-    );
+        });
 
 }
 
 
 /* =========================================================
    ANIMATED BRANDING
-   OLD STATIC BRANDING IS HIDDEN
+   HIDE OLD STATIC BRANDING
 ========================================================= */
 
 function addAnimatedBranding(){
@@ -341,13 +320,11 @@ function addAnimatedBranding(){
         document.querySelector("header");
 
     if(!header){
+
         return;
+
     }
 
-
-    /* -----------------------------------------
-       HIDE ORIGINAL STATIC BRANDING
-    ----------------------------------------- */
 
     const oldBrand =
         header.querySelector(".brand-area");
@@ -359,10 +336,6 @@ function addAnimatedBranding(){
     }
 
 
-    /* -----------------------------------------
-       HIDE ORIGINAL STATIC STATUS
-    ----------------------------------------- */
-
     const oldStatus =
         header.querySelector(".header-status");
 
@@ -372,10 +345,6 @@ function addAnimatedBranding(){
 
     }
 
-
-    /* -----------------------------------------
-       REMOVE OLD ANIMATED BRAND IF EXISTS
-    ----------------------------------------- */
 
     const oldAnimated =
         document.getElementById(
@@ -389,15 +358,12 @@ function addAnimatedBranding(){
     }
 
 
-    /* -----------------------------------------
-       CREATE NEW ANIMATED BRAND
-    ----------------------------------------- */
-
     const box =
         document.createElement("div");
 
     box.id =
         "janjuaAnimatedBrand";
+
 
     box.innerHTML = `
 
@@ -409,18 +375,15 @@ function addAnimatedBranding(){
 
             <div class="brand-orbit orbit-three"></div>
 
-
             <div class="brand-main">
 
                 <div class="brand-title">
                     JANJUA
                 </div>
 
-
                 <div class="brand-subtitle">
                     Janjua Digital Marketing Platform Online
                 </div>
-
 
                 <div class="brand-status">
 
@@ -437,493 +400,7 @@ function addAnimatedBranding(){
     `;
 
 
-    /* Put animated branding at top */
-
     header.prepend(box);
-
-
-    /* Add animation CSS */
-
-    addBrandAnimationCSS();
-
-}
-
-
-function addBrandAnimationCSS(){
-
-    if(
-        document.getElementById(
-            "janjuaAnimationCSS"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    const style =
-        document.createElement("style");
-
-
-    style.id =
-        "janjuaAnimationCSS";
-
-
-    style.textContent = `
-
-        #janjuaAnimatedBrand{
-
-            width:100%;
-
-            display:flex;
-
-            justify-content:center;
-
-            align-items:center;
-
-            padding:18px 10px 12px;
-
-            overflow:hidden;
-
-        }
-
-
-        .janjua-brand-animation{
-
-            position:relative;
-
-            width:min(900px,96%);
-
-            min-height:145px;
-
-            display:flex;
-
-            justify-content:center;
-
-            align-items:center;
-
-            overflow:hidden;
-
-            border-radius:22px;
-
-            background:
-
-                radial-gradient(
-
-                    circle at center,
-
-                    rgba(0,200,255,.16),
-
-                    transparent 45%
-
-                ),
-
-                rgba(0,0,0,.12);
-
-            box-shadow:
-
-                0 0 30px
-                rgba(0,200,255,.10),
-
-                inset 0 0 25px
-                rgba(255,255,255,.04);
-
-        }
-
-
-        .brand-main{
-
-            position:relative;
-
-            z-index:5;
-
-            text-align:center;
-
-            animation:
-                brandFloat
-                4s
-                ease-in-out
-                infinite;
-
-        }
-
-
-        .brand-title{
-
-            font-size:
-                clamp(38px,8vw,72px);
-
-            font-weight:900;
-
-            letter-spacing:8px;
-
-            line-height:1;
-
-            background:
-
-                linear-gradient(
-
-                    90deg,
-
-                    #ffffff,
-
-                    #00d9ff,
-
-                    #ffffff,
-
-                    #00d9ff,
-
-                    #ffffff
-
-                );
-
-            background-size:300% 100%;
-
-            -webkit-background-clip:text;
-
-            background-clip:text;
-
-            color:transparent;
-
-            animation:
-
-                brandShine
-                4s
-                linear
-                infinite,
-
-                brandPulse
-                2.5s
-                ease-in-out
-                infinite;
-
-        }
-
-
-        .brand-subtitle{
-
-            margin-top:10px;
-
-            font-size:
-                clamp(14px,2.5vw,22px);
-
-            font-weight:700;
-
-            letter-spacing:2px;
-
-            animation:
-
-                subtitleFade
-                3s
-                ease-in-out
-                infinite;
-
-        }
-
-
-        .brand-status{
-
-            margin-top:10px;
-
-            display:inline-flex;
-
-            align-items:center;
-
-            gap:8px;
-
-            padding:6px 12px;
-
-            border-radius:50px;
-
-            font-size:12px;
-
-            font-weight:800;
-
-            letter-spacing:2px;
-
-            border:1px solid
-                rgba(0,255,140,.25);
-
-            animation:
-
-                statusGlow
-                2s
-                ease-in-out
-                infinite;
-
-        }
-
-
-        .status-dot{
-
-            width:9px;
-
-            height:9px;
-
-            border-radius:50%;
-
-            background:#00ff88;
-
-            box-shadow:
-
-                0 0 7px #00ff88,
-
-                0 0 15px #00ff88;
-
-            animation:
-
-                dotBlink
-                1.2s
-                infinite;
-
-        }
-
-
-        .brand-orbit{
-
-            position:absolute;
-
-            border:1px solid
-                rgba(0,220,255,.22);
-
-            border-radius:50%;
-
-        }
-
-
-        .orbit-one{
-
-            width:230px;
-
-            height:230px;
-
-            animation:
-
-                orbitRotate
-                9s
-                linear
-                infinite;
-
-        }
-
-
-        .orbit-two{
-
-            width:420px;
-
-            height:150px;
-
-            transform:rotate(25deg);
-
-            animation:
-
-                orbitRotateReverse
-                12s
-                linear
-                infinite;
-
-        }
-
-
-        .orbit-three{
-
-            width:650px;
-
-            height:210px;
-
-            transform:rotate(-18deg);
-
-            animation:
-
-                orbitRotate
-                16s
-                linear
-                infinite;
-
-        }
-
-
-        @keyframes brandShine{
-
-            0%{
-
-                background-position:0% 50%;
-
-            }
-
-            100%{
-
-                background-position:300% 50%;
-
-            }
-
-        }
-
-
-        @keyframes brandPulse{
-
-            0%,100%{
-
-                transform:scale(1);
-
-            }
-
-            50%{
-
-                transform:scale(1.04);
-
-            }
-
-        }
-
-
-        @keyframes brandFloat{
-
-            0%,100%{
-
-                transform:translateY(0);
-
-            }
-
-            50%{
-
-                transform:translateY(-5px);
-
-            }
-
-        }
-
-
-        @keyframes subtitleFade{
-
-            0%,100%{
-
-                opacity:.65;
-
-            }
-
-            50%{
-
-                opacity:1;
-
-            }
-
-        }
-
-
-        @keyframes statusGlow{
-
-            0%,100%{
-
-                box-shadow:
-                    0 0 0
-                    rgba(0,255,140,0);
-
-            }
-
-            50%{
-
-                box-shadow:
-
-                    0 0 20px
-                    rgba(0,255,140,.16);
-
-            }
-
-        }
-
-
-        @keyframes dotBlink{
-
-            0%,100%{
-
-                opacity:1;
-
-                transform:scale(1);
-
-            }
-
-            50%{
-
-                opacity:.35;
-
-                transform:scale(.75);
-
-            }
-
-        }
-
-
-        @keyframes orbitRotate{
-
-            from{
-
-                transform:rotate(0deg);
-
-            }
-
-            to{
-
-                transform:rotate(360deg);
-
-            }
-
-        }
-
-
-        @keyframes orbitRotateReverse{
-
-            from{
-
-                transform:rotate(360deg);
-
-            }
-
-            to{
-
-                transform:rotate(0deg);
-
-            }
-
-        }
-
-
-        @media(max-width:600px){
-
-            .janjua-brand-animation{
-
-                min-height:125px;
-
-            }
-
-
-            .brand-title{
-
-                letter-spacing:5px;
-
-            }
-
-
-            .brand-subtitle{
-
-                letter-spacing:1px;
-
-            }
-
-
-            .orbit-three{
-
-                width:420px;
-
-            }
-
-        }
-
-    `;
-
-
-    document.head.appendChild(style);
 
 }
 
@@ -934,180 +411,124 @@ function addBrandAnimationCSS(){
 
 function openModule(module){
 
-    closeModule();
-
-
-    const titles = {
-
-        dashboard:
-            "Dashboard",
-
-        categories:
-            "Categories",
-
-        providers:
-            "Providers & Companies",
-
-        programs:
-            "Programs & Offers",
-
-        promoters:
-            "Promoters / Workers",
-
-        tracking:
-            "Tracking Links",
-
-        orders:
-            "Orders & Clicks",
-
-        payments:
-            "Commission & Payments",
-
-        reports:
-            "Reports & Analytics"
-
-    };
-
-
-    const title =
-        titles[module] || module;
-
-
-    const panel =
+    const overlay =
         document.createElement("div");
 
-
-    panel.id =
-        "modulePanel";
-
-
-    panel.innerHTML = `
-
-        <div class="module-overlay">
-
-            <div class="module-window">
-
-                <div class="module-header">
-
-                    <h2>
-                        ${escapeHTML(title)}
-                    </h2>
+    overlay.className =
+        "module-overlay";
 
 
-                    <button
-                        class="module-close"
-                        onclick="closeModule()">
+    const windowBox =
+        document.createElement("div");
 
-                        ×
-
-                    </button>
-
-                </div>
+    windowBox.className =
+        "module-window";
 
 
-                <div
-                    id="moduleContent"
-                    class="module-content">
-                </div>
+    const header =
+        document.createElement("div");
 
-            </div>
+    header.className =
+        "module-header";
+
+
+    header.innerHTML = `
+
+        <div>
+
+            <h2>
+                ${escapeHTML(module)}
+            </h2>
 
         </div>
+
+        <button
+            class="module-close"
+            onclick="this.closest('.module-overlay').remove()"
+        >
+            ×
+        </button>
 
     `;
 
 
-    document.body.appendChild(panel);
-
-
-    addModuleCSS();
-
-
     const content =
-        document.getElementById(
-            "moduleContent"
-        );
+        document.createElement("div");
+
+    content.className =
+        "module-content";
+
+
+    windowBox.appendChild(header);
+
+    windowBox.appendChild(content);
+
+    overlay.appendChild(windowBox);
+
+    document.body.appendChild(overlay);
 
 
     switch(module){
 
         case "dashboard":
 
-            renderDashboardModule(
-                content
-            );
+            renderDashboardModule(content);
 
             break;
 
 
         case "categories":
 
-            renderCategoryModule(
-                content
-            );
+            renderCategoryModule(content);
 
             break;
 
 
         case "providers":
 
-            renderProviderModule(
-                content
-            );
+            renderProviderModule(content);
 
             break;
 
 
         case "programs":
 
-            renderProgramModule(
-                content
-            );
+            renderProgramModule(content);
 
             break;
 
 
         case "promoters":
 
-            renderPromoterModule(
-                content
-            );
+            renderPromoterModule(content);
 
             break;
 
 
         case "tracking":
 
-            renderTrackingModule(
-                content
-            );
+            renderTrackingModule(content);
 
             break;
 
 
         case "orders":
 
-            renderOrdersModule(
-                content
-            );
+            renderOrdersModule(content);
 
             break;
 
 
         case "payments":
 
-            renderCommissionModule(
-                content
-            );
+            renderCommissionModule(content);
 
             break;
 
 
         case "reports":
 
-            renderReportsModule(
-                content
-            );
+            renderReportsModule(content);
 
             break;
 
@@ -1119,7 +540,7 @@ function openModule(module){
                 <div class="empty-module">
 
                     <h3>
-                        ${escapeHTML(title)}
+                        ${escapeHTML(module)}
                     </h3>
 
                     <p>
@@ -1136,27 +557,6 @@ function openModule(module){
 
 
 /* =========================================================
-   CLOSE MODULE
-========================================================= */
-
-function closeModule(){
-
-    const panel =
-        document.getElementById(
-            "modulePanel"
-        );
-
-
-    if(panel){
-
-        panel.remove();
-
-    }
-
-}
-
-
-/* =========================================================
    DASHBOARD MODULE
 ========================================================= */
 
@@ -1164,26 +564,11 @@ function renderDashboardModule(container){
 
     container.innerHTML = `
 
-        <div class="dashboard-module-title">
-
-            <h2>
-                JANJUA Marketing Control Center
-            </h2>
-
-            <p>
-                Complete affiliate marketing management system
-            </p>
-
-        </div>
-
-
         <div class="report-grid">
 
             <div class="report-card">
 
-                <h3>
-                    Providers
-                </h3>
+                <h3>Providers</h3>
 
                 <strong>
                     ${data.providers.length}
@@ -1194,9 +579,7 @@ function renderDashboardModule(container){
 
             <div class="report-card">
 
-                <h3>
-                    Programs
-                </h3>
+                <h3>Programs</h3>
 
                 <strong>
                     ${data.programs.length}
@@ -1207,9 +590,7 @@ function renderDashboardModule(container){
 
             <div class="report-card">
 
-                <h3>
-                    Promoters
-                </h3>
+                <h3>Promoters</h3>
 
                 <strong>
                     ${data.promoters.length}
@@ -1220,22 +601,7 @@ function renderDashboardModule(container){
 
             <div class="report-card">
 
-                <h3>
-                    Assignments
-                </h3>
-
-                <strong>
-                    ${data.assignments.length}
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
-                    Tracking Links
-                </h3>
+                <h3>Tracking Links</h3>
 
                 <strong>
                     ${data.trackingLinks.length}
@@ -1246,9 +612,18 @@ function renderDashboardModule(container){
 
             <div class="report-card">
 
-                <h3>
-                    Total Clicks
-                </h3>
+                <h3>Social Media Links</h3>
+
+                <strong>
+                    ${data.socialLinks.length}
+                </strong>
+
+            </div>
+
+
+            <div class="report-card">
+
+                <h3>Total Clicks</h3>
 
                 <strong>
                     ${data.clicks.length}
@@ -1259,25 +634,10 @@ function renderDashboardModule(container){
 
             <div class="report-card">
 
-                <h3>
-                    Total Orders
-                </h3>
+                <h3>Total Orders</h3>
 
                 <strong>
                     ${data.orders.length}
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
-                    Commissions
-                </h3>
-
-                <strong>
-                    ${data.commissions.length}
                 </strong>
 
             </div>
@@ -1288,25 +648,19 @@ function renderDashboardModule(container){
         <div class="form-card">
 
             <h3>
-                Marketing Flow
+                JANJUA Marketing Control Center
             </h3>
 
             <p>
 
-                Provider
-                →
-                Program
-                →
-                Promoter
-                →
-                Tracking Link
-                →
-                Click
-                →
-                Order
-                →
-                Commission
-                →
+                Provider →
+                Program →
+                Promoter →
+                Tracking →
+                Social Media →
+                Click →
+                Order →
+                Commission →
                 Payment
 
             </p>
@@ -1314,6 +668,297 @@ function renderDashboardModule(container){
         </div>
 
     `;
+
+}
+
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+function renderCategories(){
+
+    const container =
+        document.getElementById(
+            "categoryList"
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    const visibleCategories =
+        data.categories.filter(
+            x => x.visible !== false
+        );
+
+
+    container.innerHTML =
+        visibleCategories.map(
+            category => `
+
+                <div class="category-card">
+
+                    <div class="category-title">
+
+                        ${escapeHTML(
+                            category.name
+                        )}
+
+                    </div>
+
+                    <div class="category-actions">
+
+                        <button
+                            onclick="editCategory('${category.id}')"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            onclick="toggleCategory('${category.id}')"
+                        >
+                            Hide
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+function renderCategoryModule(container){
+
+    container.innerHTML = `
+
+        <div class="module-toolbar">
+
+            <button
+                onclick="addCategory()"
+            >
+                + Add Category
+            </button>
+
+        </div>
+
+
+        <div id="moduleCategories"></div>
+
+    `;
+
+    renderModuleCategories();
+
+}
+
+
+function renderModuleCategories(){
+
+    const container =
+        document.getElementById(
+            "moduleCategories"
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        data.categories.map(
+            category => `
+
+                <div class="data-card">
+
+                    <div>
+
+                        <h3>
+                            ${escapeHTML(
+                                category.name
+                            )}
+                        </h3>
+
+                        <p>
+
+                            Status:
+                            ${
+                                category.visible
+                                ? "Visible"
+                                : "Hidden"
+                            }
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-actions">
+
+                        <button
+                            onclick="editCategory('${category.id}')"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            onclick="toggleCategory('${category.id}')"
+                        >
+                            ${
+                                category.visible
+                                ? "Hide"
+                                : "Show"
+                            }
+                        </button>
+
+                        <button
+                            onclick="deleteCategory('${category.id}')"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+function addCategory(){
+
+    const name =
+        prompt(
+            "Enter category name:"
+        );
+
+    if(!name){
+
+        return;
+
+    }
+
+
+    data.categories.push({
+
+        id: makeId("CAT"),
+
+        name: name.trim(),
+
+        visible: true
+
+    });
+
+
+    saveData();
+
+    renderCategories();
+
+    renderModuleCategories();
+
+}
+
+
+function editCategory(id){
+
+    const item =
+        data.categories.find(
+            x => x.id === id
+        );
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    const name =
+        prompt(
+            "Edit category:",
+            item.name
+        );
+
+    if(!name){
+
+        return;
+
+    }
+
+
+    item.name =
+        name.trim();
+
+
+    saveData();
+
+    renderCategories();
+
+    renderModuleCategories();
+
+}
+
+
+function toggleCategory(id){
+
+    const item =
+        data.categories.find(
+            x => x.id === id
+        );
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    item.visible =
+        !item.visible;
+
+
+    saveData();
+
+    renderCategories();
+
+    renderModuleCategories();
+
+}
+
+
+function deleteCategory(id){
+
+    if(
+        !confirm(
+            "Delete this category?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    data.categories =
+        data.categories.filter(
+            x => x.id !== id
+        );
+
+
+    saveData();
+
+    renderCategories();
+
+    renderModuleCategories();
 
 }
 
@@ -1329,11 +974,9 @@ function renderProviderModule(container){
         <div class="module-toolbar">
 
             <button
-                class="primary-btn"
-                onclick="showProviderForm()">
-
+                onclick="showProviderForm()"
+            >
                 + Add Provider / Company
-
             </button>
 
         </div>
@@ -1341,11 +984,7 @@ function renderProviderModule(container){
 
         <div id="providerFormArea"></div>
 
-
-        <div
-            id="providerList"
-            class="data-list">
-        </div>
+        <div id="providersList"></div>
 
     `;
 
@@ -1357,22 +996,21 @@ function renderProviderModule(container){
 
 function renderProviders(){
 
-    const list =
+    const container =
         document.getElementById(
-            "providerList"
+            "providersList"
         );
 
+    if(!container){
 
-    if(!list){
         return;
+
     }
 
 
-    if(
-        data.providers.length === 0
-    ){
+    if(!data.providers.length){
 
-        list.innerHTML = `
+        container.innerHTML = `
 
             <div class="empty-module">
 
@@ -1381,7 +1019,7 @@ function renderProviders(){
                 </h3>
 
                 <p>
-                    Add your first company/provider.
+                    Add your first affiliate company.
                 </p>
 
             </div>
@@ -1393,332 +1031,245 @@ function renderProviders(){
     }
 
 
-    list.innerHTML =
+    container.innerHTML =
         data.providers.map(
             provider => `
 
-            <div class="data-card">
+                <div class="data-card">
 
-                <div>
+                    <div>
 
-                    <h3>
-                        ${escapeHTML(
-                            provider.name
-                        )}
-                    </h3>
+                        <h3>
+                            ${escapeHTML(
+                                provider.name
+                            )}
+                        </h3>
 
+                        <p>
+                            Website:
+                            ${escapeHTML(
+                                provider.website || "-"
+                            )}
+                        </p>
 
-                    <p>
-                        Website:
-                        ${escapeHTML(
-                            provider.website || "-"
-                        )}
-                    </p>
+                        <p>
+                            Affiliate ID:
+                            ${escapeHTML(
+                                provider.accountId || "-"
+                            )}
+                        </p>
 
+                        <p>
+                            SubID:
+                            ${provider.subIdSupport ? "Yes" : "No"}
+                            |
+                            ClickID:
+                            ${provider.clickIdSupport ? "Yes" : "No"}
+                        </p>
 
-                    <p>
-                        Affiliate ID:
-                        ${escapeHTML(
-                            provider.affiliateId || "-"
-                        )}
-                    </p>
+                        <p>
+                            API:
+                            ${provider.api ? "Yes" : "No"}
+                            |
+                            Webhook:
+                            ${provider.webhook ? "Yes" : "No"}
+                        </p>
 
+                        <p>
+                            Status:
+                            ${
+                                provider.visible
+                                ? "Active"
+                                : "Hidden"
+                            }
+                        </p>
 
-                    <p>
-
-                        SubID:
-                        ${escapeHTML(
-                            provider.subId || "No"
-                        )}
-
-                        |
-
-                        ClickID:
-                        ${escapeHTML(
-                            provider.clickId || "No"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        API:
-                        ${provider.api
-                            ? "YES"
-                            : "NO"}
-
-                        |
-
-                        Webhook:
-                        ${provider.webhook
-                            ? "YES"
-                            : "NO"}
-
-                    </p>
+                    </div>
 
 
-                    <p>
+                    <div class="card-actions">
 
-                        Status:
+                        <button
+                            onclick="editProvider('${provider.id}')"
+                        >
+                            Edit
+                        </button>
 
-                        <strong>
+                        <button
+                            onclick="toggleProvider('${provider.id}')"
+                        >
+                            ${
+                                provider.visible
+                                ? "Hide"
+                                : "Show"
+                            }
+                        </button>
 
-                            ${provider.visible
-                                ? "ACTIVE"
-                                : "HIDDEN"}
+                        <button
+                            onclick="deleteProvider('${provider.id}')"
+                        >
+                            Delete
+                        </button>
 
-                        </strong>
-
-                    </p>
-
-                </div>
-
-
-                <div class="data-card-actions">
-
-                    <button
-                        onclick="editProvider('${provider.id}')">
-
-                        Edit
-
-                    </button>
-
-
-                    <button
-                        onclick="toggleProvider('${provider.id}')">
-
-                        ${provider.visible
-                            ? "Hide"
-                            : "Show"}
-
-                    </button>
-
-
-                    <button
-                        class="danger-btn"
-                        onclick="deleteProvider('${provider.id}')">
-
-                        Delete
-
-                    </button>
+                    </div>
 
                 </div>
 
-            </div>
-
-        `
+            `
         ).join("");
 
 }
 
 
-function showProviderForm(id=null){
+function showProviderForm(id = ""){
 
-    const area =
+    const container =
         document.getElementById(
             "providerFormArea"
         );
 
+    if(!container){
 
-    if(!area){
         return;
+
     }
 
 
-    const provider =
-        id
-        ? data.providers.find(
-            p => p.id === id
-        )
-        : null;
+    const item =
+        data.providers.find(
+            x => x.id === id
+        );
 
 
-    area.innerHTML = `
+    container.innerHTML = `
 
         <div class="form-card">
 
             <h3>
-
-                ${provider
+                ${
+                    item
                     ? "Edit Provider"
-                    : "Add Provider"}
-
+                    : "Add Provider / Company"
+                }
             </h3>
 
 
-            <div class="form-grid">
-
-                <label>
-
-                    Company / Provider Name
-
-                    <input
-                        id="providerName"
-                        value="${escapeHTML(
-                            provider?.name || ""
-                        )}">
-
-                </label>
+            <input
+                id="providerName"
+                placeholder="Company / Provider Name"
+                value="${escapeHTML(
+                    item?.name || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Website
-
-                    <input
-                        id="providerWebsite"
-                        value="${escapeHTML(
-                            provider?.website || ""
-                        )}">
-
-                </label>
+            <input
+                id="providerWebsite"
+                placeholder="Website"
+                value="${escapeHTML(
+                    item?.website || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Original Affiliate Link
-
-                    <input
-                        id="providerAffiliateLink"
-                        value="${escapeHTML(
-                            provider?.affiliateLink || ""
-                        )}">
-
-                </label>
+            <input
+                id="providerAffiliateLink"
+                placeholder="Original Affiliate Link"
+                value="${escapeHTML(
+                    item?.affiliateLink || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Affiliate / Account ID
-
-                    <input
-                        id="providerAffiliateId"
-                        value="${escapeHTML(
-                            provider?.affiliateId || ""
-                        )}">
-
-                </label>
+            <input
+                id="providerAccountId"
+                placeholder="Affiliate / Account ID"
+                value="${escapeHTML(
+                    item?.accountId || ""
+                )}"
+            />
 
 
-                <label>
+            <label>
 
-                    SubID Support
+                <input
+                    type="checkbox"
+                    id="providerSubId"
+                    ${
+                        item?.subIdSupport
+                        ? "checked"
+                        : ""
+                    }
+                >
 
-                    <select id="providerSubId">
+                SubID Support
 
-                        <option value="No">
-                            No
-                        </option>
-
-                        <option
-                            value="Yes"
-                            ${provider?.subId === "Yes"
-                                ? "selected"
-                                : ""}>
-
-                            Yes
-
-                        </option>
-
-                    </select>
-
-                </label>
+            </label>
 
 
-                <label>
+            <label>
 
-                    ClickID Support
+                <input
+                    type="checkbox"
+                    id="providerClickId"
+                    ${
+                        item?.clickIdSupport
+                        ? "checked"
+                        : ""
+                    }
+                >
 
-                    <select id="providerClickId">
+                ClickID Support
 
-                        <option value="No">
-                            No
-                        </option>
-
-                        <option
-                            value="Yes"
-                            ${provider?.clickId === "Yes"
-                                ? "selected"
-                                : ""}>
-
-                            Yes
-
-                        </option>
-
-                    </select>
-
-                </label>
+            </label>
 
 
-                <label>
+            <label>
 
-                    API Available
+                <input
+                    type="checkbox"
+                    id="providerAPI"
+                    ${
+                        item?.api
+                        ? "checked"
+                        : ""
+                    }
+                >
 
-                    <select id="providerApi">
+                API Support
 
-                        <option value="No">
-                            No
-                        </option>
-
-                        <option
-                            value="Yes"
-                            ${provider?.api
-                                ? "selected"
-                                : ""}>
-
-                            Yes
-
-                        </option>
-
-                    </select>
-
-                </label>
+            </label>
 
 
-                <label>
+            <label>
 
-                    Webhook Available
+                <input
+                    type="checkbox"
+                    id="providerWebhook"
+                    ${
+                        item?.webhook
+                        ? "checked"
+                        : ""
+                    }
+                >
 
-                    <select id="providerWebhook">
+                Webhook Support
 
-                        <option value="No">
-                            No
-                        </option>
-
-                        <option
-                            value="Yes"
-                            ${provider?.webhook
-                                ? "selected"
-                                : ""}>
-
-                            Yes
-
-                        </option>
-
-                    </select>
-
-                </label>
-
-            </div>
+            </label>
 
 
             <div class="form-actions">
 
                 <button
-                    class="primary-btn"
-                    onclick="saveProvider('${id || ""}')">
-
-                    Save Provider
-
+                    onclick="saveProvider('${id}')"
+                >
+                    Save
                 </button>
 
-
                 <button
-                    onclick="cancelProviderForm()">
-
+                    onclick="cancelProviderForm()"
+                >
                     Cancel
-
                 </button>
 
             </div>
@@ -1741,7 +1292,7 @@ function saveProvider(id){
     if(!name){
 
         alert(
-            "Please enter Provider Name."
+            "Provider name is required."
         );
 
         return;
@@ -1749,9 +1300,9 @@ function saveProvider(id){
     }
 
 
-    const providerData = {
+    const item = {
 
-        name:name,
+        name,
 
         website:
             document.getElementById(
@@ -1763,48 +1314,55 @@ function saveProvider(id){
                 "providerAffiliateLink"
             ).value.trim(),
 
-        affiliateId:
+        accountId:
             document.getElementById(
-                "providerAffiliateId"
+                "providerAccountId"
             ).value.trim(),
 
-        subId:
+        subIdSupport:
             document.getElementById(
                 "providerSubId"
-            ).value,
+            ).checked,
 
-        clickId:
+        clickIdSupport:
             document.getElementById(
                 "providerClickId"
-            ).value,
+            ).checked,
 
         api:
             document.getElementById(
-                "providerApi"
-            ).value === "Yes",
+                "providerAPI"
+            ).checked,
 
         webhook:
             document.getElementById(
                 "providerWebhook"
-            ).value === "Yes"
+            ).checked,
+
+        visible: true,
+
+        createdAt:
+            new Date().toISOString()
 
     };
 
 
     if(id){
 
-        const provider =
-            data.providers.find(
-                p => p.id === id
+        const index =
+            data.providers.findIndex(
+                x => x.id === id
             );
 
+        if(index !== -1){
 
-        if(provider){
+            data.providers[index] = {
 
-            Object.assign(
-                provider,
-                providerData
-            );
+                ...data.providers[index],
+
+                ...item
+
+            };
 
         }
 
@@ -1812,14 +1370,9 @@ function saveProvider(id){
 
         data.providers.push({
 
-            id:makeId("provider"),
+            id: makeId("PROVIDER"),
 
-            ...providerData,
-
-            visible:true,
-
-            createdAt:
-                new Date().toISOString()
+            ...item
 
         });
 
@@ -1831,11 +1384,6 @@ function saveProvider(id){
     renderProviders();
 
     cancelProviderForm();
-
-
-    alert(
-        "Provider saved successfully."
-    );
 
 }
 
@@ -1849,19 +1397,20 @@ function editProvider(id){
 
 function toggleProvider(id){
 
-    const provider =
+    const item =
         data.providers.find(
-            p => p.id === id
+            x => x.id === id
         );
 
+    if(!item){
 
-    if(!provider){
         return;
+
     }
 
 
-    provider.visible =
-        !provider.visible;
+    item.visible =
+        !item.visible;
 
 
     saveData();
@@ -1875,7 +1424,7 @@ function deleteProvider(id){
 
     if(
         !confirm(
-            "Delete this Provider?"
+            "Delete this provider?"
         )
     ){
 
@@ -1886,13 +1435,7 @@ function deleteProvider(id){
 
     data.providers =
         data.providers.filter(
-            p => p.id !== id
-        );
-
-
-    data.programs =
-        data.programs.filter(
-            p => p.providerId !== id
+            x => x.id !== id
         );
 
 
@@ -1905,15 +1448,14 @@ function deleteProvider(id){
 
 function cancelProviderForm(){
 
-    const area =
+    const container =
         document.getElementById(
             "providerFormArea"
         );
 
+    if(container){
 
-    if(area){
-
-        area.innerHTML = "";
+        container.innerHTML = "";
 
     }
 
@@ -1931,11 +1473,9 @@ function renderProgramModule(container){
         <div class="module-toolbar">
 
             <button
-                class="primary-btn"
-                onclick="showProgramForm()">
-
+                onclick="showProgramForm()"
+            >
                 + Add Program / Offer
-
             </button>
 
         </div>
@@ -1943,11 +1483,7 @@ function renderProgramModule(container){
 
         <div id="programFormArea"></div>
 
-
-        <div
-            id="programList"
-            class="data-list">
-        </div>
+        <div id="programsList"></div>
 
     `;
 
@@ -1959,31 +1495,30 @@ function renderProgramModule(container){
 
 function renderPrograms(){
 
-    const list =
+    const container =
         document.getElementById(
-            "programList"
+            "programsList"
         );
 
+    if(!container){
 
-    if(!list){
         return;
+
     }
 
 
-    if(
-        data.programs.length === 0
-    ){
+    if(!data.programs.length){
 
-        list.innerHTML = `
+        container.innerHTML = `
 
             <div class="empty-module">
 
                 <h3>
-                    No Programs Yet
+                    No Programs Added
                 </h3>
 
                 <p>
-                    Add a Program / Offer.
+                    Add affiliate offers here.
                 </p>
 
             </div>
@@ -1995,288 +1530,226 @@ function renderPrograms(){
     }
 
 
-    list.innerHTML =
+    container.innerHTML =
         data.programs.map(
             program => `
 
-            <div class="data-card">
+                <div class="data-card">
 
-                <div>
+                    <div>
 
-                    <h3>
-                        ${escapeHTML(
-                            program.name
-                        )}
-                    </h3>
+                        <h3>
+                            ${escapeHTML(
+                                program.name
+                            )}
+                        </h3>
 
+                        <p>
+                            Provider:
+                            ${escapeHTML(
+                                getProviderName(
+                                    program.providerId
+                                )
+                            )}
+                        </p>
 
-                    <p>
+                        <p>
+                            Category:
+                            ${escapeHTML(
+                                program.category || "-"
+                            )}
+                        </p>
 
-                        Provider:
+                        <p>
+                            Commission:
+                            ${escapeHTML(
+                                program.commission || "0"
+                            )}%
+                        </p>
 
-                        ${escapeHTML(
-                            getProviderName(
-                                program.providerId
-                            )
-                        )}
+                        <p>
+                            Cookie:
+                            ${escapeHTML(
+                                program.cookieDays || "0"
+                            )} days
+                        </p>
 
-                    </p>
-
-
-                    <p>
-
-                        Category:
-
-                        ${escapeHTML(
-                            program.category || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Commission:
-
-                        ${escapeHTML(
-                            program.commission || "0"
-                        )}%
-
-                    </p>
+                    </div>
 
 
-                    <p>
+                    <div class="card-actions">
 
-                        Cookie:
+                        <button
+                            onclick="editProgram('${program.id}')"
+                        >
+                            Edit
+                        </button>
 
-                        ${escapeHTML(
-                            program.cookieDays || "0"
-                        )}
+                        <button
+                            onclick="deleteProgram('${program.id}')"
+                        >
+                            Delete
+                        </button>
 
-                        days
-
-                    </p>
-
-                </div>
-
-
-                <div class="data-card-actions">
-
-                    <button
-                        onclick="editProgram('${program.id}')">
-
-                        Edit
-
-                    </button>
-
-
-                    <button
-                        class="danger-btn"
-                        onclick="deleteProgram('${program.id}')">
-
-                        Delete
-
-                    </button>
+                    </div>
 
                 </div>
 
-            </div>
-
-        `
+            `
         ).join("");
 
 }
 
 
-function showProgramForm(id=null){
+function showProgramForm(id = ""){
 
-    const area =
+    const container =
         document.getElementById(
             "programFormArea"
         );
 
+    if(!container){
 
-    if(!area){
         return;
+
     }
 
 
-    const program =
-        id
-        ? data.programs.find(
-            p => p.id === id
-        )
-        : null;
+    const item =
+        data.programs.find(
+            x => x.id === id
+        );
 
 
-    area.innerHTML = `
+    const providerOptions =
+        data.providers.map(
+            provider => `
+
+                <option
+                    value="${provider.id}"
+                    ${
+                        item?.providerId === provider.id
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    ${escapeHTML(
+                        provider.name
+                    )}
+                </option>
+
+            `
+        ).join("");
+
+
+    const categoryOptions =
+        data.categories.map(
+            category => `
+
+                <option
+                    value="${escapeHTML(
+                        category.name
+                    )}"
+                    ${
+                        item?.category === category.name
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    ${escapeHTML(
+                        category.name
+                    )}
+                </option>
+
+            `
+        ).join("");
+
+
+    container.innerHTML = `
 
         <div class="form-card">
 
             <h3>
-
-                ${program
+                ${
+                    item
                     ? "Edit Program"
-                    : "Add Program"}
-
+                    : "Add Program / Offer"
+                }
             </h3>
 
 
-            <div class="form-grid">
-
-                <label>
-
-                    Program Name
-
-                    <input
-                        id="programName"
-                        value="${escapeHTML(
-                            program?.name || ""
-                        )}">
-
-                </label>
+            <input
+                id="programName"
+                placeholder="Program / Offer Name"
+                value="${escapeHTML(
+                    item?.name || ""
+                )}"
+            />
 
 
-                <label>
+            <select id="programProvider">
 
-                    Provider / Company
+                <option value="">
+                    Select Provider
+                </option>
 
-                    <select id="programProvider">
+                ${providerOptions}
 
-                        <option value="">
-                            Select Provider
-                        </option>
-
-                        ${data.providers
-                            .filter(
-                                p => p.visible
-                            )
-                            .map(
-                                p => `
-
-                                <option
-                                    value="${p.id}"
-                                    ${program?.providerId === p.id
-                                        ? "selected"
-                                        : ""}>
-
-                                    ${escapeHTML(
-                                        p.name
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
+            </select>
 
 
-                <label>
+            <select id="programCategory">
 
-                    Category
+                <option value="">
+                    Select Category
+                </option>
 
-                    <select id="programCategory">
+                ${categoryOptions}
 
-                        <option value="">
-                            Select Category
-                        </option>
-
-                        ${data.categories
-                            .filter(
-                                c => c.visible
-                            )
-                            .map(
-                                c => `
-
-                                <option
-                                    value="${escapeHTML(
-                                        c.name
-                                    )}"
-                                    ${program?.category === c.name
-                                        ? "selected"
-                                        : ""}>
-
-                                    ${escapeHTML(
-                                        c.name
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
+            </select>
 
 
-                <label>
-
-                    Original Affiliate Link
-
-                    <input
-                        id="programAffiliateLink"
-                        value="${escapeHTML(
-                            program?.affiliateLink || ""
-                        )}">
-
-                </label>
+            <input
+                id="programAffiliateLink"
+                placeholder="Original Affiliate Link"
+                value="${escapeHTML(
+                    item?.affiliateLink || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Commission %
-
-                    <input
-                        id="programCommission"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value="${escapeHTML(
-                            program?.commission || ""
-                        )}">
-
-                </label>
+            <input
+                id="programCommission"
+                type="number"
+                placeholder="Commission %"
+                value="${escapeHTML(
+                    item?.commission || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Cookie Days
-
-                    <input
-                        id="programCookie"
-                        type="number"
-                        min="0"
-                        value="${escapeHTML(
-                            program?.cookieDays || ""
-                        )}">
-
-                </label>
-
-            </div>
+            <input
+                id="programCookie"
+                type="number"
+                placeholder="Cookie Days"
+                value="${escapeHTML(
+                    item?.cookieDays || ""
+                )}"
+            />
 
 
             <div class="form-actions">
 
                 <button
-                    class="primary-btn"
-                    onclick="saveProgram('${id || ""}')">
-
-                    Save Program
-
+                    onclick="saveProgram('${id}')"
+                >
+                    Save
                 </button>
 
-
                 <button
-                    onclick="cancelProgramForm()">
-
+                    onclick="document.getElementById('programFormArea').innerHTML=''"
+                >
                     Cancel
-
                 </button>
 
             </div>
@@ -2305,7 +1778,7 @@ function saveProgram(id){
     if(!name){
 
         alert(
-            "Please enter Program Name."
+            "Program name is required."
         );
 
         return;
@@ -2316,7 +1789,7 @@ function saveProgram(id){
     if(!providerId){
 
         alert(
-            "Please select Provider."
+            "Please select a provider."
         );
 
         return;
@@ -2324,11 +1797,11 @@ function saveProgram(id){
     }
 
 
-    const programData = {
+    const item = {
 
-        name:name,
+        name,
 
-        providerId:providerId,
+        providerId,
 
         category:
             document.getElementById(
@@ -2348,25 +1821,30 @@ function saveProgram(id){
         cookieDays:
             document.getElementById(
                 "programCookie"
-            ).value
+            ).value,
+
+        createdAt:
+            new Date().toISOString()
 
     };
 
 
     if(id){
 
-        const program =
-            data.programs.find(
-                p => p.id === id
+        const index =
+            data.programs.findIndex(
+                x => x.id === id
             );
 
+        if(index !== -1){
 
-        if(program){
+            data.programs[index] = {
 
-            Object.assign(
-                program,
-                programData
-            );
+                ...data.programs[index],
+
+                ...item
+
+            };
 
         }
 
@@ -2374,12 +1852,9 @@ function saveProgram(id){
 
         data.programs.push({
 
-            id:makeId("program"),
+            id: makeId("PROGRAM"),
 
-            ...programData,
-
-            createdAt:
-                new Date().toISOString()
+            ...item
 
         });
 
@@ -2390,12 +1865,9 @@ function saveProgram(id){
 
     renderPrograms();
 
-    cancelProgramForm();
-
-
-    alert(
-        "Program saved successfully."
-    );
+    document.getElementById(
+        "programFormArea"
+    ).innerHTML = "";
 
 }
 
@@ -2411,7 +1883,7 @@ function deleteProgram(id){
 
     if(
         !confirm(
-            "Delete this Program?"
+            "Delete this program?"
         )
     ){
 
@@ -2422,42 +1894,13 @@ function deleteProgram(id){
 
     data.programs =
         data.programs.filter(
-            p => p.id !== id
-        );
-
-
-    data.assignments =
-        data.assignments.filter(
-            a => a.programId !== id
-        );
-
-
-    data.trackingLinks =
-        data.trackingLinks.filter(
-            t => t.programId !== id
+            x => x.id !== id
         );
 
 
     saveData();
 
     renderPrograms();
-
-}
-
-
-function cancelProgramForm(){
-
-    const area =
-        document.getElementById(
-            "programFormArea"
-        );
-
-
-    if(area){
-
-        area.innerHTML = "";
-
-    }
 
 }
 
@@ -2473,11 +1916,9 @@ function renderPromoterModule(container){
         <div class="module-toolbar">
 
             <button
-                class="primary-btn"
-                onclick="showPromoterForm()">
-
+                onclick="showPromoterForm()"
+            >
                 + Add Promoter / Worker
-
             </button>
 
         </div>
@@ -2485,11 +1926,7 @@ function renderPromoterModule(container){
 
         <div id="promoterFormArea"></div>
 
-
-        <div
-            id="promoterList"
-            class="data-list">
-        </div>
+        <div id="promotersList"></div>
 
     `;
 
@@ -2501,27 +1938,26 @@ function renderPromoterModule(container){
 
 function renderPromoters(){
 
-    const list =
+    const container =
         document.getElementById(
-            "promoterList"
+            "promotersList"
         );
 
+    if(!container){
 
-    if(!list){
         return;
+
     }
 
 
-    if(
-        data.promoters.length === 0
-    ){
+    if(!data.promoters.length){
 
-        list.innerHTML = `
+        container.innerHTML = `
 
             <div class="empty-module">
 
                 <h3>
-                    No Promoters / Workers
+                    No Promoters Added
                 </h3>
 
                 <p>
@@ -2537,248 +1973,173 @@ function renderPromoters(){
     }
 
 
-    list.innerHTML =
+    container.innerHTML =
         data.promoters.map(
             promoter => `
 
-            <div class="data-card">
+                <div class="data-card">
 
-                <div>
+                    <div>
 
-                    <h3>
-                        ${escapeHTML(
-                            promoter.name
-                        )}
-                    </h3>
+                        <h3>
+                            ${escapeHTML(
+                                promoter.name
+                            )}
+                        </h3>
 
+                        <p>
+                            Phone:
+                            ${escapeHTML(
+                                promoter.phone || "-"
+                            )}
+                        </p>
 
-                    <p>
+                        <p>
+                            Email:
+                            ${escapeHTML(
+                                promoter.email || "-"
+                            )}
+                        </p>
 
-                        Phone:
+                        <p>
+                            Payment:
+                            ${escapeHTML(
+                                promoter.paymentMethod || "-"
+                            )}
+                        </p>
 
-                        ${escapeHTML(
-                            promoter.phone || "-"
-                        )}
+                        <p>
+                            Account:
+                            ${escapeHTML(
+                                promoter.paymentAccount || "-"
+                            )}
+                        </p>
 
-                    </p>
-
-
-                    <p>
-
-                        Email:
-
-                        ${escapeHTML(
-                            promoter.email || "-"
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Payment:
-
-                        ${escapeHTML(
-                            promoter.paymentMethod || "-"
-                        )}
-
-                    </p>
+                    </div>
 
 
-                    <p>
+                    <div class="card-actions">
 
-                        Account:
+                        <button
+                            onclick="editPromoter('${promoter.id}')"
+                        >
+                            Edit
+                        </button>
 
-                        ${escapeHTML(
-                            promoter.paymentAccount || "-"
-                        )}
+                        <button
+                            onclick="deletePromoter('${promoter.id}')"
+                        >
+                            Delete
+                        </button>
 
-                    </p>
-
-                </div>
-
-
-                <div class="data-card-actions">
-
-                    <button
-                        onclick="editPromoter('${promoter.id}')">
-
-                        Edit
-
-                    </button>
-
-
-                    <button
-                        class="danger-btn"
-                        onclick="deletePromoter('${promoter.id}')">
-
-                        Delete
-
-                    </button>
+                    </div>
 
                 </div>
 
-            </div>
-
-        `
+            `
         ).join("");
 
 }
 
 
-function showPromoterForm(id=null){
+function showPromoterForm(id = ""){
 
-    const area =
+    const container =
         document.getElementById(
             "promoterFormArea"
         );
 
+    if(!container){
 
-    if(!area){
         return;
+
     }
 
 
-    const promoter =
-        id
-        ? data.promoters.find(
-            p => p.id === id
-        )
-        : null;
+    const item =
+        data.promoters.find(
+            x => x.id === id
+        );
 
 
-    area.innerHTML = `
+    container.innerHTML = `
 
         <div class="form-card">
 
             <h3>
-
-                ${promoter
+                ${
+                    item
                     ? "Edit Promoter"
-                    : "Add Promoter / Worker"}
-
+                    : "Add Promoter / Worker"
+                }
             </h3>
 
 
-            <div class="form-grid">
-
-                <label>
-
-                    Full Name
-
-                    <input
-                        id="promoterName"
-                        value="${escapeHTML(
-                            promoter?.name || ""
-                        )}">
-
-                </label>
+            <input
+                id="promoterName"
+                placeholder="Full Name"
+                value="${escapeHTML(
+                    item?.name || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Phone
-
-                    <input
-                        id="promoterPhone"
-                        value="${escapeHTML(
-                            promoter?.phone || ""
-                        )}">
-
-                </label>
+            <input
+                id="promoterPhone"
+                placeholder="Phone"
+                value="${escapeHTML(
+                    item?.phone || ""
+                )}"
+            />
 
 
-                <label>
-
-                    Email
-
-                    <input
-                        id="promoterEmail"
-                        value="${escapeHTML(
-                            promoter?.email || ""
-                        )}">
-
-                </label>
+            <input
+                id="promoterEmail"
+                placeholder="Email"
+                value="${escapeHTML(
+                    item?.email || ""
+                )}"
+            />
 
 
-                <label>
+            <select id="promoterPaymentMethod">
 
-                    Payment Method
+                <option value="Bank">
+                    Bank
+                </option>
 
-                    <select
-                        id="promoterPayment">
+                <option value="JazzCash">
+                    JazzCash
+                </option>
 
-                        <option value="">
-                            Select
-                        </option>
+                <option value="Easypaisa">
+                    Easypaisa
+                </option>
 
-                        <option
-                            value="Bank"
-                            ${promoter?.paymentMethod === "Bank"
-                                ? "selected"
-                                : ""}>
-
-                            Bank
-
-                        </option>
-
-                        <option
-                            value="JazzCash"
-                            ${promoter?.paymentMethod === "JazzCash"
-                                ? "selected"
-                                : ""}>
-
-                            JazzCash
-
-                        </option>
-
-                        <option
-                            value="Easypaisa"
-                            ${promoter?.paymentMethod === "Easypaisa"
-                                ? "selected"
-                                : ""}>
-
-                            Easypaisa
-
-                        </option>
-
-                    </select>
-
-                </label>
+            </select>
 
 
-                <label>
-
-                    Payment Account
-
-                    <input
-                        id="promoterPaymentAccount"
-                        value="${escapeHTML(
-                            promoter?.paymentAccount || ""
-                        )}"
-                        placeholder="Account / Number">
-
-                </label>
-
-            </div>
+            <input
+                id="promoterPaymentAccount"
+                placeholder="Payment Account"
+                value="${escapeHTML(
+                    item?.paymentAccount || ""
+                )}"
+            />
 
 
             <div class="form-actions">
 
                 <button
-                    class="primary-btn"
-                    onclick="savePromoter('${id || ""}')">
-
-                    Save Promoter
-
+                    onclick="savePromoter('${id}')"
+                >
+                    Save
                 </button>
 
-
                 <button
-                    onclick="cancelPromoterForm()">
-
+                    onclick="cancelPromoterForm()"
+                >
                     Cancel
-
                 </button>
 
             </div>
@@ -2801,7 +2162,7 @@ function savePromoter(id){
     if(!name){
 
         alert(
-            "Please enter Promoter Name."
+            "Name is required."
         );
 
         return;
@@ -2809,9 +2170,9 @@ function savePromoter(id){
     }
 
 
-    const promoterData = {
+    const item = {
 
-        name:name,
+        name,
 
         phone:
             document.getElementById(
@@ -2825,31 +2186,36 @@ function savePromoter(id){
 
         paymentMethod:
             document.getElementById(
-                "promoterPayment"
+                "promoterPaymentMethod"
             ).value,
 
         paymentAccount:
             document.getElementById(
                 "promoterPaymentAccount"
-            ).value.trim()
+            ).value.trim(),
+
+        createdAt:
+            new Date().toISOString()
 
     };
 
 
     if(id){
 
-        const promoter =
-            data.promoters.find(
-                p => p.id === id
+        const index =
+            data.promoters.findIndex(
+                x => x.id === id
             );
 
+        if(index !== -1){
 
-        if(promoter){
+            data.promoters[index] = {
 
-            Object.assign(
-                promoter,
-                promoterData
-            );
+                ...data.promoters[index],
+
+                ...item
+
+            };
 
         }
 
@@ -2857,12 +2223,9 @@ function savePromoter(id){
 
         data.promoters.push({
 
-            id:makeId("promoter"),
+            id: makeId("PROMOTER"),
 
-            ...promoterData,
-
-            createdAt:
-                new Date().toISOString()
+            ...item
 
         });
 
@@ -2874,11 +2237,6 @@ function savePromoter(id){
     renderPromoters();
 
     cancelPromoterForm();
-
-
-    alert(
-        "Promoter saved successfully."
-    );
 
 }
 
@@ -2894,7 +2252,7 @@ function deletePromoter(id){
 
     if(
         !confirm(
-            "Delete this Promoter?"
+            "Delete this promoter and related tracking links?"
         )
     ){
 
@@ -2905,19 +2263,19 @@ function deletePromoter(id){
 
     data.promoters =
         data.promoters.filter(
-            p => p.id !== id
+            x => x.id !== id
         );
 
 
     data.assignments =
         data.assignments.filter(
-            a => a.promoterId !== id
+            x => x.promoterId !== id
         );
 
 
     data.trackingLinks =
         data.trackingLinks.filter(
-            t => t.promoterId !== id
+            x => x.promoterId !== id
         );
 
 
@@ -2930,15 +2288,14 @@ function deletePromoter(id){
 
 function cancelPromoterForm(){
 
-    const area =
+    const container =
         document.getElementById(
             "promoterFormArea"
         );
 
+    if(container){
 
-    if(area){
-
-        area.innerHTML = "";
+        container.innerHTML = "";
 
     }
 
@@ -2946,7 +2303,7 @@ function cancelPromoterForm(){
 
 
 /* =========================================================
-   ASSIGNMENT + TRACKING
+   TRACKING MODULE
 ========================================================= */
 
 function renderTrackingModule(container){
@@ -2956,11 +2313,15 @@ function renderTrackingModule(container){
         <div class="module-toolbar">
 
             <button
-                class="primary-btn"
-                onclick="showAssignmentForm()">
+                onclick="showAssignmentForm()"
+            >
+                + Assign Program to Promoter
+            </button>
 
-                + Assign Program / Create Link
-
+            <button
+                onclick="showSocialLinkForm()"
+            >
+                + Social Media Link
             </button>
 
         </div>
@@ -2969,151 +2330,140 @@ function renderTrackingModule(container){
         <div id="assignmentFormArea"></div>
 
 
-        <div
-            id="trackingList"
-            class="data-list">
+        <div id="trackingLinksArea"></div>
+
+
+        <hr>
+
+
+        <div class="form-card">
+
+            <h2>
+                🔗 Social Media Links
+            </h2>
+
+            <p>
+                Admin-generated links for
+                Facebook, Instagram, TikTok
+                and WhatsApp.
+            </p>
+
+            <p>
+                🔒 Original Affiliate Links remain
+                inside Admin data.
+            </p>
+
         </div>
+
+
+        <div id="socialLinkFormArea"></div>
+
+
+        <div id="socialLinksArea"></div>
 
     `;
 
 
     renderTrackingLinks();
 
+    renderSocialMediaLinks();
+
 }
 
 
+/* =========================================================
+   PROMOTER ASSIGNMENT
+========================================================= */
+
 function showAssignmentForm(){
 
-    const area =
+    const container =
         document.getElementById(
             "assignmentFormArea"
         );
 
-
-    if(!area){
-        return;
-    }
-
-
-    if(
-        data.promoters.length === 0
-    ){
-
-        alert(
-            "First add a Promoter / Worker."
-        );
+    if(!container){
 
         return;
 
     }
 
 
-    if(
-        data.programs.length === 0
-    ){
+    const promoterOptions =
+        data.promoters.map(
+            promoter => `
 
-        alert(
-            "First add a Program / Offer."
-        );
+                <option value="${promoter.id}">
 
-        return;
+                    ${escapeHTML(
+                        promoter.name
+                    )}
 
-    }
+                </option>
+
+            `
+        ).join("");
 
 
-    area.innerHTML = `
+    const programOptions =
+        data.programs.map(
+            program => `
+
+                <option value="${program.id}">
+
+                    ${escapeHTML(
+                        program.name
+                    )}
+
+                </option>
+
+            `
+        ).join("");
+
+
+    container.innerHTML = `
 
         <div class="form-card">
 
             <h3>
-                Assign Program & Create Tracking Link
+                Assign Program to Promoter
             </h3>
 
 
-            <div class="form-grid">
+            <select id="assignmentPromoter">
 
-                <label>
+                <option value="">
+                    Select Promoter
+                </option>
 
-                    Promoter / Worker
+                ${promoterOptions}
 
-                    <select id="assignPromoter">
-
-                        <option value="">
-                            Select Promoter
-                        </option>
-
-                        ${data.promoters
-                            .map(
-                                p => `
-
-                                <option
-                                    value="${p.id}">
-
-                                    ${escapeHTML(
-                                        p.name
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
+            </select>
 
 
-                <label>
+            <select id="assignmentProgram">
 
-                    Program / Offer
+                <option value="">
+                    Select Program
+                </option>
 
-                    <select id="assignProgram">
+                ${programOptions}
 
-                        <option value="">
-                            Select Program
-                        </option>
-
-                        ${data.programs
-                            .map(
-                                p => `
-
-                                <option
-                                    value="${p.id}">
-
-                                    ${escapeHTML(
-                                        p.name
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
-
-            </div>
+            </select>
 
 
             <div class="form-actions">
 
                 <button
-                    class="primary-btn"
-                    onclick="createTrackingAssignment()">
-
-                    Create Tracking Link
-
+                    onclick="createTrackingAssignment()"
+                >
+                    Generate Tracking Link
                 </button>
 
-
                 <button
-                    onclick="cancelAssignmentForm()">
-
+                    onclick="cancelAssignmentForm()"
+                >
                     Cancel
-
                 </button>
 
             </div>
@@ -3129,23 +2479,20 @@ function createTrackingAssignment(){
 
     const promoterId =
         document.getElementById(
-            "assignPromoter"
+            "assignmentPromoter"
         ).value;
 
 
     const programId =
         document.getElementById(
-            "assignProgram"
+            "assignmentProgram"
         ).value;
 
 
-    if(
-        !promoterId ||
-        !programId
-    ){
+    if(!promoterId || !programId){
 
         alert(
-            "Please select Promoter and Program."
+            "Please select promoter and program."
         );
 
         return;
@@ -3153,18 +2500,18 @@ function createTrackingAssignment(){
     }
 
 
-    const alreadyExists =
-        data.assignments.find(
-            a =>
-                a.promoterId === promoterId &&
-                a.programId === programId
+    const duplicate =
+        data.trackingLinks.find(
+            x =>
+                x.promoterId === promoterId &&
+                x.programId === programId
         );
 
 
-    if(alreadyExists){
+    if(duplicate){
 
         alert(
-            "This Program is already assigned to this Promoter."
+            "This promoter already has this program."
         );
 
         return;
@@ -3174,35 +2521,21 @@ function createTrackingAssignment(){
 
     const promoter =
         data.promoters.find(
-            p => p.id === promoterId
+            x => x.id === promoterId
         );
 
 
-    const program =
-        data.programs.find(
-            p => p.id === programId
-        );
+    const prefix =
+        promoter
+        ? promoter.name
+            .replace(/[^a-zA-Z0-9]/g,"")
+            .substring(0,8)
+            .toUpperCase()
+        : "PROMOTER";
 
 
-    if(
-        !promoter ||
-        !program
-    ){
-
-        return;
-
-    }
-
-
-    let trackingCode =
-        "J" +
-        promoter.name
-            .replace(
-                /[^a-zA-Z0-9]/g,
-                ""
-            )
-            .substring(0,6)
-            .toUpperCase() +
+    const code =
+        prefix +
         "_" +
         Math.random()
             .toString(36)
@@ -3210,80 +2543,28 @@ function createTrackingAssignment(){
             .toUpperCase();
 
 
-    while(
-        data.trackingLinks.some(
-            t =>
-                t.trackingCode === trackingCode
-        )
-    ){
-
-        trackingCode =
-            "J" +
-            Math.random()
-                .toString(36)
-                .substring(2,10)
-                .toUpperCase();
-
-    }
-
-
-    const assignment = {
-
-        id:
-            makeId("assignment"),
-
-        promoterId:
-            promoterId,
-
-        programId:
-            programId,
-
-        trackingCode:
-            trackingCode,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    data.assignments.push(
-        assignment
-    );
-
-
-    const publicUrl =
+    const url =
         window.location.origin +
         window.location.pathname +
         "?ref=" +
-        encodeURIComponent(
-            trackingCode
-        );
+        encodeURIComponent(code);
 
 
     data.trackingLinks.push({
 
-        id:
-            makeId("track"),
+        id: makeId("TRACK"),
 
-        assignmentId:
-            assignment.id,
+        promoterId,
 
-        promoterId:
-            promoterId,
+        programId,
 
-        programId:
-            programId,
+        code,
 
-        trackingCode:
-            trackingCode,
+        url,
 
-        publicUrl:
-            publicUrl,
+        active: true,
 
-        clicks:0,
-
-        active:true,
+        clicks: 0,
 
         createdAt:
             new Date().toISOString()
@@ -3293,36 +2574,50 @@ function createTrackingAssignment(){
 
     saveData();
 
-    renderTrackingLinks();
-
     cancelAssignmentForm();
 
-
-    alert(
-        "Tracking link created successfully."
-    );
+    renderTrackingLinks();
 
 }
 
 
-function renderTrackingLinks(){
+function cancelAssignmentForm(){
 
-    const list =
+    const container =
         document.getElementById(
-            "trackingList"
+            "assignmentFormArea"
         );
 
+    if(container){
 
-    if(!list){
+        container.innerHTML = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   TRACKING LINKS
+========================================================= */
+
+function renderTrackingLinks(){
+
+    const container =
+        document.getElementById(
+            "trackingLinksArea"
+        );
+
+    if(!container){
+
         return;
+
     }
 
 
-    if(
-        data.trackingLinks.length === 0
-    ){
+    if(!data.trackingLinks.length){
 
-        list.innerHTML = `
+        container.innerHTML = `
 
             <div class="empty-module">
 
@@ -3331,8 +2626,8 @@ function renderTrackingLinks(){
                 </h3>
 
                 <p>
-                    Assign a Program to a Promoter
-                    to create a unique link.
+                    Assign a program to a promoter
+                    to generate a tracking link.
                 </p>
 
             </div>
@@ -3344,121 +2639,115 @@ function renderTrackingLinks(){
     }
 
 
-    list.innerHTML =
-        data.trackingLinks.map(
-            link => `
+    container.innerHTML = `
 
-            <div class="data-card">
+        <div class="form-card">
 
-                <div>
+            <h2>
+                🔒 Affiliate Tracking Links
+            </h2>
 
-                    <h3>
+            <p>
+                These are promoter tracking links.
+            </p>
 
-                        ${escapeHTML(
-                            getPromoterName(
-                                link.promoterId
-                            )
-                        )}
-
-                    </h3>
+        </div>
 
 
-                    <p>
+        ${
 
-                        Program:
+            data.trackingLinks.map(
+                link => `
 
-                        ${escapeHTML(
-                            getProgramName(
-                                link.programId
-                            )
-                        )}
+                    <div class="data-card">
 
-                    </p>
+                        <div>
 
+                            <h3>
 
-                    <p>
+                                ${escapeHTML(
+                                    getProgramName(
+                                        link.programId
+                                    )
+                                )}
 
-                        Tracking Code:
+                            </h3>
 
-                        <strong>
-                            ${escapeHTML(
-                                link.trackingCode
-                            )}
-                        </strong>
+                            <p>
 
-                    </p>
+                                Promoter:
+                                ${escapeHTML(
+                                    getPromoterName(
+                                        link.promoterId
+                                    )
+                                )}
 
+                            </p>
 
-                    <p>
+                            <p>
 
-                        Clicks:
+                                Code:
+                                ${escapeHTML(
+                                    link.code
+                                )}
 
-                        <strong>
-                            ${link.clicks || 0}
-                        </strong>
+                            </p>
 
-                    </p>
+                            <p>
 
+                                Clicks:
+                                ${link.clicks || 0}
 
-                    <p>
+                            </p>
 
-                        Status:
+                            <p>
 
-                        <strong>
+                                Status:
+                                ${
+                                    link.active
+                                    ? "Active"
+                                    : "Inactive"
+                                }
 
-                            ${link.active
-                                ? "ACTIVE"
-                                : "DISABLED"}
+                            </p>
 
-                        </strong>
-
-                    </p>
-
-
-                    <p class="tracking-url">
-
-                        ${escapeHTML(
-                            link.publicUrl
-                        )}
-
-                    </p>
-
-                </div>
+                        </div>
 
 
-                <div class="data-card-actions">
+                        <div class="card-actions">
 
-                    <button
-                        onclick="copyTrackingLink('${link.id}')">
+                            <button
+                                onclick="copyTrackingLink('${link.id}')"
+                            >
+                                Copy
+                            </button>
 
-                        Copy Link
+                            <button
+                                onclick="testTrackingLink('${link.id}')"
+                            >
+                                Test
+                            </button>
 
-                    </button>
+                            <button
+                                onclick="toggleTrackingLink('${link.id}')"
+                            >
+                                ${
+                                    link.active
+                                    ? "Disable"
+                                    : "Enable"
+                                }
+                            </button>
 
+                        </div>
 
-                    <button
-                        onclick="testTrackingLink('${link.id}')">
+                    </div>
 
-                        Test
+                `
+            ).join("")
 
-                    </button>
+        }
 
-
-                    <button
-                        onclick="toggleTrackingLink('${link.id}')">
-
-                        ${link.active
-                            ? "Disable"
-                            : "Enable"}
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        `
-        ).join("");
+    `;
 
 }
 
@@ -3467,52 +2756,20 @@ function copyTrackingLink(id){
 
     const link =
         data.trackingLinks.find(
-            t => t.id === id
+            x => x.id === id
         );
-
 
     if(!link){
+
         return;
-    }
-
-
-    if(
-        navigator.clipboard &&
-        navigator.clipboard.writeText
-    ){
-
-        navigator.clipboard
-            .writeText(
-                link.publicUrl
-            )
-            .then(
-                function(){
-
-                    alert(
-                        "Tracking link copied."
-                    );
-
-                }
-            )
-            .catch(
-                function(){
-
-                    prompt(
-                        "Copy this tracking link:",
-                        link.publicUrl
-                    );
-
-                }
-            );
-
-    }else{
-
-        prompt(
-            "Copy this tracking link:",
-            link.publicUrl
-        );
 
     }
+
+
+    copyText(
+        link.url,
+        "Tracking link copied."
+    );
 
 }
 
@@ -3521,17 +2778,18 @@ function testTrackingLink(id){
 
     const link =
         data.trackingLinks.find(
-            t => t.id === id
+            x => x.id === id
         );
 
-
     if(!link){
+
         return;
+
     }
 
 
     window.open(
-        link.publicUrl,
+        link.url,
         "_blank"
     );
 
@@ -3542,12 +2800,13 @@ function toggleTrackingLink(id){
 
     const link =
         data.trackingLinks.find(
-            t => t.id === id
+            x => x.id === id
         );
 
-
     if(!link){
+
         return;
+
     }
 
 
@@ -3562,17 +2821,141 @@ function toggleTrackingLink(id){
 }
 
 
-function cancelAssignmentForm(){
+/* =========================================================
+   SOCIAL MEDIA LINK FORM
+========================================================= */
 
-    const area =
+function showSocialLinkForm(){
+
+    const container =
         document.getElementById(
-            "assignmentFormArea"
+            "socialLinkFormArea"
         );
 
+    if(!container){
 
-    if(area){
+        return;
 
-        area.innerHTML = "";
+    }
+
+
+    if(!data.programs.length){
+
+        container.innerHTML = `
+
+            <div class="empty-module">
+
+                <h3>
+                    No Program Available
+                </h3>
+
+                <p>
+                    First add a Program / Offer.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const programOptions =
+        data.programs.map(
+            program => `
+
+                <option value="${program.id}">
+
+                    ${escapeHTML(
+                        program.name
+                    )}
+
+                </option>
+
+            `
+        ).join("");
+
+
+    container.innerHTML = `
+
+        <div class="form-card">
+
+            <h3>
+                Create Social Media Link
+            </h3>
+
+
+            <select id="socialProgram">
+
+                <option value="">
+                    Select Program / Offer
+                </option>
+
+                ${programOptions}
+
+            </select>
+
+
+            <select id="socialPlatform">
+
+                <option value="All">
+                    All Social Media
+                </option>
+
+                <option value="Facebook">
+                    Facebook
+                </option>
+
+                <option value="Instagram">
+                    Instagram
+                </option>
+
+                <option value="TikTok">
+                    TikTok
+                </option>
+
+                <option value="WhatsApp">
+                    WhatsApp
+                </option>
+
+            </select>
+
+
+            <div class="form-actions">
+
+                <button
+                    onclick="createSocialMediaLink()"
+                >
+                    Generate Social Media Link
+                </button>
+
+                <button
+                    onclick="cancelSocialLinkForm()"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+function cancelSocialLinkForm(){
+
+    const container =
+        document.getElementById(
+            "socialLinkFormArea"
+        );
+
+    if(container){
+
+        container.innerHTML = "";
 
     }
 
@@ -3580,7 +2963,448 @@ function cancelAssignmentForm(){
 
 
 /* =========================================================
-   PUBLIC TRACKING
+   CREATE SOCIAL MEDIA LINK
+========================================================= */
+
+function createSocialMediaLink(){
+
+    const programId =
+        document.getElementById(
+            "socialProgram"
+        ).value;
+
+
+    const platform =
+        document.getElementById(
+            "socialPlatform"
+        ).value;
+
+
+    if(!programId){
+
+        alert(
+            "Please select a program."
+        );
+
+        return;
+
+    }
+
+
+    const code =
+        "SOC_" +
+        Math.random()
+            .toString(36)
+            .substring(2,10)
+            .toUpperCase();
+
+
+    const url =
+        window.location.origin +
+        window.location.pathname +
+        "?social=" +
+        encodeURIComponent(code);
+
+
+    data.socialLinks.push({
+
+        id: makeId("SOCIAL"),
+
+        programId,
+
+        code,
+
+        url,
+
+        platform,
+
+        active: true,
+
+        clicks: 0,
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+    cancelSocialLinkForm();
+
+    renderSocialMediaLinks();
+
+    alert(
+        "Social Media Link generated successfully."
+    );
+
+}
+
+
+/* =========================================================
+   SOCIAL MEDIA LINKS DISPLAY
+========================================================= */
+
+function renderSocialMediaLinks(){
+
+    const container =
+        document.getElementById(
+            "socialLinksArea"
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    if(!data.socialLinks.length){
+
+        container.innerHTML = `
+
+            <div class="empty-module">
+
+                <h3>
+                    No Social Media Links
+                </h3>
+
+                <p>
+                    Click "+ Social Media Link"
+                    to create one.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="form-card">
+
+            <h2>
+                📱 Social Media Automation Links
+            </h2>
+
+            <p>
+                Copy these links and share them
+                on your social media platforms.
+            </p>
+
+        </div>
+
+
+        ${
+
+            data.socialLinks.map(
+                link => `
+
+                    <div class="data-card">
+
+                        <div>
+
+                            <h3>
+
+                                ${escapeHTML(
+                                    getProgramName(
+                                        link.programId
+                                    )
+                                )}
+
+                            </h3>
+
+                            <p>
+
+                                Platform:
+                                <strong>
+                                    ${escapeHTML(
+                                        link.platform
+                                    )}
+                                </strong>
+
+                            </p>
+
+
+                            <p>
+
+                                Social Code:
+                                ${escapeHTML(
+                                    link.code
+                                )}
+
+                            </p>
+
+
+                            <p>
+
+                                Clicks:
+                                ${link.clicks || 0}
+
+                            </p>
+
+
+                            <p>
+
+                                Status:
+                                ${
+                                    link.active
+                                    ? "Active"
+                                    : "Inactive"
+                                }
+
+                            </p>
+
+
+                            <input
+                                readonly
+                                value="${escapeHTML(
+                                    link.url
+                                )}"
+                                style="
+                                    width:100%;
+                                    margin-top:8px;
+                                    padding:10px;
+                                "
+                            >
+
+                        </div>
+
+
+                        <div class="card-actions">
+
+                            <button
+                                onclick="copySocialLink('${link.id}')"
+                            >
+                                📋 Copy Link
+                            </button>
+
+
+                            <button
+                                onclick="testSocialLink('${link.id}')"
+                            >
+                                🔗 Test
+                            </button>
+
+
+                            <button
+                                onclick="toggleSocialLink('${link.id}')"
+                            >
+                                ${
+                                    link.active
+                                    ? "Disable"
+                                    : "Enable"
+                                }
+                            </button>
+
+
+                            <button
+                                onclick="deleteSocialLink('${link.id}')"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `
+            ).join("")
+
+        }
+
+    `;
+
+}
+
+
+/* =========================================================
+   COPY SOCIAL LINK
+========================================================= */
+
+function copySocialLink(id){
+
+    const link =
+        data.socialLinks.find(
+            x => x.id === id
+        );
+
+    if(!link){
+
+        return;
+
+    }
+
+
+    copyText(
+        link.url,
+        "Social Media Link copied."
+    );
+
+}
+
+
+/* =========================================================
+   TEST SOCIAL LINK
+========================================================= */
+
+function testSocialLink(id){
+
+    const link =
+        data.socialLinks.find(
+            x => x.id === id
+        );
+
+    if(!link){
+
+        return;
+
+    }
+
+
+    window.open(
+        link.url,
+        "_blank"
+    );
+
+}
+
+
+/* =========================================================
+   TOGGLE SOCIAL LINK
+========================================================= */
+
+function toggleSocialLink(id){
+
+    const link =
+        data.socialLinks.find(
+            x => x.id === id
+        );
+
+    if(!link){
+
+        return;
+
+    }
+
+
+    link.active =
+        !link.active;
+
+
+    saveData();
+
+    renderSocialMediaLinks();
+
+}
+
+
+/* =========================================================
+   DELETE SOCIAL LINK
+========================================================= */
+
+function deleteSocialLink(id){
+
+    if(
+        !confirm(
+            "Delete this Social Media Link?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    data.socialLinks =
+        data.socialLinks.filter(
+            x => x.id !== id
+        );
+
+
+    saveData();
+
+    renderSocialMediaLinks();
+
+}
+
+
+/* =========================================================
+   COPY TEXT HELPER
+========================================================= */
+
+function copyText(text, message){
+
+    if(
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ){
+
+        navigator.clipboard
+            .writeText(text)
+            .then(
+                () => alert(message)
+            )
+            .catch(
+                () => fallbackCopy(text, message)
+            );
+
+        return;
+
+    }
+
+
+    fallbackCopy(
+        text,
+        message
+    );
+
+}
+
+
+function fallbackCopy(text, message){
+
+    const textarea =
+        document.createElement(
+            "textarea"
+        );
+
+    textarea.value =
+        text;
+
+    document.body.appendChild(
+        textarea
+    );
+
+    textarea.select();
+
+    try{
+
+        document.execCommand(
+            "copy"
+        );
+
+        alert(message);
+
+    }catch(error){
+
+        alert(
+            "Please copy the link manually."
+        );
+
+    }
+
+    textarea.remove();
+
+}
+
+
+/* =========================================================
+   PUBLIC TRACKING LINK HANDLER
 ========================================================= */
 
 function handlePublicTracking(){
@@ -3596,42 +3420,25 @@ function handlePublicTracking(){
 
 
     if(!ref){
+
         return;
+
     }
 
 
     const link =
         data.trackingLinks.find(
-            t =>
-                t.trackingCode === ref &&
-                t.active
+            x =>
+                x.code === ref &&
+                x.active
         );
 
 
     if(!link){
-        return;
-    }
-
-
-    const sessionKey =
-        "janjua_click_" + ref;
-
-
-    if(
-        sessionStorage.getItem(
-            sessionKey
-        )
-    ){
 
         return;
 
     }
-
-
-    sessionStorage.setItem(
-        sessionKey,
-        "1"
-    );
 
 
     link.clicks =
@@ -3640,11 +3447,13 @@ function handlePublicTracking(){
 
     data.clicks.push({
 
-        id:
-            makeId("click"),
+        id: makeId("CLICK"),
 
         trackingLinkId:
             link.id,
+
+        code:
+            link.code,
 
         promoterId:
             link.promoterId,
@@ -3652,10 +3461,10 @@ function handlePublicTracking(){
         programId:
             link.programId,
 
-        trackingCode:
-            link.trackingCode,
+        type:
+            "promoter",
 
-        date:
+        createdAt:
             new Date().toISOString()
 
     });
@@ -3667,28 +3476,197 @@ function handlePublicTracking(){
 
 
 /* =========================================================
+   PUBLIC SOCIAL MEDIA LINK HANDLER
+========================================================= */
+
+function handlePublicSocialLink(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const socialCode =
+        params.get("social");
+
+
+    if(!socialCode){
+
+        return;
+
+    }
+
+
+    const link =
+        data.socialLinks.find(
+            x =>
+                x.code === socialCode &&
+                x.active
+        );
+
+
+    if(!link){
+
+        return;
+
+    }
+
+
+    link.clicks =
+        Number(link.clicks || 0) + 1;
+
+
+    data.clicks.push({
+
+        id: makeId("SOCIALCLICK"),
+
+        socialLinkId:
+            link.id,
+
+        code:
+            link.code,
+
+        programId:
+            link.programId,
+
+        type:
+            "social",
+
+        platform:
+            link.platform,
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+
+    /*
+       IMPORTANT:
+
+       This frontend prototype records the click.
+
+       It does NOT securely redirect to the original
+       affiliate link because the original affiliate
+       URL is still stored in browser localStorage.
+
+       Secure affiliate redirection will be connected
+       later through a backend/server.
+    */
+
+
+    showSocialLandingMessage(link);
+
+}
+
+
+/* =========================================================
+   SOCIAL LANDING MESSAGE
+========================================================= */
+
+function showSocialLandingMessage(link){
+
+    const box =
+        document.createElement(
+            "div"
+        );
+
+
+    box.style.position =
+        "fixed";
+
+    box.style.inset =
+        "0";
+
+    box.style.background =
+        "rgba(0,0,0,0.75)";
+
+    box.style.display =
+        "flex";
+
+    box.style.alignItems =
+        "center";
+
+    box.style.justifyContent =
+        "center";
+
+    box.style.zIndex =
+        "999999";
+
+
+    box.innerHTML = `
+
+        <div
+            style="
+                background:white;
+                max-width:500px;
+                width:90%;
+                padding:30px;
+                border-radius:18px;
+                text-align:center;
+                box-shadow:0 20px 50px rgba(0,0,0,.3);
+            "
+        >
+
+            <h2>
+                JANJUA
+            </h2>
+
+
+            <h3>
+                ${escapeHTML(
+                    getProgramName(
+                        link.programId
+                    )
+                )}
+            </h3>
+
+
+            <p>
+                Thank you for visiting.
+            </p>
+
+
+            <p>
+                Your request has been recorded.
+            </p>
+
+
+            <button
+                onclick="this.closest('div[style]').parentElement.remove()"
+                style="
+                    padding:12px 22px;
+                    border:0;
+                    border-radius:8px;
+                    cursor:pointer;
+                "
+            >
+                Continue
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        box
+    );
+
+}
+
+
+/* =========================================================
    ORDERS & CLICKS
 ========================================================= */
 
 function renderOrdersModule(container){
 
     container.innerHTML = `
-
-        <div class="module-toolbar">
-
-            <button
-                class="primary-btn"
-                onclick="showOrderForm()">
-
-                + Add Order / Sale
-
-            </button>
-
-        </div>
-
-
-        <div id="orderFormArea"></div>
-
 
         <div class="report-grid">
 
@@ -3708,6 +3686,40 @@ function renderOrdersModule(container){
             <div class="report-card">
 
                 <h3>
+                    Promoter Clicks
+                </h3>
+
+                <strong>
+                    ${
+                        data.clicks.filter(
+                            x => x.type === "promoter"
+                        ).length
+                    }
+                </strong>
+
+            </div>
+
+
+            <div class="report-card">
+
+                <h3>
+                    Social Media Clicks
+                </h3>
+
+                <strong>
+                    ${
+                        data.clicks.filter(
+                            x => x.type === "social"
+                        ).length
+                    }
+                </strong>
+
+            </div>
+
+
+            <div class="report-card">
+
+                <h3>
                     Total Orders
                 </h3>
 
@@ -3717,544 +3729,24 @@ function renderOrdersModule(container){
 
             </div>
 
-
-            <div class="report-card">
-
-                <h3>
-                    Total Sales
-                </h3>
-
-                <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        data.orders.reduce(
-                            (sum,o) =>
-                                sum +
-                                Number(
-                                    o.amount || 0
-                                ),
-                            0
-                        )
-                    )}
-
-                </strong>
-
-            </div>
-
         </div>
 
-
-        <div
-            id="orderList"
-            class="data-list">
-        </div>
-
-    `;
-
-
-    renderOrders();
-
-}
-
-
-function showOrderForm(){
-
-    const area =
-        document.getElementById(
-            "orderFormArea"
-        );
-
-
-    if(!area){
-        return;
-    }
-
-
-    if(
-        data.trackingLinks.length === 0
-    ){
-
-        alert(
-            "First create a Tracking Link."
-        );
-
-        return;
-
-    }
-
-
-    area.innerHTML = `
 
         <div class="form-card">
 
             <h3>
-                Add Order / Sale
+                Orders & Conversion Tracking
             </h3>
 
-
-            <div class="form-grid">
-
-                <label>
-
-                    Tracking Link
-
-                    <select id="orderTracking">
-
-                        <option value="">
-                            Select Tracking Link
-                        </option>
-
-                        ${data.trackingLinks
-                            .map(
-                                link => `
-
-                                <option
-                                    value="${link.id}">
-
-                                    ${escapeHTML(
-                                        getPromoterName(
-                                            link.promoterId
-                                        )
-                                    )}
-                                    -
-                                    ${escapeHTML(
-                                        getProgramName(
-                                            link.programId
-                                        )
-                                    )}
-                                    -
-                                    ${escapeHTML(
-                                        link.trackingCode
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
-
-
-                <label>
-
-                    Customer / Order ID
-
-                    <input
-                        id="orderNumber"
-                        placeholder="Order ID">
-
-                </label>
-
-
-                <label>
-
-                    Sale Amount
-
-                    <input
-                        id="orderAmount"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="0">
-
-                </label>
-
-
-                <label>
-
-                    Order Status
-
-                    <select id="orderStatus">
-
-                        <option value="Pending">
-                            Pending
-                        </option>
-
-                        <option value="Confirmed">
-                            Confirmed
-                        </option>
-
-                        <option value="Cancelled">
-                            Cancelled
-                        </option>
-
-                    </select>
-
-                </label>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <button
-                    class="primary-btn"
-                    onclick="saveOrder()">
-
-                    Save Order
-
-                </button>
-
-
-                <button
-                    onclick="cancelOrderForm()">
-
-                    Cancel
-
-                </button>
-
-            </div>
+            <p>
+                Orders will be connected with
+                tracking codes and affiliate
+                conversions in the next phase.
+            </p>
 
         </div>
 
     `;
-
-}
-
-
-function saveOrder(){
-
-    const trackingLinkId =
-        document.getElementById(
-            "orderTracking"
-        ).value;
-
-
-    const orderNumber =
-        document.getElementById(
-            "orderNumber"
-        ).value.trim();
-
-
-    const amount =
-        Number(
-            document.getElementById(
-                "orderAmount"
-            ).value
-        ) || 0;
-
-
-    const status =
-        document.getElementById(
-            "orderStatus"
-        ).value;
-
-
-    if(!trackingLinkId){
-
-        alert(
-            "Please select Tracking Link."
-        );
-
-        return;
-
-    }
-
-
-    const link =
-        data.trackingLinks.find(
-            t => t.id === trackingLinkId
-        );
-
-
-    if(!link){
-
-        alert(
-            "Tracking Link not found."
-        );
-
-        return;
-
-    }
-
-
-    const order = {
-
-        id:
-            makeId("order"),
-
-        trackingLinkId:
-            trackingLinkId,
-
-        promoterId:
-            link.promoterId,
-
-        programId:
-            link.programId,
-
-        trackingCode:
-            link.trackingCode,
-
-        orderNumber:
-            orderNumber,
-
-        amount:
-            amount,
-
-        status:
-            status,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    data.orders.push(order);
-
-
-    if(
-        status === "Confirmed"
-    ){
-
-        createCommissionForOrder(
-            order
-        );
-
-    }
-
-
-    saveData();
-
-    renderOrders();
-
-    cancelOrderForm();
-
-
-    alert(
-        "Order saved successfully."
-    );
-
-}
-
-
-function createCommissionForOrder(order){
-
-    const existing =
-        data.commissions.find(
-            c =>
-                c.orderId === order.id
-        );
-
-
-    if(existing){
-        return;
-    }
-
-
-    const program =
-        data.programs.find(
-            p =>
-                p.id === order.programId
-        );
-
-
-    if(!program){
-        return;
-    }
-
-
-    const commissionRate =
-        Number(
-            program.commission || 0
-        );
-
-
-    const commissionAmount =
-        (
-            Number(order.amount || 0) *
-            commissionRate /
-            100
-        );
-
-
-    data.commissions.push({
-
-        id:
-            makeId("commission"),
-
-        orderId:
-            order.id,
-
-        promoterId:
-            order.promoterId,
-
-        programId:
-            order.programId,
-
-        trackingCode:
-            order.trackingCode,
-
-        saleAmount:
-            Number(order.amount || 0),
-
-        commissionRate:
-            commissionRate,
-
-        commissionAmount:
-            commissionAmount,
-
-        status:
-            "Pending",
-
-        createdAt:
-            new Date().toISOString()
-
-    });
-
-}
-
-
-function renderOrders(){
-
-    const list =
-        document.getElementById(
-            "orderList"
-        );
-
-
-    if(!list){
-        return;
-    }
-
-
-    if(
-        data.orders.length === 0
-    ){
-
-        list.innerHTML = `
-
-            <div class="empty-module">
-
-                <h3>
-                    No Orders Yet
-                </h3>
-
-                <p>
-                    Add your first order or sale.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.innerHTML =
-        data.orders.map(
-            order => `
-
-            <div class="data-card">
-
-                <div>
-
-                    <h3>
-
-                        Order
-                        ${escapeHTML(
-                            order.orderNumber || order.id
-                        )}
-
-                    </h3>
-
-
-                    <p>
-
-                        Promoter:
-
-                        ${escapeHTML(
-                            getPromoterName(
-                                order.promoterId
-                            )
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Program:
-
-                        ${escapeHTML(
-                            getProgramName(
-                                order.programId
-                            )
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Tracking:
-
-                        <strong>
-                            ${escapeHTML(
-                                order.trackingCode
-                            )}
-                        </strong>
-
-                    </p>
-
-
-                    <p>
-
-                        Amount:
-
-                        <strong>
-
-                            Rs.
-                            ${formatMoney(
-                                order.amount
-                            )}
-
-                        </strong>
-
-                    </p>
-
-
-                    <p>
-
-                        Status:
-
-                        <strong>
-                            ${escapeHTML(
-                                order.status
-                            )}
-                        </strong>
-
-                    </p>
-
-                </div>
-
-            </div>
-
-        `
-        ).join("");
-
-}
-
-
-function cancelOrderForm(){
-
-    const area =
-        document.getElementById(
-            "orderFormArea"
-        );
-
-
-    if(area){
-
-        area.innerHTML = "";
-
-    }
 
 }
 
@@ -4265,67 +3757,18 @@ function cancelOrderForm(){
 
 function renderCommissionModule(container){
 
-    const totalCommission =
-        data.commissions.reduce(
-            (sum,c) =>
-                sum +
-                Number(
-                    c.commissionAmount || 0
-                ),
-            0
-        );
-
-
-    const paidCommission =
-        data.commissions
-            .filter(
-                c => c.status === "Paid"
-            )
-            .reduce(
-                (sum,c) =>
-                    sum +
-                    Number(
-                        c.commissionAmount || 0
-                    ),
-                0
-            );
-
-
-    const pendingCommission =
-        totalCommission -
-        paidCommission;
-
-
     container.innerHTML = `
-
-        <div class="module-toolbar">
-
-            <button
-                class="primary-btn"
-                onclick="showPaymentForm()">
-
-                + Mark Commission Payment
-
-            </button>
-
-        </div>
-
 
         <div class="report-grid">
 
             <div class="report-card">
 
                 <h3>
-                    Total Commission
+                    Commissions
                 </h3>
 
                 <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        totalCommission
-                    )}
-
+                    ${data.commissions.length}
                 </strong>
 
             </div>
@@ -4334,43 +3777,7 @@ function renderCommissionModule(container){
             <div class="report-card">
 
                 <h3>
-                    Paid
-                </h3>
-
-                <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        paidCommission
-                    )}
-
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
-                    Pending
-                </h3>
-
-                <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        pendingCommission
-                    )}
-
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
-                    Payment Records
+                    Payments
                 </h3>
 
                 <strong>
@@ -4382,487 +3789,21 @@ function renderCommissionModule(container){
         </div>
 
 
-        <div id="paymentFormArea"></div>
-
-
-        <div
-            id="commissionList"
-            class="data-list">
-        </div>
-
-    `;
-
-
-    renderCommissions();
-
-}
-
-
-function renderCommissions(){
-
-    const list =
-        document.getElementById(
-            "commissionList"
-        );
-
-
-    if(!list){
-        return;
-    }
-
-
-    if(
-        data.commissions.length === 0
-    ){
-
-        list.innerHTML = `
-
-            <div class="empty-module">
-
-                <h3>
-                    No Commissions Yet
-                </h3>
-
-                <p>
-                    Confirmed orders will generate commissions.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.innerHTML =
-        data.commissions.map(
-            commission => `
-
-            <div class="data-card">
-
-                <div>
-
-                    <h3>
-
-                        ${escapeHTML(
-                            getPromoterName(
-                                commission.promoterId
-                            )
-                        )}
-
-                    </h3>
-
-
-                    <p>
-
-                        Program:
-
-                        ${escapeHTML(
-                            getProgramName(
-                                commission.programId
-                            )
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Sale:
-
-                        Rs.
-                        ${formatMoney(
-                            commission.saleAmount
-                        )}
-
-                    </p>
-
-
-                    <p>
-
-                        Rate:
-
-                        ${escapeHTML(
-                            commission.commissionRate
-                        )}%
-
-                    </p>
-
-
-                    <p>
-
-                        Commission:
-
-                        <strong>
-
-                            Rs.
-                            ${formatMoney(
-                                commission.commissionAmount
-                            )}
-
-                        </strong>
-
-                    </p>
-
-
-                    <p>
-
-                        Status:
-
-                        <strong>
-                            ${escapeHTML(
-                                commission.status
-                            )}
-                        </strong>
-
-                    </p>
-
-                </div>
-
-
-                <div class="data-card-actions">
-
-                    ${
-                        commission.status !== "Paid"
-                        ?
-
-                        `<button
-                            class="primary-btn"
-                            onclick="markCommissionPaid('${commission.id}')">
-
-                            Mark Paid
-
-                        </button>`
-
-                        :
-
-                        ""
-
-                    }
-
-                </div>
-
-            </div>
-
-        `
-        ).join("");
-
-}
-
-
-function showPaymentForm(){
-
-    const area =
-        document.getElementById(
-            "paymentFormArea"
-        );
-
-
-    if(!area){
-        return;
-    }
-
-
-    const pending =
-        data.commissions.filter(
-            c => c.status !== "Paid"
-        );
-
-
-    if(
-        pending.length === 0
-    ){
-
-        alert(
-            "No pending commissions available."
-        );
-
-        return;
-
-    }
-
-
-    area.innerHTML = `
-
         <div class="form-card">
 
             <h3>
-                Mark Commission Payment
+                Commission & Promoter Payments
             </h3>
 
-
-            <div class="form-grid">
-
-                <label>
-
-                    Commission
-
-                    <select id="paymentCommission">
-
-                        <option value="">
-                            Select Commission
-                        </option>
-
-                        ${pending
-                            .map(
-                                c => `
-
-                                <option
-                                    value="${c.id}">
-
-                                    ${escapeHTML(
-                                        getPromoterName(
-                                            c.promoterId
-                                        )
-                                    )}
-                                    -
-                                    Rs.
-                                    ${formatMoney(
-                                        c.commissionAmount
-                                    )}
-
-                                </option>
-
-                            `
-                            )
-                            .join("")}
-
-                    </select>
-
-                </label>
-
-
-                <label>
-
-                    Payment Method
-
-                    <select id="paymentMethod">
-
-                        <option value="Bank">
-                            Bank
-                        </option>
-
-                        <option value="JazzCash">
-                            JazzCash
-                        </option>
-
-                        <option value="Easypaisa">
-                            Easypaisa
-                        </option>
-
-                        <option value="Cash">
-                            Cash
-                        </option>
-
-                    </select>
-
-                </label>
-
-
-                <label>
-
-                    Payment Reference
-
-                    <input
-                        id="paymentReference"
-                        placeholder="Transaction ID">
-
-                </label>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <button
-                    class="primary-btn"
-                    onclick="savePayment()">
-
-                    Save Payment
-
-                </button>
-
-
-                <button
-                    onclick="cancelPaymentForm()">
-
-                    Cancel
-
-                </button>
-
-            </div>
+            <p>
+                Commission calculation and payment
+                management will be connected in
+                the next phase.
+            </p>
 
         </div>
 
     `;
-
-}
-
-
-function savePayment(){
-
-    const commissionId =
-        document.getElementById(
-            "paymentCommission"
-        ).value;
-
-
-    const method =
-        document.getElementById(
-            "paymentMethod"
-        ).value;
-
-
-    const reference =
-        document.getElementById(
-            "paymentReference"
-        ).value.trim();
-
-
-    if(!commissionId){
-
-        alert(
-            "Please select Commission."
-        );
-
-        return;
-
-    }
-
-
-    const commission =
-        data.commissions.find(
-            c => c.id === commissionId
-        );
-
-
-    if(!commission){
-        return;
-    }
-
-
-    commission.status =
-        "Paid";
-
-
-    data.payments.push({
-
-        id:
-            makeId("payment"),
-
-        commissionId:
-            commission.id,
-
-        promoterId:
-            commission.promoterId,
-
-        amount:
-            commission.commissionAmount,
-
-        method:
-            method,
-
-        reference:
-            reference,
-
-        date:
-            new Date().toISOString()
-
-    });
-
-
-    saveData();
-
-
-    renderCommissionModule(
-        document.getElementById(
-            "moduleContent"
-        )
-    );
-
-
-    alert(
-        "Payment saved successfully."
-    );
-
-}
-
-
-function markCommissionPaid(id){
-
-    const commission =
-        data.commissions.find(
-            c => c.id === id
-        );
-
-
-    if(!commission){
-        return;
-    }
-
-
-    commission.status =
-        "Paid";
-
-
-    data.payments.push({
-
-        id:
-            makeId("payment"),
-
-        commissionId:
-            commission.id,
-
-        promoterId:
-            commission.promoterId,
-
-        amount:
-            commission.commissionAmount,
-
-        method:
-            "Manual",
-
-        reference:
-            "",
-
-        date:
-            new Date().toISOString()
-
-    });
-
-
-    saveData();
-
-
-    renderCommissionModule(
-        document.getElementById(
-            "moduleContent"
-        )
-    );
-
-
-    alert(
-        "Commission marked as Paid."
-    );
-
-}
-
-
-function cancelPaymentForm(){
-
-    const area =
-        document.getElementById(
-            "paymentFormArea"
-        );
-
-
-    if(area){
-
-        area.innerHTML = "";
-
-    }
 
 }
 
@@ -4873,26 +3814,16 @@ function cancelPaymentForm(){
 
 function renderReportsModule(container){
 
-    const sales =
-        data.orders.reduce(
-            (sum,o) =>
-                sum +
-                Number(
-                    o.amount || 0
-                ),
-            0
-        );
+    const socialClicks =
+        data.clicks.filter(
+            x => x.type === "social"
+        ).length;
 
 
-    const commissions =
-        data.commissions.reduce(
-            (sum,c) =>
-                sum +
-                Number(
-                    c.commissionAmount || 0
-                ),
-            0
-        );
+    const promoterClicks =
+        data.clicks.filter(
+            x => x.type === "promoter"
+        ).length;
 
 
     container.innerHTML = `
@@ -4941,19 +3872,6 @@ function renderReportsModule(container){
             <div class="report-card">
 
                 <h3>
-                    Assignments
-                </h3>
-
-                <strong>
-                    ${data.assignments.length}
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
                     Tracking Links
                 </h3>
 
@@ -4967,11 +3885,37 @@ function renderReportsModule(container){
             <div class="report-card">
 
                 <h3>
-                    Total Clicks
+                    Social Links
                 </h3>
 
                 <strong>
-                    ${data.clicks.length}
+                    ${data.socialLinks.length}
+                </strong>
+
+            </div>
+
+
+            <div class="report-card">
+
+                <h3>
+                    Promoter Clicks
+                </h3>
+
+                <strong>
+                    ${promoterClicks}
+                </strong>
+
+            </div>
+
+
+            <div class="report-card">
+
+                <h3>
+                    Social Clicks
+                </h3>
+
+                <strong>
+                    ${socialClicks}
                 </strong>
 
             </div>
@@ -4989,441 +3933,9 @@ function renderReportsModule(container){
 
             </div>
 
-
-            <div class="report-card">
-
-                <h3>
-                    Total Sales
-                </h3>
-
-                <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        sales
-                    )}
-
-                </strong>
-
-            </div>
-
-
-            <div class="report-card">
-
-                <h3>
-                    Commission
-                </h3>
-
-                <strong>
-
-                    Rs.
-                    ${formatMoney(
-                        commissions
-                    )}
-
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="form-card">
-
-            <h3>
-                JANJUA Marketing Flow
-            </h3>
-
-            <p>
-
-                Provider →
-                Program →
-                Promoter →
-                Tracking →
-                Click →
-                Order →
-                Commission →
-                Payment
-
-            </p>
-
         </div>
 
     `;
-
-}
-
-
-/* =========================================================
-   CATEGORIES
-========================================================= */
-
-function renderCategories(){
-
-    const container =
-        document.getElementById(
-            "categoryList"
-        );
-
-
-    if(!container){
-        return;
-    }
-
-
-    container.innerHTML =
-        data.categories
-            .filter(
-                category =>
-                    category.visible
-            )
-            .map(
-                category => `
-
-                <div class="category-card">
-
-                    <div class="category-title">
-
-                        ${escapeHTML(
-                            category.name
-                        )}
-
-                    </div>
-
-
-                    <div class="category-actions">
-
-                        <button
-                            onclick="editCategory('${category.id}')">
-
-                            Edit
-
-                        </button>
-
-
-                        <button
-                            onclick="toggleCategory('${category.id}')">
-
-                            Hide
-
-                        </button>
-
-
-                        <button
-                            onclick="deleteCategory('${category.id}')">
-
-                            Delete
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `
-            )
-            .join("");
-
-}
-
-
-function renderCategoryModule(container){
-
-    container.innerHTML = `
-
-        <div class="module-toolbar">
-
-            <button
-                class="primary-btn"
-                onclick="addCategory()">
-
-                + Add Category
-
-            </button>
-
-        </div>
-
-
-        <div
-            id="moduleCategoryList"
-            class="data-list">
-        </div>
-
-    `;
-
-
-    renderModuleCategories();
-
-}
-
-
-function renderModuleCategories(){
-
-    const list =
-        document.getElementById(
-            "moduleCategoryList"
-        );
-
-
-    if(!list){
-        return;
-    }
-
-
-    if(
-        data.categories.length === 0
-    ){
-
-        list.innerHTML = `
-
-            <div class="empty-module">
-
-                <h3>
-                    No Categories
-                </h3>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.innerHTML =
-        data.categories.map(
-            category => `
-
-            <div class="data-card">
-
-                <div>
-
-                    <h3>
-
-                        ${escapeHTML(
-                            category.name
-                        )}
-
-                    </h3>
-
-
-                    <p>
-
-                        Status:
-
-                        <strong>
-
-                            ${category.visible
-                                ? "ACTIVE"
-                                : "HIDDEN"}
-
-                        </strong>
-
-                    </p>
-
-                </div>
-
-
-                <div class="data-card-actions">
-
-                    <button
-                        onclick="editCategory('${category.id}')">
-
-                        Edit
-
-                    </button>
-
-
-                    <button
-                        onclick="toggleCategory('${category.id}')">
-
-                        ${category.visible
-                            ? "Hide"
-                            : "Show"}
-
-                    </button>
-
-
-                    <button
-                        class="danger-btn"
-                        onclick="deleteCategory('${category.id}')">
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        `
-        ).join("");
-
-}
-
-
-function addCategory(){
-
-    const name =
-        prompt(
-            "Enter Category Name:"
-        );
-
-
-    if(!name){
-        return;
-    }
-
-
-    const cleanName =
-        name.trim();
-
-
-    if(!cleanName){
-        return;
-    }
-
-
-    const exists =
-        data.categories.some(
-            c =>
-                c.name.toLowerCase() ===
-                cleanName.toLowerCase()
-        );
-
-
-    if(exists){
-
-        alert(
-            "This category already exists."
-        );
-
-        return;
-
-    }
-
-
-    data.categories.push({
-
-        id:
-            makeId("cat"),
-
-        name:
-            cleanName,
-
-        visible:
-            true
-
-    });
-
-
-    saveData();
-
-    renderCategories();
-
-    renderModuleCategories();
-
-}
-
-
-function editCategory(id){
-
-    const category =
-        data.categories.find(
-            c => c.id === id
-        );
-
-
-    if(!category){
-        return;
-    }
-
-
-    const name =
-        prompt(
-            "Edit Category:",
-            category.name
-        );
-
-
-    if(!name){
-        return;
-    }
-
-
-    const cleanName =
-        name.trim();
-
-
-    if(!cleanName){
-        return;
-    }
-
-
-    category.name =
-        cleanName;
-
-
-    saveData();
-
-    renderCategories();
-
-    renderModuleCategories();
-
-}
-
-
-function toggleCategory(id){
-
-    const category =
-        data.categories.find(
-            c => c.id === id
-        );
-
-
-    if(!category){
-        return;
-    }
-
-
-    category.visible =
-        !category.visible;
-
-
-    saveData();
-
-    renderCategories();
-
-    renderModuleCategories();
-
-}
-
-
-function deleteCategory(id){
-
-    if(
-        !confirm(
-            "Delete this Category?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    data.categories =
-        data.categories.filter(
-            c => c.id !== id
-        );
-
-
-    saveData();
-
-    renderCategories();
-
-    renderModuleCategories();
 
 }
 
@@ -5436,7 +3948,7 @@ function addModuleCSS(){
 
     if(
         document.getElementById(
-            "moduleCSS"
+            "janjuaModuleCSS"
         )
     ){
 
@@ -5446,31 +3958,26 @@ function addModuleCSS(){
 
 
     const style =
-        document.createElement("style");
+        document.createElement(
+            "style"
+        );
 
 
     style.id =
-        "moduleCSS";
+        "janjuaModuleCSS";
 
 
-    style.textContent = `
+    style.innerHTML = `
 
         .module-overlay{
 
             position:fixed;
-
             inset:0;
-
-            z-index:99999;
-
-            background:rgba(0,0,0,.72);
-
+            background:rgba(0,0,0,.65);
+            z-index:9999;
             display:flex;
-
-            justify-content:center;
-
             align-items:center;
-
+            justify-content:center;
             padding:15px;
 
         }
@@ -5478,45 +3985,27 @@ function addModuleCSS(){
 
         .module-window{
 
-            width:min(1100px,100%);
-
+            background:#ffffff;
+            width:min(1100px,96vw);
             max-height:92vh;
-
             overflow:auto;
-
-            background:#fff;
-
-            color:#17202a;
-
             border-radius:18px;
-
-            box-shadow:
-
-                0 20px 70px
-                rgba(0,0,0,.4);
+            box-shadow:0 20px 70px rgba(0,0,0,.35);
 
         }
 
 
         .module-header{
 
-            position:sticky;
-
-            top:0;
-
-            z-index:2;
-
             display:flex;
-
             justify-content:space-between;
-
             align-items:center;
-
-            padding:16px 20px;
-
-            background:#17202a;
-
-            color:#fff;
+            padding:18px 22px;
+            background:#111827;
+            color:white;
+            position:sticky;
+            top:0;
+            z-index:2;
 
         }
 
@@ -5524,25 +4013,18 @@ function addModuleCSS(){
         .module-header h2{
 
             margin:0;
-
-            font-size:20px;
+            text-transform:capitalize;
 
         }
 
 
         .module-close{
 
-            border:0;
-
             background:transparent;
-
-            color:#fff;
-
+            border:0;
+            color:white;
             font-size:32px;
-
             cursor:pointer;
-
-            line-height:1;
 
         }
 
@@ -5554,90 +4036,39 @@ function addModuleCSS(){
         }
 
 
-        .dashboard-module-title{
+        .module-toolbar{
 
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
             margin-bottom:20px;
 
         }
 
 
-        .dashboard-module-title h2{
-
-            margin:0 0 6px;
-
-        }
-
-
-        .dashboard-module-title p{
-
-            margin:0;
-
-            color:#667085;
-
-        }
-
-
-        .module-toolbar{
-
-            display:flex;
-
-            justify-content:flex-end;
-
-            margin-bottom:18px;
-
-        }
-
-
-        .primary-btn{
+        .module-toolbar button,
+        .form-actions button,
+        .card-actions button{
 
             border:0;
-
-            border-radius:10px;
-
-            padding:11px 16px;
-
-            background:#17202a;
-
-            color:#fff;
-
+            border-radius:8px;
+            padding:10px 14px;
             cursor:pointer;
-
-            font-weight:700;
-
-        }
-
-
-        .primary-btn:hover{
-
-            opacity:.9;
-
-        }
-
-
-        .danger-btn{
-
-            background:#b42318 !important;
-
-            color:#fff !important;
 
         }
 
 
         .form-card{
 
+            background:#f5f7fa;
+            border-radius:14px;
             padding:18px;
-
             margin-bottom:20px;
-
-            border:1px solid #e1e5e8;
-
-            border-radius:15px;
-
-            background:#f8fafb;
 
         }
 
 
+        .form-card h2,
         .form-card h3{
 
             margin-top:0;
@@ -5645,58 +4076,23 @@ function addModuleCSS(){
         }
 
 
-        .form-grid{
-
-            display:grid;
-
-            grid-template-columns:
-                repeat(2,minmax(0,1fr));
-
-            gap:14px;
-
-        }
-
-
-        .form-grid label{
-
-            display:flex;
-
-            flex-direction:column;
-
-            gap:6px;
-
-            font-weight:700;
-
-            font-size:13px;
-
-        }
-
-
-        .form-grid input,
-
-        .form-grid select{
+        .form-card input,
+        .form-card select{
 
             width:100%;
-
-            padding:11px;
-
-            border:1px solid #ccd3d8;
-
-            border-radius:9px;
-
-            background:#fff;
-
-            color:#17202a;
+            padding:12px;
+            margin:7px 0;
+            border:1px solid #d5d9df;
+            border-radius:8px;
+            box-sizing:border-box;
 
         }
 
 
-        .form-grid input:focus,
+        .form-card label{
 
-        .form-grid select:focus{
-
-            outline:2px solid
-                rgba(0,150,255,.15);
+            display:block;
+            margin:10px 0;
 
         }
 
@@ -5704,38 +4100,9 @@ function addModuleCSS(){
         .form-actions{
 
             display:flex;
-
             gap:10px;
-
-            margin-top:18px;
-
             flex-wrap:wrap;
-
-        }
-
-
-        .form-actions button{
-
-            padding:10px 15px;
-
-            border:0;
-
-            border-radius:9px;
-
-            cursor:pointer;
-
-            font-weight:700;
-
-        }
-
-
-        .data-list{
-
-            display:flex;
-
-            flex-direction:column;
-
-            gap:12px;
+            margin-top:12px;
 
         }
 
@@ -5743,18 +4110,14 @@ function addModuleCSS(){
         .data-card{
 
             display:flex;
-
             justify-content:space-between;
-
-            gap:15px;
-
-            padding:16px;
-
-            border:1px solid #e1e5e8;
-
+            gap:20px;
+            align-items:center;
+            background:white;
+            border:1px solid #e2e6eb;
             border-radius:14px;
-
-            background:#fff;
+            padding:16px;
+            margin-bottom:12px;
 
         }
 
@@ -5770,55 +4133,25 @@ function addModuleCSS(){
 
             margin:5px 0;
 
-            font-size:13px;
-
         }
 
 
-        .data-card-actions{
+        .card-actions{
 
             display:flex;
-
-            align-items:center;
-
             gap:7px;
-
             flex-wrap:wrap;
-
-        }
-
-
-        .data-card-actions button{
-
-            padding:8px 11px;
-
-            border:0;
-
-            border-radius:8px;
-
-            cursor:pointer;
-
-            background:#eef2f5;
-
-            font-weight:700;
-
-        }
-
-
-        .tracking-url{
-
-            word-break:break-all;
-
-            color:#667085;
+            justify-content:flex-end;
 
         }
 
 
         .empty-module{
 
-            padding:45px 20px;
-
             text-align:center;
+            padding:35px 20px;
+            background:#f7f8fa;
+            border-radius:14px;
 
         }
 
@@ -5826,12 +4159,12 @@ function addModuleCSS(){
         .report-grid{
 
             display:grid;
-
             grid-template-columns:
-                repeat(4,minmax(0,1fr));
-
-            gap:15px;
-
+                repeat(
+                    auto-fit,
+                    minmax(160px,1fr)
+                );
+            gap:14px;
             margin-bottom:20px;
 
         }
@@ -5839,24 +4172,17 @@ function addModuleCSS(){
 
         .report-card{
 
-            padding:22px;
-
-            text-align:center;
-
-            border:1px solid #e1e5e8;
-
+            background:#f5f7fa;
             border-radius:14px;
-
-            background:#fff;
+            padding:20px;
+            text-align:center;
 
         }
 
 
         .report-card h3{
 
-            margin:0;
-
-            font-size:14px;
+            margin:0 0 10px;
 
         }
 
@@ -5864,70 +4190,24 @@ function addModuleCSS(){
         .report-card strong{
 
             display:block;
-
-            font-size:28px;
-
-            margin-top:10px;
+            font-size:30px;
 
         }
 
 
-        @media(max-width:850px){
-
-            .report-grid{
-
-                grid-template-columns:
-                    repeat(2,minmax(0,1fr));
-
-            }
-
-        }
-
-
-        @media(max-width:700px){
-
-            .form-grid{
-
-                grid-template-columns:1fr;
-
-            }
-
+        @media(max-width:650px){
 
             .data-card{
 
                 flex-direction:column;
+                align-items:stretch;
 
             }
 
 
-            .report-grid{
+            .card-actions{
 
-                grid-template-columns:1fr 1fr;
-
-            }
-
-        }
-
-
-        @media(max-width:450px){
-
-            .module-content{
-
-                padding:12px;
-
-            }
-
-
-            .report-grid{
-
-                grid-template-columns:1fr;
-
-            }
-
-
-            .module-header{
-
-                padding:13px 15px;
+                justify-content:flex-start;
 
             }
 
@@ -5936,11 +4216,264 @@ function addModuleCSS(){
     `;
 
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+        style
+    );
 
 }
 
 
 /* =========================================================
-   END
+   BRAND ANIMATION CSS
 ========================================================= */
+
+function addBrandAnimationCSS(){
+
+    if(
+        document.getElementById(
+            "janjuaBrandAnimationCSS"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const style =
+        document.createElement(
+            "style"
+        );
+
+
+    style.id =
+        "janjuaBrandAnimationCSS";
+
+
+    style.innerHTML = `
+
+        #janjuaAnimatedBrand{
+
+            width:100%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden;
+
+        }
+
+
+        .janjua-brand-animation{
+
+            position:relative;
+            width:100%;
+            max-width:700px;
+            min-height:125px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+
+        }
+
+
+        .brand-main{
+
+            position:relative;
+            z-index:5;
+            text-align:center;
+            padding:15px 30px;
+
+        }
+
+
+        .brand-title{
+
+            font-size:38px;
+            font-weight:900;
+            letter-spacing:7px;
+
+        }
+
+
+        .brand-subtitle{
+
+            font-size:14px;
+            margin-top:3px;
+
+        }
+
+
+        .brand-status{
+
+            margin-top:7px;
+            font-size:12px;
+            letter-spacing:2px;
+
+        }
+
+
+        .status-dot{
+
+            display:inline-block;
+            width:9px;
+            height:9px;
+            border-radius:50%;
+            margin-right:6px;
+            background:#20d46b;
+            box-shadow:
+                0 0 12px #20d46b;
+            animation:
+                brandPulse 1.5s infinite;
+
+        }
+
+
+        .brand-orbit{
+
+            position:absolute;
+            border:1px solid rgba(255,255,255,.35);
+            border-radius:50%;
+            pointer-events:none;
+
+        }
+
+
+        .orbit-one{
+
+            width:310px;
+            height:85px;
+            transform:rotate(-12deg);
+            animation:
+                brandOrbitOne 5s linear infinite;
+
+        }
+
+
+        .orbit-two{
+
+            width:420px;
+            height:120px;
+            transform:rotate(18deg);
+            animation:
+                brandOrbitTwo 7s linear infinite;
+
+        }
+
+
+        .orbit-three{
+
+            width:540px;
+            height:145px;
+            transform:rotate(-25deg);
+            animation:
+                brandOrbitThree 9s linear infinite;
+
+        }
+
+
+        @keyframes brandOrbitOne{
+
+            from{
+                transform:
+                    rotate(-12deg)
+                    scale(1);
+            }
+
+            50%{
+                transform:
+                    rotate(168deg)
+                    scale(1.04);
+            }
+
+            to{
+                transform:
+                    rotate(348deg)
+                    scale(1);
+            }
+
+        }
+
+
+        @keyframes brandOrbitTwo{
+
+            from{
+                transform:
+                    rotate(18deg);
+            }
+
+            to{
+                transform:
+                    rotate(378deg);
+            }
+
+        }
+
+
+        @keyframes brandOrbitThree{
+
+            from{
+                transform:
+                    rotate(-25deg);
+            }
+
+            to{
+                transform:
+                    rotate(335deg);
+            }
+
+        }
+
+
+        @keyframes brandPulse{
+
+            0%,100%{
+
+                opacity:.5;
+                transform:scale(.8);
+
+            }
+
+            50%{
+
+                opacity:1;
+                transform:scale(1.25);
+
+            }
+
+        }
+
+
+        @media(max-width:600px){
+
+            .brand-title{
+
+                font-size:28px;
+                letter-spacing:4px;
+
+            }
+
+
+            .brand-subtitle{
+
+                font-size:11px;
+
+            }
+
+
+            .janjua-brand-animation{
+
+                min-height:115px;
+
+            }
+
+        }
+
+    `;
+
+
+    document.head.appendChild(
+        style
+    );
+
+}
