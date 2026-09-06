@@ -1,15 +1,18 @@
 /* =========================================================
-   JANJUA — ALL IN ONE MARKETING
-   Complete Frontend Application
+   JANJUA
+   ALL IN ONE MARKETING PLATFORM
+   COMPLETE APP.JS
    ========================================================= */
 
-const STORAGE_KEY = "all_in_one_marketing_v4";
+const STORAGE_KEY = "all_in_one_marketing_v5";
+
 
 /* =========================================================
    DEFAULT DATA
    ========================================================= */
 
 const defaultData = {
+
     categories: [
         { id: "cat1", name: "Automotive" },
         { id: "cat2", name: "Motorcycles" },
@@ -46,54 +49,94 @@ const defaultData = {
 
 
 /* =========================================================
-   DATA FUNCTIONS
+   LOAD DATA
    ========================================================= */
 
 function loadData() {
 
     try {
 
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const saved =
+            localStorage.getItem(STORAGE_KEY);
 
         if (!saved) {
-            return JSON.parse(JSON.stringify(defaultData));
+            return JSON.parse(
+                JSON.stringify(defaultData)
+            );
         }
 
-        const parsed = JSON.parse(saved);
+        const parsed =
+            JSON.parse(saved);
 
         return {
+
             ...defaultData,
+
             ...parsed,
 
-            categories: parsed.categories || [],
-            providers: parsed.providers || [],
-            programs: parsed.programs || [],
-            promoters: parsed.promoters || [],
-            assignments: parsed.assignments || [],
-            trackingLinks: parsed.trackingLinks || [],
-            socialLinks: parsed.socialLinks || [],
-            clicks: parsed.clicks || [],
-            orders: parsed.orders || [],
-            commissions: parsed.commissions || [],
-            payments: parsed.payments || [],
+            categories:
+                parsed.categories || [],
+
+            providers:
+                parsed.providers || [],
+
+            programs:
+                parsed.programs || [],
+
+            promoters:
+                parsed.promoters || [],
+
+            assignments:
+                parsed.assignments || [],
+
+            trackingLinks:
+                parsed.trackingLinks || [],
+
+            socialLinks:
+                parsed.socialLinks || [],
+
+            clicks:
+                parsed.clicks || [],
+
+            orders:
+                parsed.orders || [],
+
+            commissions:
+                parsed.commissions || [],
+
+            payments:
+                parsed.payments || [],
 
             settings: {
+
                 ...defaultData.settings,
+
                 ...(parsed.settings || {})
+
             }
+
         };
 
     } catch (error) {
 
-        console.error("Data loading error:", error);
+        console.error(
+            "Data loading error:",
+            error
+        );
 
-        return JSON.parse(JSON.stringify(defaultData));
+        return JSON.parse(
+            JSON.stringify(defaultData)
+        );
     }
 }
 
 
 let data = loadData();
 
+
+/* =========================================================
+   SAVE
+   ========================================================= */
 
 function saveData() {
 
@@ -106,7 +149,10 @@ function saveData() {
 
     } catch (error) {
 
-        console.error("Data saving error:", error);
+        console.error(
+            "Data saving error:",
+            error
+        );
     }
 }
 
@@ -131,7 +177,10 @@ function createId(prefix) {
 
 function escapeHTML(value) {
 
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -146,12 +195,21 @@ function escapeHTML(value) {
 
 function formatMoney(amount) {
 
-    const number = Number(amount) || 0;
+    const value =
+        Number(amount) || 0;
 
     return (
         data.settings.currency +
         " " +
-        number.toLocaleString()
+        value.toLocaleString()
+    );
+}
+
+
+function getCategory(id) {
+
+    return data.categories.find(
+        item => item.id === id
     );
 }
 
@@ -180,16 +238,16 @@ function getPromoter(id) {
 }
 
 
-function getCategory(id) {
+function getTrackingLink(id) {
 
-    return data.categories.find(
+    return data.trackingLinks.find(
         item => item.id === id
     );
 }
 
 
 /* =========================================================
-   INITIALIZATION
+   START
    ========================================================= */
 
 document.addEventListener(
@@ -197,7 +255,9 @@ document.addEventListener(
     function () {
 
         addAnimatedBranding();
+
         addBrandAnimationCSS();
+
         addModuleCSS();
 
         createModuleArea();
@@ -205,6 +265,7 @@ document.addEventListener(
         renderCategories();
 
         handlePublicTracking();
+
         handlePublicSocialLink();
 
     }
@@ -212,49 +273,68 @@ document.addEventListener(
 
 
 /* =========================================================
-   CREATE MODULE AREA
-   IMPORTANT:
-   index.html DOES NOT contain moduleArea.
-   We create it automatically here.
+   MODULE AREA
    ========================================================= */
 
 function createModuleArea() {
 
-    if (document.getElementById("moduleArea")) {
+    if (
+        document.getElementById(
+            "moduleArea"
+        )
+    ) {
         return;
     }
 
-    const dashboardGrid =
-        document.querySelector(".dashboard-grid");
+    const grid =
+        document.querySelector(
+            ".dashboard-grid"
+        );
 
-    if (!dashboardGrid) {
+    if (!grid) {
         return;
     }
 
-    const moduleArea =
+    const area =
         document.createElement("section");
 
-    moduleArea.id = "moduleArea";
-    moduleArea.className = "janjua-module-area";
+    area.id =
+        "moduleArea";
 
-    moduleArea.innerHTML = `
+    area.className =
+        "janjua-module-area";
+
+    area.innerHTML = `
+
         <div id="moduleContent">
+
             <div class="module-placeholder">
-                <h2>JANJUA Marketing Modules</h2>
-                <p>Select any dashboard card above to open its module.</p>
+
+                <h2>
+                    JANJUA Marketing Modules
+                </h2>
+
+                <p>
+                    Select any dashboard card
+                    to open its module.
+                </p>
+
             </div>
+
         </div>
+
     `;
 
-    dashboardGrid.insertAdjacentElement(
+    grid.insertAdjacentElement(
         "afterend",
-        moduleArea
+        area
     );
 }
 
 
 /* =========================================================
    OPEN MODULE
+   MODULE NOW APPEARS UNDER SELECTED CARD
    ========================================================= */
 
 function openModule(module) {
@@ -262,19 +342,68 @@ function openModule(module) {
     createModuleArea();
 
     const content =
-        document.getElementById("moduleContent");
+        document.getElementById(
+            "moduleContent"
+        );
 
     const moduleArea =
-        document.getElementById("moduleArea");
-
-    if (!content || !moduleArea) {
-        console.error(
-            "Module area could not be created."
+        document.getElementById(
+            "moduleArea"
         );
+
+    if (
+        !content ||
+        !moduleArea
+    ) {
+
+        console.error(
+            "Module area unavailable."
+        );
+
         return;
     }
 
-    moduleArea.style.display = "block";
+
+    /* Find selected card */
+
+    const cards =
+        document.querySelectorAll(
+            ".dashboard-card"
+        );
+
+    let selectedCard = null;
+
+
+    cards.forEach(card => {
+
+        const button =
+            card.querySelector(
+                `button[onclick="openModule('${module}')"]`
+            );
+
+        if (button) {
+            selectedCard = card;
+        }
+
+    });
+
+
+    /* Move module directly below selected card */
+
+    if (selectedCard) {
+
+        selectedCard.insertAdjacentElement(
+            "afterend",
+            moduleArea
+        );
+    }
+
+
+    moduleArea.style.display =
+        "block";
+
+
+    /* Render selected module */
 
     switch (module) {
 
@@ -317,14 +446,24 @@ function openModule(module) {
         default:
 
             content.innerHTML = `
+
                 <div class="empty-module">
-                    <h2>${escapeHTML(module)}</h2>
-                    <p>Module ready for integration.</p>
+
+                    <h2>
+                        ${escapeHTML(module)}
+                    </h2>
+
+                    <p>
+                        Module ready.
+                    </p>
+
                 </div>
+
             `;
     }
 
-    setTimeout(function () {
+
+    setTimeout(() => {
 
         moduleArea.scrollIntoView({
             behavior: "smooth",
@@ -341,47 +480,66 @@ function openModule(module) {
 
 function closeModule() {
 
-    const moduleArea =
-        document.getElementById("moduleArea");
+    const area =
+        document.getElementById(
+            "moduleArea"
+        );
 
-    if (moduleArea) {
-        moduleArea.style.display = "none";
+    if (area) {
+
+        area.style.display =
+            "none";
     }
 }
 
 
 /* =========================================================
-   DASHBOARD MODULE
+   DASHBOARD
    ========================================================= */
 
 function renderDashboardModule(content) {
 
-    const totalClicks =
-        data.clicks.length;
-
-    const totalOrders =
-        data.orders.length;
-
-    const totalPrograms =
-        data.programs.length;
-
-    const totalPromoters =
-        data.promoters.length;
-
-    const totalCommission =
-        data.commissions.reduce(
-            (sum, item) =>
-                sum + (Number(item.amount) || 0),
+    const sales =
+        data.orders.reduce(
+            (sum, order) =>
+                sum +
+                (Number(order.amount) || 0),
             0
         );
+
+
+    const commission =
+        data.commissions.reduce(
+            (sum, item) =>
+                sum +
+                (Number(item.amount) || 0),
+            0
+        );
+
+
+    const paid =
+        data.payments.reduce(
+            (sum, item) =>
+                sum +
+                (Number(item.amount) || 0),
+            0
+        );
+
 
     content.innerHTML = `
 
         <div class="module-header">
 
             <div>
-                <h2>📊 Marketing Dashboard</h2>
-                <p>Complete overview of your marketing platform.</p>
+
+                <h2>
+                    📊 Marketing Dashboard
+                </h2>
+
+                <p>
+                    Complete platform performance.
+                </p>
+
             </div>
 
             <button onclick="closeModule()">
@@ -394,38 +552,59 @@ function renderDashboardModule(content) {
         <div class="stats-grid">
 
             <div class="stat-card">
-                <span>Categories</span>
-                <strong>${data.categories.length}</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>Providers</span>
-                <strong>${data.providers.length}</strong>
-            </div>
-
-            <div class="stat-card">
                 <span>Programs</span>
-                <strong>${totalPrograms}</strong>
+                <strong>
+                    ${data.programs.length}
+                </strong>
             </div>
 
             <div class="stat-card">
                 <span>Promoters</span>
-                <strong>${totalPromoters}</strong>
+                <strong>
+                    ${data.promoters.length}
+                </strong>
             </div>
 
             <div class="stat-card">
-                <span>Clicks</span>
-                <strong>${totalClicks}</strong>
+                <span>Tracking Links</span>
+                <strong>
+                    ${data.trackingLinks.length}
+                </strong>
             </div>
 
             <div class="stat-card">
-                <span>Orders</span>
-                <strong>${totalOrders}</strong>
+                <span>Total Clicks</span>
+                <strong>
+                    ${data.clicks.length}
+                </strong>
             </div>
 
             <div class="stat-card">
-                <span>Total Commission</span>
-                <strong>${formatMoney(totalCommission)}</strong>
+                <span>Total Orders</span>
+                <strong>
+                    ${data.orders.length}
+                </strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Total Sales</span>
+                <strong>
+                    ${formatMoney(sales)}
+                </strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Commission</span>
+                <strong>
+                    ${formatMoney(commission)}
+                </strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Paid</span>
+                <strong>
+                    ${formatMoney(paid)}
+                </strong>
             </div>
 
         </div>
@@ -433,12 +612,20 @@ function renderDashboardModule(content) {
 
         <div class="module-panel">
 
-            <h3>🚀 Platform Workflow</h3>
+            <h3>
+                🔄 Marketing Flow
+            </h3>
 
             <p>
-                Providers → Programs → Promoters →
-                Tracking Links → Clicks → Orders →
-                Commission → Payments → Reports
+                Provider →
+                Program →
+                Promoter →
+                Tracking Link →
+                Click →
+                Order →
+                Commission →
+                Payment →
+                Report
             </p>
 
         </div>
@@ -457,53 +644,74 @@ function renderCategoryModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>📂 Marketing Categories</h2>
-                <p>Manage your marketing categories.</p>
+
+                <h2>
+                    📂 Marketing Categories
+                </h2>
+
+                <p>
+                    Manage marketing categories.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
+
 
         <div class="module-panel">
 
             <button
                 class="primary-action"
                 onclick="addCategory()">
+
                 + Add Category
+
             </button>
+
 
             <div class="module-list">
 
                 ${
                     data.categories.length
+
                     ?
+
                     data.categories.map(category => `
 
                         <div class="list-item">
 
                             <div>
+
                                 <strong>
                                     ${escapeHTML(category.name)}
                                 </strong>
 
                                 <small>
-                                    ID: ${escapeHTML(category.id)}
+                                    ${escapeHTML(category.id)}
                                 </small>
+
                             </div>
 
                             <button
                                 onclick="deleteCategory('${category.id}')">
+
                                 Delete
+
                             </button>
 
                         </div>
 
                     `).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No categories found.
+                        No categories.
                     </div>
                     `
                 }
@@ -518,7 +726,9 @@ function renderCategoryModule(content) {
 function renderCategories() {
 
     const list =
-        document.getElementById("categoryList");
+        document.getElementById(
+            "categoryList"
+        );
 
     if (!list) {
         return;
@@ -526,14 +736,17 @@ function renderCategories() {
 
     list.innerHTML = "";
 
+
     data.categories.forEach(category => {
 
         const card =
             document.createElement("div");
 
-        card.className = "category-card";
+        card.className =
+            "category-card";
 
         card.innerHTML = `
+
             <strong>
                 ${escapeHTML(category.name)}
             </strong>
@@ -541,9 +754,11 @@ function renderCategories() {
             <span>
                 Marketing Category
             </span>
+
         `;
 
         list.appendChild(card);
+
     });
 }
 
@@ -551,29 +766,45 @@ function renderCategories() {
 function addCategory() {
 
     const name =
-        prompt("Enter new category name:");
+        prompt(
+            "Enter new category name:"
+        );
 
-    if (!name || !name.trim()) {
+    if (
+        !name ||
+        !name.trim()
+    ) {
         return;
     }
 
+
     data.categories.push({
+
         id: createId("cat"),
+
         name: name.trim()
+
     });
+
 
     saveData();
 
     renderCategories();
 
+
     const content =
-        document.getElementById("moduleContent");
+        document.getElementById(
+            "moduleContent"
+        );
 
     if (content) {
         renderCategoryModule(content);
     }
 
-    alert("Category added successfully.");
+
+    alert(
+        "Category added successfully."
+    );
 }
 
 
@@ -581,27 +812,29 @@ function deleteCategory(id) {
 
     if (
         !confirm(
-            "Are you sure you want to delete this category?"
+            "Delete this category?"
         )
     ) {
         return;
     }
+
 
     data.categories =
         data.categories.filter(
             item => item.id !== id
         );
 
+
     saveData();
 
     renderCategories();
 
-    const content =
-        document.getElementById("moduleContent");
 
-    if (content) {
-        renderCategoryModule(content);
-    }
+    renderCategoryModule(
+        document.getElementById(
+            "moduleContent"
+        )
+    );
 }
 
 
@@ -616,59 +849,87 @@ function renderProviderModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>🏢 Providers & Companies</h2>
-                <p>Manage banks, brands, companies and service providers.</p>
+
+                <h2>
+                    🏢 Providers & Companies
+                </h2>
+
+                <p>
+                    Manage banks, brands and companies.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
+
 
         <div class="module-panel">
 
             <button
                 class="primary-action"
                 onclick="showProviderForm()">
+
                 + Add Provider
+
             </button>
 
+
             <div id="providerFormArea"></div>
+
 
             <div class="module-list">
 
                 ${
                     data.providers.length
+
                     ?
+
                     data.providers.map(provider => `
 
                         <div class="list-item">
 
                             <div>
+
                                 <strong>
                                     ${escapeHTML(provider.name)}
                                 </strong>
 
                                 <small>
-                                    ${escapeHTML(provider.type || "Company")}
+                                    ${escapeHTML(
+                                        provider.type ||
+                                        "Company"
+                                    )}
                                 </small>
 
                                 <small>
-                                    ${escapeHTML(provider.website || "")}
+                                    ${escapeHTML(
+                                        provider.website ||
+                                        ""
+                                    )}
                                 </small>
+
                             </div>
 
                             <button
                                 onclick="deleteProvider('${provider.id}')">
+
                                 Delete
+
                             </button>
 
                         </div>
 
                     `).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No providers added yet.
+                        No providers added.
                     </div>
                     `
                 }
@@ -683,11 +944,14 @@ function renderProviderModule(content) {
 function showProviderForm() {
 
     const area =
-        document.getElementById("providerFormArea");
+        document.getElementById(
+            "providerFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     area.innerHTML = `
 
@@ -697,21 +961,27 @@ function showProviderForm() {
                 id="providerName"
                 placeholder="Provider / Company Name">
 
+
             <input
                 id="providerType"
-                placeholder="Type e.g. Bank, Brand, Company">
+                placeholder="Bank / Brand / Company">
+
 
             <input
                 id="providerWebsite"
-                placeholder="Website / URL">
+                placeholder="Website URL">
+
 
             <button
                 class="primary-action"
                 onclick="createProvider()">
+
                 Save Provider
+
             </button>
 
         </div>
+
     `;
 }
 
@@ -719,53 +989,85 @@ function showProviderForm() {
 function createProvider() {
 
     const name =
-        document.getElementById("providerName")?.value.trim();
+        document.getElementById(
+            "providerName"
+        )?.value.trim();
+
 
     const type =
-        document.getElementById("providerType")?.value.trim();
+        document.getElementById(
+            "providerType"
+        )?.value.trim();
+
 
     const website =
-        document.getElementById("providerWebsite")?.value.trim();
+        document.getElementById(
+            "providerWebsite"
+        )?.value.trim();
+
 
     if (!name) {
-        alert("Please enter provider name.");
+
+        alert(
+            "Please enter provider name."
+        );
+
         return;
     }
 
+
     data.providers.push({
+
         id: createId("provider"),
+
         name,
+
         type,
+
         website,
-        createdAt: new Date().toISOString()
+
+        createdAt:
+            new Date().toISOString()
+
     });
+
 
     saveData();
 
-    const content =
-        document.getElementById("moduleContent");
 
-    renderProviderModule(content);
+    renderProviderModule(
+        document.getElementById(
+            "moduleContent"
+        )
+    );
 }
 
 
 function deleteProvider(id) {
 
-    if (!confirm("Delete this provider?")) {
+    if (
+        !confirm(
+            "Delete this provider?"
+        )
+    ) {
         return;
     }
+
 
     data.providers =
         data.providers.filter(
             item => item.id !== id
         );
 
+
     saveData();
 
-    const content =
-        document.getElementById("moduleContent");
 
-    renderProviderModule(content);
+    renderProviderModule(
+        document.getElementById(
+            "moduleContent"
+        )
+    );
 }
 
 
@@ -780,36 +1082,56 @@ function renderProgramModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>🎯 Programs & Offers</h2>
-                <p>Manage affiliate programs and marketing offers.</p>
+
+                <h2>
+                    🎯 Programs & Offers
+                </h2>
+
+                <p>
+                    Manage affiliate programs and offers.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
+
 
         <div class="module-panel">
 
             <button
                 class="primary-action"
                 onclick="showProgramForm()">
+
                 + Add Program / Offer
+
             </button>
 
+
             <div id="programFormArea"></div>
+
 
             <div class="module-list">
 
                 ${
                     data.programs.length
+
                     ?
+
                     data.programs.map(program => {
 
                         const provider =
-                            getProvider(program.providerId);
+                            getProvider(
+                                program.providerId
+                            );
 
                         const category =
-                            getCategory(program.categoryId);
+                            getCategory(
+                                program.categoryId
+                            );
 
                         return `
 
@@ -818,29 +1140,44 @@ function renderProgramModule(content) {
                                 <div>
 
                                     <strong>
-                                        ${escapeHTML(program.name)}
+                                        ${escapeHTML(
+                                            program.name
+                                        )}
                                     </strong>
 
                                     <small>
                                         Provider:
-                                        ${escapeHTML(provider?.name || "Not selected")}
+                                        ${escapeHTML(
+                                            provider?.name ||
+                                            "Not selected"
+                                        )}
                                     </small>
 
                                     <small>
                                         Category:
-                                        ${escapeHTML(category?.name || "Not selected")}
+                                        ${escapeHTML(
+                                            category?.name ||
+                                            "Not selected"
+                                        )}
                                     </small>
 
                                     <small>
                                         Commission:
-                                        ${Number(program.commissionRate) || 0}%
+                                        ${
+                                            Number(
+                                                program.commissionRate
+                                            ) || 0
+                                        }%
                                     </small>
 
                                 </div>
 
+
                                 <button
                                     onclick="deleteProgram('${program.id}')">
+
                                     Delete
+
                                 </button>
 
                             </div>
@@ -848,10 +1185,12 @@ function renderProgramModule(content) {
                         `;
 
                     }).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No programs or offers added yet.
+                        No programs added.
                     </div>
                     `
                 }
@@ -866,11 +1205,14 @@ function renderProgramModule(content) {
 function showProgramForm() {
 
     const area =
-        document.getElementById("programFormArea");
+        document.getElementById(
+            "programFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     area.innerHTML = `
 
@@ -880,6 +1222,7 @@ function showProgramForm() {
                 id="programName"
                 placeholder="Program / Offer Name">
 
+
             <select id="programProvider">
 
                 <option value="">
@@ -888,9 +1231,11 @@ function showProgramForm() {
 
                 ${
                     data.providers.map(provider => `
+
                         <option value="${provider.id}">
                             ${escapeHTML(provider.name)}
                         </option>
+
                     `).join("")
                 }
 
@@ -905,9 +1250,11 @@ function showProgramForm() {
 
                 ${
                     data.categories.map(category => `
+
                         <option value="${category.id}">
                             ${escapeHTML(category.name)}
                         </option>
+
                     `).join("")
                 }
 
@@ -931,10 +1278,13 @@ function showProgramForm() {
             <button
                 class="primary-action"
                 onclick="createProgram()">
+
                 Save Program
+
             </button>
 
         </div>
+
     `;
 }
 
@@ -942,66 +1292,108 @@ function showProgramForm() {
 function createProgram() {
 
     const name =
-        document.getElementById("programName")?.value.trim();
+        document.getElementById(
+            "programName"
+        )?.value.trim();
+
 
     const providerId =
-        document.getElementById("programProvider")?.value;
+        document.getElementById(
+            "programProvider"
+        )?.value;
+
 
     const categoryId =
-        document.getElementById("programCategory")?.value;
+        document.getElementById(
+            "programCategory"
+        )?.value;
+
 
     const affiliateUrl =
-        document.getElementById("programAffiliateUrl")?.value.trim();
+        document.getElementById(
+            "programAffiliateUrl"
+        )?.value.trim();
+
 
     const commissionRate =
         Number(
-            document.getElementById("programCommission")?.value
+            document.getElementById(
+                "programCommission"
+            )?.value
         ) || 0;
 
+
     if (!name) {
-        alert("Please enter program name.");
+
+        alert(
+            "Please enter program name."
+        );
+
         return;
     }
 
+
     data.programs.push({
+
         id: createId("program"),
+
         name,
+
         providerId,
+
         categoryId,
+
         affiliateUrl,
+
         commissionRate,
-        createdAt: new Date().toISOString()
+
+        createdAt:
+            new Date().toISOString()
+
     });
+
 
     saveData();
 
+
     renderProgramModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 function deleteProgram(id) {
 
-    if (!confirm("Delete this program?")) {
+    if (
+        !confirm(
+            "Delete this program?"
+        )
+    ) {
         return;
     }
+
 
     data.programs =
         data.programs.filter(
             item => item.id !== id
         );
 
+
     saveData();
 
+
     renderProgramModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 /* =========================================================
-   PROMOTERS / WORKERS
+   PROMOTERS
    ========================================================= */
 
 function renderPromoterModule(content) {
@@ -1011,11 +1403,20 @@ function renderPromoterModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>👥 Promoters / Workers</h2>
-                <p>Manage your marketing promoters and workers.</p>
+
+                <h2>
+                    👥 Promoters / Workers
+                </h2>
+
+                <p>
+                    Manage marketing promoters.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
 
@@ -1025,16 +1426,22 @@ function renderPromoterModule(content) {
             <button
                 class="primary-action"
                 onclick="showPromoterForm()">
+
                 + Add Promoter
+
             </button>
 
+
             <div id="promoterFormArea"></div>
+
 
             <div class="module-list">
 
                 ${
                     data.promoters.length
+
                     ?
+
                     data.promoters.map(promoter => `
 
                         <div class="list-item">
@@ -1042,31 +1449,44 @@ function renderPromoterModule(content) {
                             <div>
 
                                 <strong>
-                                    ${escapeHTML(promoter.name)}
+                                    ${escapeHTML(
+                                        promoter.name
+                                    )}
                                 </strong>
 
                                 <small>
-                                    ${escapeHTML(promoter.phone || "")}
+                                    ${escapeHTML(
+                                        promoter.phone ||
+                                        ""
+                                    )}
                                 </small>
 
                                 <small>
-                                    ${escapeHTML(promoter.email || "")}
+                                    ${escapeHTML(
+                                        promoter.email ||
+                                        ""
+                                    )}
                                 </small>
 
                             </div>
 
+
                             <button
                                 onclick="deletePromoter('${promoter.id}')">
+
                                 Delete
+
                             </button>
 
                         </div>
 
                     `).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No promoters added yet.
+                        No promoters added.
                     </div>
                     `
                 }
@@ -1081,11 +1501,14 @@ function renderPromoterModule(content) {
 function showPromoterForm() {
 
     const area =
-        document.getElementById("promoterFormArea");
+        document.getElementById(
+            "promoterFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     area.innerHTML = `
 
@@ -1095,22 +1518,28 @@ function showPromoterForm() {
                 id="promoterName"
                 placeholder="Promoter Name">
 
+
             <input
                 id="promoterPhone"
                 placeholder="Phone Number">
+
 
             <input
                 id="promoterEmail"
                 type="email"
                 placeholder="Email">
 
+
             <button
                 class="primary-action"
                 onclick="createPromoter()">
+
                 Save Promoter
+
             </button>
 
         </div>
+
     `;
 }
 
@@ -1118,61 +1547,104 @@ function showPromoterForm() {
 function createPromoter() {
 
     const name =
-        document.getElementById("promoterName")?.value.trim();
+        document.getElementById(
+            "promoterName"
+        )?.value.trim();
+
 
     const phone =
-        document.getElementById("promoterPhone")?.value.trim();
+        document.getElementById(
+            "promoterPhone"
+        )?.value.trim();
+
 
     const email =
-        document.getElementById("promoterEmail")?.value.trim();
+        document.getElementById(
+            "promoterEmail"
+        )?.value.trim();
+
 
     if (!name) {
-        alert("Please enter promoter name.");
+
+        alert(
+            "Please enter promoter name."
+        );
+
         return;
     }
 
+
     data.promoters.push({
+
         id: createId("promoter"),
+
         name,
+
         phone,
+
         email,
-        createdAt: new Date().toISOString()
+
+        createdAt:
+            new Date().toISOString()
+
     });
+
 
     saveData();
 
+
     renderPromoterModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 function deletePromoter(id) {
 
-    if (!confirm("Delete this promoter?")) {
+    if (
+        !confirm(
+            "Delete this promoter?"
+        )
+    ) {
         return;
     }
+
 
     data.promoters =
         data.promoters.filter(
             item => item.id !== id
         );
 
+
     data.assignments =
         data.assignments.filter(
-            item => item.promoterId !== id
+            item =>
+                item.promoterId !== id
         );
+
+
+    data.trackingLinks =
+        data.trackingLinks.filter(
+            item =>
+                item.promoterId !== id
+        );
+
 
     saveData();
 
+
     renderPromoterModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 /* =========================================================
-   TRACKING
+   TRACKING MODULE
    ========================================================= */
 
 function renderTrackingModule(content) {
@@ -1182,11 +1654,20 @@ function renderTrackingModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>🔗 Tracking Links</h2>
-                <p>Create and manage promoter tracking links.</p>
+
+                <h2>
+                    🔗 Tracking Links
+                </h2>
+
+                <p>
+                    Manage promoter and social links.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
 
@@ -1196,36 +1677,48 @@ function renderTrackingModule(content) {
             <button
                 class="primary-action"
                 onclick="showAssignmentForm()">
+
                 + Assign Program to Promoter
+
             </button>
+
 
             <button
                 class="secondary-action"
                 onclick="showSocialLinkForm()">
+
                 + Social Media Link
+
             </button>
 
 
             <div id="assignmentFormArea"></div>
 
 
-            <h3>🔗 Promoter Tracking Links</h3>
+            <h3>
+                🔗 Promoter Tracking Links
+            </h3>
+
 
             <div class="module-list">
 
                 ${
                     data.trackingLinks.length
+
                     ?
+
                     data.trackingLinks.map(link => {
 
                         const promoter =
-                            getPromoter(link.promoterId);
+                            getPromoter(
+                                link.promoterId
+                            );
 
                         const program =
-                            getProgram(link.programId);
+                            getProgram(
+                                link.programId
+                            );
 
-                        const url =
-                            link.url || "";
 
                         return `
 
@@ -1234,21 +1727,31 @@ function renderTrackingModule(content) {
                                 <div>
 
                                     <strong>
-                                        ${escapeHTML(program?.name || "Program")}
+                                        ${escapeHTML(
+                                            program?.name ||
+                                            "Program"
+                                        )}
                                     </strong>
 
                                     <small>
                                         Promoter:
-                                        ${escapeHTML(promoter?.name || "Unknown")}
+                                        ${escapeHTML(
+                                            promoter?.name ||
+                                            "Unknown"
+                                        )}
                                     </small>
 
                                     <small>
                                         Clicks:
-                                        ${Number(link.clicks) || 0}
+                                        ${Number(
+                                            link.clicks
+                                        ) || 0}
                                     </small>
 
                                     <small class="link-text">
-                                        ${escapeHTML(url)}
+                                        ${escapeHTML(
+                                            link.url
+                                        )}
                                     </small>
 
                                 </div>
@@ -1258,29 +1761,40 @@ function renderTrackingModule(content) {
 
                                     <button
                                         onclick="copyTrackingLink('${link.id}')">
+
                                         Copy
+
                                     </button>
+
 
                                     <button
                                         onclick="testTrackingLink('${link.id}')">
+
                                         Test
+
                                     </button>
+
 
                                     <button
                                         onclick="deleteTrackingLink('${link.id}')">
+
                                         Delete
+
                                     </button>
 
                                 </div>
 
                             </div>
+
                         `;
 
                     }).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No promoter tracking links created yet.
+                        No promoter links yet.
                     </div>
                     `
                 }
@@ -1288,20 +1802,21 @@ function renderTrackingModule(content) {
             </div>
 
 
-            <h3>📱 Social Media Links</h3>
+            <h3>
+                📱 Social Media Links
+            </h3>
 
-            <p>
-                Admin-generated links for Facebook,
-                Instagram, TikTok and WhatsApp.
-            </p>
 
             <div id="socialLinkFormArea"></div>
+
 
             <div id="socialLinksArea">
 
                 ${
                     data.socialLinks.length
+
                     ?
+
                     data.socialLinks.map(link => `
 
                         <div class="list-item">
@@ -1309,43 +1824,60 @@ function renderTrackingModule(content) {
                             <div>
 
                                 <strong>
-                                    ${escapeHTML(link.platform)}
+                                    ${escapeHTML(
+                                        link.platform
+                                    )}
                                 </strong>
 
                                 <small>
                                     Program:
                                     ${escapeHTML(
-                                        getProgram(link.programId)?.name ||
+                                        getProgram(
+                                            link.programId
+                                        )?.name ||
                                         "Program"
                                     )}
                                 </small>
 
                                 <small>
                                     Clicks:
-                                    ${Number(link.clicks) || 0}
+                                    ${Number(
+                                        link.clicks
+                                    ) || 0}
                                 </small>
 
-                                <small>
-                                    ${escapeHTML(link.url)}
+                                <small class="link-text">
+                                    ${escapeHTML(
+                                        link.url
+                                    )}
                                 </small>
 
                             </div>
+
 
                             <div class="button-group">
 
                                 <button
                                     onclick="copySocialLink('${link.id}')">
+
                                     Copy
+
                                 </button>
+
 
                                 <button
                                     onclick="testSocialLink('${link.id}')">
+
                                     Test
+
                                 </button>
+
 
                                 <button
                                     onclick="deleteSocialLink('${link.id}')">
+
                                     Delete
+
                                 </button>
 
                             </div>
@@ -1353,10 +1885,12 @@ function renderTrackingModule(content) {
                         </div>
 
                     `).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No social media links created yet.
+                        No social links yet.
                     </div>
                     `
                 }
@@ -1369,17 +1903,20 @@ function renderTrackingModule(content) {
 
 
 /* =========================================================
-   ASSIGNMENT
+   CREATE PROMOTER TRACKING LINK
    ========================================================= */
 
 function showAssignmentForm() {
 
     const area =
-        document.getElementById("assignmentFormArea");
+        document.getElementById(
+            "assignmentFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     if (!data.promoters.length) {
 
@@ -1390,6 +1927,7 @@ function showAssignmentForm() {
         return;
     }
 
+
     if (!data.programs.length) {
 
         alert(
@@ -1398,6 +1936,7 @@ function showAssignmentForm() {
 
         return;
     }
+
 
     area.innerHTML = `
 
@@ -1411,9 +1950,13 @@ function showAssignmentForm() {
 
                 ${
                     data.promoters.map(item => `
+
                         <option value="${item.id}">
-                            ${escapeHTML(item.name)}
+                            ${escapeHTML(
+                                item.name
+                            )}
                         </option>
+
                     `).join("")
                 }
 
@@ -1428,9 +1971,13 @@ function showAssignmentForm() {
 
                 ${
                     data.programs.map(item => `
+
                         <option value="${item.id}">
-                            ${escapeHTML(item.name)}
+                            ${escapeHTML(
+                                item.name
+                            )}
                         </option>
+
                     `).join("")
                 }
 
@@ -1440,10 +1987,13 @@ function showAssignmentForm() {
             <button
                 class="primary-action"
                 onclick="createAssignment()">
+
                 Create Tracking Link
+
             </button>
 
         </div>
+
     `;
 }
 
@@ -1451,12 +2001,21 @@ function showAssignmentForm() {
 function createAssignment() {
 
     const promoterId =
-        document.getElementById("assignmentPromoter")?.value;
+        document.getElementById(
+            "assignmentPromoter"
+        )?.value;
+
 
     const programId =
-        document.getElementById("assignmentProgram")?.value;
+        document.getElementById(
+            "assignmentProgram"
+        )?.value;
 
-    if (!promoterId || !programId) {
+
+    if (
+        !promoterId ||
+        !programId
+    ) {
 
         alert(
             "Please select promoter and program."
@@ -1465,12 +2024,14 @@ function createAssignment() {
         return;
     }
 
+
     const code =
         "TRK_" +
         Math.random()
             .toString(36)
             .substring(2, 10)
             .toUpperCase();
+
 
     const url =
         window.location.origin +
@@ -1481,7 +2042,9 @@ function createAssignment() {
 
     const assignment = {
 
-        id: createId("assignment"),
+        id: createId(
+            "assignment"
+        ),
 
         promoterId,
 
@@ -1491,12 +2054,15 @@ function createAssignment() {
 
         createdAt:
             new Date().toISOString()
+
     };
 
 
     const link = {
 
-        id: createId("tracking"),
+        id: createId(
+            "tracking"
+        ),
 
         assignmentId:
             assignment.id,
@@ -1513,6 +2079,7 @@ function createAssignment() {
 
         createdAt:
             new Date().toISOString()
+
     };
 
 
@@ -1520,15 +2087,19 @@ function createAssignment() {
         assignment
     );
 
+
     data.trackingLinks.push(
         link
     );
+
 
     saveData();
 
 
     renderTrackingModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 
 
@@ -1538,41 +2109,61 @@ function createAssignment() {
 }
 
 
+/* =========================================================
+   TRACKING LINK ACTIONS
+   ========================================================= */
+
 function copyTrackingLink(id) {
 
     const link =
-        data.trackingLinks.find(
-            item => item.id === id
-        );
+        getTrackingLink(id);
 
     if (!link) {
         return;
     }
 
-    navigator.clipboard
-        ?.writeText(link.url)
-        .then(() => {
-            alert("Tracking link copied.");
-        })
-        .catch(() => {
-            prompt(
-                "Copy this tracking link:",
-                link.url
-            );
-        });
+
+    if (
+        navigator.clipboard
+    ) {
+
+        navigator.clipboard
+            .writeText(link.url)
+            .then(() => {
+
+                alert(
+                    "Tracking link copied."
+                );
+
+            })
+            .catch(() => {
+
+                prompt(
+                    "Copy tracking link:",
+                    link.url
+                );
+
+            });
+
+    } else {
+
+        prompt(
+            "Copy tracking link:",
+            link.url
+        );
+    }
 }
 
 
 function testTrackingLink(id) {
 
     const link =
-        data.trackingLinks.find(
-            item => item.id === id
-        );
+        getTrackingLink(id);
 
     if (!link) {
         return;
     }
+
 
     window.open(
         link.url,
@@ -1583,25 +2174,34 @@ function testTrackingLink(id) {
 
 function deleteTrackingLink(id) {
 
-    if (!confirm("Delete this tracking link?")) {
+    if (
+        !confirm(
+            "Delete this tracking link?"
+        )
+    ) {
         return;
     }
+
 
     data.trackingLinks =
         data.trackingLinks.filter(
             item => item.id !== id
         );
 
+
     saveData();
 
+
     renderTrackingModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 /* =========================================================
-   PUBLIC TRACKING LINK
+   PUBLIC TRACKING
    ========================================================= */
 
 function handlePublicTracking() {
@@ -1611,21 +2211,27 @@ function handlePublicTracking() {
             window.location.search
         );
 
+
     const code =
         params.get("track");
+
 
     if (!code) {
         return;
     }
 
+
     const link =
         data.trackingLinks.find(
-            item => item.code === code
+            item =>
+                item.code === code
         );
+
 
     if (!link) {
         return;
     }
+
 
     link.clicks =
         (Number(link.clicks) || 0) + 1;
@@ -1633,20 +2239,27 @@ function handlePublicTracking() {
 
     data.clicks.push({
 
-        id: createId("click"),
+        id: createId(
+            "click"
+        ),
 
         type: "tracking",
 
-        trackingCode: code,
+        trackingCode:
+            code,
 
-        trackingLinkId: link.id,
+        trackingLinkId:
+            link.id,
 
-        promoterId: link.promoterId,
+        promoterId:
+            link.promoterId,
 
-        programId: link.programId,
+        programId:
+            link.programId,
 
         createdAt:
             new Date().toISOString()
+
     });
 
 
@@ -1667,11 +2280,14 @@ function handlePublicTracking() {
 function showSocialLinkForm() {
 
     const area =
-        document.getElementById("socialLinkFormArea");
+        document.getElementById(
+            "socialLinkFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     if (!data.programs.length) {
 
@@ -1681,6 +2297,7 @@ function showSocialLinkForm() {
 
         return;
     }
+
 
     area.innerHTML = `
 
@@ -1719,9 +2336,13 @@ function showSocialLinkForm() {
 
                 ${
                     data.programs.map(program => `
+
                         <option value="${program.id}">
-                            ${escapeHTML(program.name)}
+                            ${escapeHTML(
+                                program.name
+                            )}
                         </option>
+
                     `).join("")
                 }
 
@@ -1731,10 +2352,13 @@ function showSocialLinkForm() {
             <button
                 class="primary-action"
                 onclick="createSocialMediaLink()">
+
                 Create Social Link
+
             </button>
 
         </div>
+
     `;
 }
 
@@ -1742,12 +2366,21 @@ function showSocialLinkForm() {
 function createSocialMediaLink() {
 
     const platform =
-        document.getElementById("socialPlatform")?.value;
+        document.getElementById(
+            "socialPlatform"
+        )?.value;
+
 
     const programId =
-        document.getElementById("socialProgram")?.value;
+        document.getElementById(
+            "socialProgram"
+        )?.value;
 
-    if (!platform || !programId) {
+
+    if (
+        !platform ||
+        !programId
+    ) {
 
         alert(
             "Please select platform and program."
@@ -1774,7 +2407,9 @@ function createSocialMediaLink() {
 
     data.socialLinks.push({
 
-        id: createId("social"),
+        id: createId(
+            "social"
+        ),
 
         code,
 
@@ -1788,6 +2423,7 @@ function createSocialMediaLink() {
 
         createdAt:
             new Date().toISOString()
+
     });
 
 
@@ -1795,7 +2431,9 @@ function createSocialMediaLink() {
 
 
     renderTrackingModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 
 
@@ -1816,17 +2454,36 @@ function copySocialLink(id) {
         return;
     }
 
-    navigator.clipboard
-        ?.writeText(link.url)
-        .then(() => {
-            alert("Social link copied.");
-        })
-        .catch(() => {
-            prompt(
-                "Copy this social media link:",
-                link.url
-            );
-        });
+
+    if (
+        navigator.clipboard
+    ) {
+
+        navigator.clipboard
+            .writeText(link.url)
+            .then(() => {
+
+                alert(
+                    "Social link copied."
+                );
+
+            })
+            .catch(() => {
+
+                prompt(
+                    "Copy social link:",
+                    link.url
+                );
+
+            });
+
+    } else {
+
+        prompt(
+            "Copy social link:",
+            link.url
+        );
+    }
 }
 
 
@@ -1841,6 +2498,7 @@ function testSocialLink(id) {
         return;
     }
 
+
     window.open(
         link.url,
         "_blank"
@@ -1850,25 +2508,34 @@ function testSocialLink(id) {
 
 function deleteSocialLink(id) {
 
-    if (!confirm("Delete this social link?")) {
+    if (
+        !confirm(
+            "Delete this social link?"
+        )
+    ) {
         return;
     }
+
 
     data.socialLinks =
         data.socialLinks.filter(
             item => item.id !== id
         );
 
+
     saveData();
 
+
     renderTrackingModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
 
 /* =========================================================
-   PUBLIC SOCIAL LINK
+   PUBLIC SOCIAL TRACKING
    ========================================================= */
 
 function handlePublicSocialLink() {
@@ -1878,17 +2545,22 @@ function handlePublicSocialLink() {
             window.location.search
         );
 
+
     const code =
         params.get("social");
+
 
     if (!code) {
         return;
     }
 
+
     const link =
         data.socialLinks.find(
-            item => item.code === code
+            item =>
+                item.code === code
         );
+
 
     if (!link) {
         return;
@@ -1901,20 +2573,27 @@ function handlePublicSocialLink() {
 
     data.clicks.push({
 
-        id: createId("socialclick"),
+        id: createId(
+            "socialclick"
+        ),
 
         type: "social",
 
-        socialCode: link.code,
+        socialCode:
+            link.code,
 
-        socialLinkId: link.id,
+        socialLinkId:
+            link.id,
 
-        programId: link.programId,
+        programId:
+            link.programId,
 
-        platform: link.platform,
+        platform:
+            link.platform,
 
         createdAt:
             new Date().toISOString()
+
     });
 
 
@@ -1929,7 +2608,7 @@ function handlePublicSocialLink() {
 
 
 /* =========================================================
-   PUBLIC LANDING MESSAGE
+   PUBLIC LANDING
    ========================================================= */
 
 function showPublicLandingMessage(
@@ -1938,13 +2617,20 @@ function showPublicLandingMessage(
 ) {
 
     const program =
-        getProgram(link.programId);
+        getProgram(
+            link.programId
+        );
+
 
     const box =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     box.className =
         "public-link-message";
+
 
     box.innerHTML = `
 
@@ -1954,9 +2640,11 @@ function showPublicLandingMessage(
                 JANJUA
             </div>
 
+
             <h2>
                 Welcome to JANJUA
             </h2>
+
 
             <p>
                 ${escapeHTML(
@@ -1965,36 +2653,56 @@ function showPublicLandingMessage(
                 )}
             </p>
 
+
             <p>
-                Your ${type === "social" ? "social media" : "tracking"}
+                Your
+                ${
+                    type === "social"
+                    ?
+                    "social media"
+                    :
+                    "tracking"
+                }
                 visit has been recorded.
             </p>
 
+
             ${
                 program?.affiliateUrl
+
                 ?
+
                 `
                 <a
                     class="primary-action public-link-button"
-                    href="${escapeHTML(program.affiliateUrl)}"
+                    href="${escapeHTML(
+                        program.affiliateUrl
+                    )}"
                     target="_blank"
                     rel="noopener noreferrer">
+
                     Continue to Offer
+
                 </a>
                 `
+
                 :
+
                 `
                 <p>
-                    Offer link is not configured yet.
+                    Offer link is not configured.
                 </p>
                 `
             }
 
         </div>
+
     `;
 
 
-    document.body.appendChild(box);
+    document.body.appendChild(
+        box
+    );
 }
 
 
@@ -2004,16 +2712,99 @@ function showPublicLandingMessage(
 
 function renderOrdersModule(content) {
 
+    const totalClicks =
+        data.clicks.length;
+
+
+    const trackingClicks =
+        data.clicks.filter(
+            item =>
+                item.type === "tracking"
+        ).length;
+
+
+    const socialClicks =
+        data.clicks.filter(
+            item =>
+                item.type === "social"
+        ).length;
+
+
     content.innerHTML = `
 
         <div class="module-header">
 
             <div>
-                <h2>🛒 Orders & Clicks</h2>
-                <p>Track clicks, orders and sales.</p>
+
+                <h2>
+                    🛒 Orders & Clicks
+                </h2>
+
+                <p>
+                    Track traffic, orders and sales.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <span>
+                    Total Clicks
+                </span>
+
+                <strong>
+                    ${totalClicks}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Tracking Clicks
+                </span>
+
+                <strong>
+                    ${trackingClicks}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Social Clicks
+                </span>
+
+                <strong>
+                    ${socialClicks}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Orders
+                </span>
+
+                <strong>
+                    ${data.orders.length}
+                </strong>
+
+            </div>
 
         </div>
 
@@ -2023,101 +2814,110 @@ function renderOrdersModule(content) {
             <button
                 class="primary-action"
                 onclick="showOrderForm()">
+
                 + Add Order
+
             </button>
 
 
             <div id="orderFormArea"></div>
 
 
-            <h3>📊 Click Statistics</h3>
+            <h3>
+                🛍 Orders
+            </h3>
 
-            <div class="stats-grid">
-
-                <div class="stat-card">
-                    <span>Total Clicks</span>
-                    <strong>${data.clicks.length}</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Tracking Clicks</span>
-                    <strong>
-                        ${
-                            data.clicks.filter(
-                                item => item.type === "tracking"
-                            ).length
-                        }
-                    </strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Social Clicks</span>
-                    <strong>
-                        ${
-                            data.clicks.filter(
-                                item => item.type === "social"
-                            ).length
-                        }
-                    </strong>
-                </div>
-
-                <div class="stat-card">
-                    <span>Total Orders</span>
-                    <strong>${data.orders.length}</strong>
-                </div>
-
-            </div>
-
-
-            <h3>🛍 Orders</h3>
 
             <div class="module-list">
 
                 ${
                     data.orders.length
+
                     ?
-                    data.orders.map(order => `
 
-                        <div class="list-item">
+                    data.orders.map(order => {
 
-                            <div>
+                        const program =
+                            getProgram(
+                                order.programId
+                            );
 
-                                <strong>
-                                    ${escapeHTML(order.customerName)}
-                                </strong>
+                        const promoter =
+                            getPromoter(
+                                order.promoterId
+                            );
 
-                                <small>
-                                    Program:
-                                    ${escapeHTML(
-                                        getProgram(order.programId)?.name ||
-                                        "Unknown"
-                                    )}
-                                </small>
 
-                                <small>
-                                    Amount:
-                                    ${formatMoney(order.amount)}
-                                </small>
+                        return `
 
-                                <small>
-                                    Status:
-                                    ${escapeHTML(order.status)}
-                                </small>
+                            <div class="list-item">
+
+                                <div>
+
+                                    <strong>
+                                        ${escapeHTML(
+                                            order.customerName
+                                        )}
+                                    </strong>
+
+                                    <small>
+                                        Program:
+                                        ${escapeHTML(
+                                            program?.name ||
+                                            "Unknown"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Promoter:
+                                        ${escapeHTML(
+                                            promoter?.name ||
+                                            "Direct / Unknown"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Amount:
+                                        ${formatMoney(
+                                            order.amount
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Commission:
+                                        ${formatMoney(
+                                            order.commissionAmount
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Status:
+                                        ${escapeHTML(
+                                            order.status
+                                        )}
+                                    </small>
+
+                                </div>
+
+
+                                <button
+                                    onclick="deleteOrder('${order.id}')">
+
+                                    Delete
+
+                                </button>
 
                             </div>
 
-                            <button
-                                onclick="deleteOrder('${order.id}')">
-                                Delete
-                            </button>
+                        `;
 
-                        </div>
+                    }).join("")
 
-                    `).join("")
                     :
+
                     `
                     <div class="empty-module">
-                        No orders recorded yet.
+                        No orders recorded.
                     </div>
                     `
                 }
@@ -2129,14 +2929,21 @@ function renderOrdersModule(content) {
 }
 
 
+/* =========================================================
+   ORDER FORM
+   ========================================================= */
+
 function showOrderForm() {
 
     const area =
-        document.getElementById("orderFormArea");
+        document.getElementById(
+            "orderFormArea"
+        );
 
     if (!area) {
         return;
     }
+
 
     if (!data.programs.length) {
 
@@ -2146,6 +2953,7 @@ function showOrderForm() {
 
         return;
     }
+
 
     area.innerHTML = `
 
@@ -2164,9 +2972,34 @@ function showOrderForm() {
 
                 ${
                     data.programs.map(program => `
+
                         <option value="${program.id}">
-                            ${escapeHTML(program.name)}
+                            ${escapeHTML(
+                                program.name
+                            )}
                         </option>
+
+                    `).join("")
+                }
+
+            </select>
+
+
+            <select id="orderPromoter">
+
+                <option value="">
+                    Direct / No Promoter
+                </option>
+
+                ${
+                    data.promoters.map(promoter => `
+
+                        <option value="${promoter.id}">
+                            ${escapeHTML(
+                                promoter.name
+                            )}
+                        </option>
+
                     `).join("")
                 }
 
@@ -2210,33 +3043,62 @@ function showOrderForm() {
             <button
                 class="primary-action"
                 onclick="createOrder()">
+
                 Save Order
+
             </button>
 
         </div>
+
     `;
 }
 
 
+/* =========================================================
+   CREATE ORDER
+   ========================================================= */
+
 function createOrder() {
 
     const customerName =
-        document.getElementById("orderCustomer")?.value.trim();
+        document.getElementById(
+            "orderCustomer"
+        )?.value.trim();
+
 
     const programId =
-        document.getElementById("orderProgram")?.value;
+        document.getElementById(
+            "orderProgram"
+        )?.value;
+
+
+    const promoterId =
+        document.getElementById(
+            "orderPromoter"
+        )?.value ||
+        "";
+
 
     const amount =
         Number(
-            document.getElementById("orderAmount")?.value
+            document.getElementById(
+                "orderAmount"
+            )?.value
         ) || 0;
 
+
     const status =
-        document.getElementById("orderStatus")?.value ||
+        document.getElementById(
+            "orderStatus"
+        )?.value ||
         "Pending";
 
+
     const trackingCode =
-        document.getElementById("orderTrackingCode")?.value.trim();
+        document.getElementById(
+            "orderTrackingCode"
+        )?.value.trim() ||
+        "";
 
 
     if (!customerName) {
@@ -2248,6 +3110,7 @@ function createOrder() {
         return;
     }
 
+
     if (!programId) {
 
         alert(
@@ -2258,8 +3121,20 @@ function createOrder() {
     }
 
 
+    if (amount <= 0) {
+
+        alert(
+            "Please enter valid order amount."
+        );
+
+        return;
+    }
+
+
     const program =
-        getProgram(programId);
+        getProgram(
+            programId
+        );
 
 
     const commissionRate =
@@ -2280,11 +3155,15 @@ function createOrder() {
 
     const order = {
 
-        id: createId("order"),
+        id: createId(
+            "order"
+        ),
 
         customerName,
 
         programId,
+
+        promoterId,
 
         amount,
 
@@ -2298,32 +3177,28 @@ function createOrder() {
 
         createdAt:
             new Date().toISOString()
+
     };
 
 
-    data.orders.push(order);
+    data.orders.push(
+        order
+    );
 
+
+    /*
+       Commission only becomes payable
+       when order is Confirmed or Completed.
+    */
 
     if (
         status === "Confirmed" ||
         status === "Completed"
     ) {
 
-        data.commissions.push({
-
-            id: createId("commission"),
-
-            orderId: order.id,
-
-            programId,
-
-            amount: commissionAmount,
-
-            status: "Pending",
-
-            createdAt:
-                new Date().toISOString()
-        });
+        createCommissionForOrder(
+            order
+        );
     }
 
 
@@ -2331,7 +3206,9 @@ function createOrder() {
 
 
     renderOrdersModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 
 
@@ -2341,26 +3218,91 @@ function createOrder() {
 }
 
 
-function deleteOrder(id) {
+/* =========================================================
+   COMMISSION CREATION
+   ========================================================= */
 
-    if (!confirm("Delete this order?")) {
+function createCommissionForOrder(
+    order
+) {
+
+    const alreadyExists =
+        data.commissions.some(
+            item =>
+                item.orderId ===
+                order.id
+        );
+
+
+    if (alreadyExists) {
         return;
     }
 
+
+    data.commissions.push({
+
+        id: createId(
+            "commission"
+        ),
+
+        orderId:
+            order.id,
+
+        programId:
+            order.programId,
+
+        promoterId:
+            order.promoterId || "",
+
+        amount:
+            order.commissionAmount,
+
+        status:
+            "Pending",
+
+        createdAt:
+            new Date().toISOString()
+
+    });
+}
+
+
+/* =========================================================
+   DELETE ORDER
+   ========================================================= */
+
+function deleteOrder(id) {
+
+    if (
+        !confirm(
+            "Delete this order?"
+        )
+    ) {
+        return;
+    }
+
+
     data.orders =
         data.orders.filter(
-            item => item.id !== id
+            item =>
+                item.id !== id
         );
+
 
     data.commissions =
         data.commissions.filter(
-            item => item.orderId !== id
+            item =>
+                item.orderId !== id
         );
+
 
     saveData();
 
+
     renderOrdersModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 }
 
@@ -2374,7 +3316,8 @@ function renderCommissionModule(content) {
     const totalCommission =
         data.commissions.reduce(
             (sum, item) =>
-                sum + (Number(item.amount) || 0),
+                sum +
+                (Number(item.amount) || 0),
             0
         );
 
@@ -2382,14 +3325,18 @@ function renderCommissionModule(content) {
     const totalPaid =
         data.payments.reduce(
             (sum, item) =>
-                sum + (Number(item.amount) || 0),
+                sum +
+                (Number(item.amount) || 0),
             0
         );
 
 
     const pending =
-        totalCommission -
-        totalPaid;
+        Math.max(
+            totalCommission -
+            totalPaid,
+            0
+        );
 
 
     content.innerHTML = `
@@ -2397,11 +3344,20 @@ function renderCommissionModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>💰 Commission & Payments</h2>
-                <p>Manage commissions and promoter payments.</p>
+
+                <h2>
+                    💰 Commission & Payments
+                </h2>
+
+                <p>
+                    Manage promoter earnings and payments.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
 
@@ -2410,33 +3366,43 @@ function renderCommissionModule(content) {
 
             <div class="stat-card">
 
-                <span>Total Commission</span>
-
-                <strong>
-                    ${formatMoney(totalCommission)}
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>Total Paid</span>
-
-                <strong>
-                    ${formatMoney(totalPaid)}
-                </strong>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span>Pending</span>
+                <span>
+                    Total Commission
+                </span>
 
                 <strong>
                     ${formatMoney(
-                        Math.max(pending, 0)
+                        totalCommission
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Paid
+                </span>
+
+                <strong>
+                    ${formatMoney(
+                        totalPaid
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Pending
+                </span>
+
+                <strong>
+                    ${formatMoney(
+                        pending
                     )}
                 </strong>
 
@@ -2447,57 +3413,100 @@ function renderCommissionModule(content) {
 
         <div class="module-panel">
 
-            <h3>Commission Records</h3>
+            <h3>
+                💵 Commission Records
+            </h3>
+
 
             <div class="module-list">
 
                 ${
                     data.commissions.length
+
                     ?
-                    data.commissions.map(item => `
 
-                        <div class="list-item">
+                    data.commissions.map(item => {
 
-                            <div>
+                        const promoter =
+                            getPromoter(
+                                item.promoterId
+                            );
 
-                                <strong>
-                                    ${formatMoney(item.amount)}
-                                </strong>
+                        const program =
+                            getProgram(
+                                item.programId
+                            );
 
-                                <small>
-                                    Status:
-                                    ${escapeHTML(item.status)}
-                                </small>
 
-                                <small>
-                                    Order:
-                                    ${escapeHTML(item.orderId)}
-                                </small>
+                        return `
+
+                            <div class="list-item">
+
+                                <div>
+
+                                    <strong>
+                                        ${formatMoney(
+                                            item.amount
+                                        )}
+                                    </strong>
+
+                                    <small>
+                                        Promoter:
+                                        ${escapeHTML(
+                                            promoter?.name ||
+                                            "Direct / Unknown"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Program:
+                                        ${escapeHTML(
+                                            program?.name ||
+                                            "Unknown"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Status:
+                                        ${escapeHTML(
+                                            item.status
+                                        )}
+                                    </small>
+
+                                </div>
+
+
+                                ${
+                                    item.status === "Pending"
+
+                                    ?
+
+                                    `
+                                    <button
+                                        onclick="markCommissionPaid('${item.id}')">
+
+                                        Mark Paid
+
+                                    </button>
+                                    `
+
+                                    :
+
+                                    `
+                                    <span class="paid-label">
+                                        PAID
+                                    </span>
+                                    `
+                                }
 
                             </div>
 
+                        `;
 
-                            ${
-                                item.status === "Pending"
-                                ?
-                                `
-                                <button
-                                    onclick="markCommissionPaid('${item.id}')">
-                                    Mark Paid
-                                </button>
-                                `
-                                :
-                                `
-                                <span class="paid-label">
-                                    PAID
-                                </span>
-                                `
-                            }
+                    }).join("")
 
-                        </div>
-
-                    `).join("")
                     :
+
                     `
                     <div class="empty-module">
                         No commission records yet.
@@ -2512,45 +3521,74 @@ function renderCommissionModule(content) {
 
         <div class="module-panel">
 
-            <h3>Payment Records</h3>
+            <h3>
+                💳 Payment Records
+            </h3>
+
 
             <div class="module-list">
 
                 ${
                     data.payments.length
+
                     ?
-                    data.payments.map(payment => `
 
-                        <div class="list-item">
+                    data.payments.map(payment => {
 
-                            <div>
+                        const promoter =
+                            getPromoter(
+                                payment.promoterId
+                            );
 
-                                <strong>
-                                    ${formatMoney(payment.amount)}
-                                </strong>
 
-                                <small>
-                                    Promoter:
-                                    ${escapeHTML(
-                                        getPromoter(payment.promoterId)?.name ||
-                                        "Not assigned"
-                                    )}
-                                </small>
+                        return `
 
-                                <small>
-                                    Method:
-                                    ${escapeHTML(payment.method || "")}
-                                </small>
+                            <div class="list-item">
+
+                                <div>
+
+                                    <strong>
+                                        ${formatMoney(
+                                            payment.amount
+                                        )}
+                                    </strong>
+
+                                    <small>
+                                        Promoter:
+                                        ${escapeHTML(
+                                            promoter?.name ||
+                                            "Not assigned"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Method:
+                                        ${escapeHTML(
+                                            payment.method ||
+                                            "Manual"
+                                        )}
+                                    </small>
+
+                                    <small>
+                                        Date:
+                                        ${escapeHTML(
+                                            payment.createdAt
+                                        )}
+                                    </small>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                        `;
 
-                    `).join("")
+                    }).join("")
+
                     :
+
                     `
                     <div class="empty-module">
-                        No payments recorded yet.
+                        No payment records yet.
                     </div>
                     `
                 }
@@ -2562,31 +3600,62 @@ function renderCommissionModule(content) {
 }
 
 
+/* =========================================================
+   MARK COMMISSION PAID
+   ========================================================= */
+
 function markCommissionPaid(id) {
 
     const commission =
         data.commissions.find(
-            item => item.id === id
+            item =>
+                item.id === id
         );
+
 
     if (!commission) {
         return;
     }
 
-    commission.status = "Paid";
+
+    if (
+        commission.status === "Paid"
+    ) {
+        return;
+    }
+
+
+    const promoter =
+        getPromoter(
+            commission.promoterId
+        );
+
+
+    commission.status =
+        "Paid";
+
 
     data.payments.push({
 
-        id: createId("payment"),
+        id: createId(
+            "payment"
+        ),
 
-        commissionId: commission.id,
+        commissionId:
+            commission.id,
 
-        amount: commission.amount,
+        promoterId:
+            commission.promoterId || "",
 
-        method: "Manual",
+        amount:
+            commission.amount,
+
+        method:
+            "Manual",
 
         createdAt:
             new Date().toISOString()
+
     });
 
 
@@ -2594,7 +3663,9 @@ function markCommissionPaid(id) {
 
 
     renderCommissionModule(
-        document.getElementById("moduleContent")
+        document.getElementById(
+            "moduleContent"
+        )
     );
 
 
@@ -2610,24 +3681,27 @@ function markCommissionPaid(id) {
 
 function renderReportsModule(content) {
 
-    const totalClicks =
+    const clicks =
         data.clicks.length;
 
-    const totalOrders =
+
+    const orders =
         data.orders.length;
 
-    const completedOrders =
+
+    const confirmedOrders =
         data.orders.filter(
             order =>
-                order.status === "Completed" ||
-                order.status === "Confirmed"
+                order.status === "Confirmed" ||
+                order.status === "Completed"
         ).length;
 
 
     const sales =
         data.orders.reduce(
             (sum, order) =>
-                sum + (Number(order.amount) || 0),
+                sum +
+                (Number(order.amount) || 0),
             0
         );
 
@@ -2635,17 +3709,27 @@ function renderReportsModule(content) {
     const commission =
         data.commissions.reduce(
             (sum, item) =>
-                sum + (Number(item.amount) || 0),
+                sum +
+                (Number(item.amount) || 0),
+            0
+        );
+
+
+    const paid =
+        data.payments.reduce(
+            (sum, item) =>
+                sum +
+                (Number(item.amount) || 0),
             0
         );
 
 
     const conversion =
-        totalClicks > 0
+        clicks > 0
         ?
         (
-            totalOrders /
-            totalClicks *
+            orders /
+            clicks *
             100
         ).toFixed(2)
         :
@@ -2657,11 +3741,20 @@ function renderReportsModule(content) {
         <div class="module-header">
 
             <div>
-                <h2>📈 Reports & Analytics</h2>
-                <p>View marketing performance and statistics.</p>
+
+                <h2>
+                    📈 Reports & Analytics
+                </h2>
+
+                <p>
+                    Complete marketing performance.
+                </p>
+
             </div>
 
-            <button onclick="closeModule()">✕ Close</button>
+            <button onclick="closeModule()">
+                ✕ Close
+            </button>
 
         </div>
 
@@ -2670,10 +3763,12 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Total Clicks</span>
+                <span>
+                    Total Clicks
+                </span>
 
                 <strong>
-                    ${totalClicks}
+                    ${clicks}
                 </strong>
 
             </div>
@@ -2681,10 +3776,12 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Total Orders</span>
+                <span>
+                    Orders
+                </span>
 
                 <strong>
-                    ${totalOrders}
+                    ${orders}
                 </strong>
 
             </div>
@@ -2692,10 +3789,12 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Confirmed / Completed</span>
+                <span>
+                    Confirmed / Completed
+                </span>
 
                 <strong>
-                    ${completedOrders}
+                    ${confirmedOrders}
                 </strong>
 
             </div>
@@ -2703,7 +3802,9 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Conversion Rate</span>
+                <span>
+                    Conversion
+                </span>
 
                 <strong>
                     ${conversion}%
@@ -2714,10 +3815,14 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Total Sales</span>
+                <span>
+                    Sales
+                </span>
 
                 <strong>
-                    ${formatMoney(sales)}
+                    ${formatMoney(
+                        sales
+                    )}
                 </strong>
 
             </div>
@@ -2725,10 +3830,48 @@ function renderReportsModule(content) {
 
             <div class="stat-card">
 
-                <span>Total Commission</span>
+                <span>
+                    Commission
+                </span>
 
                 <strong>
-                    ${formatMoney(commission)}
+                    ${formatMoney(
+                        commission
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Paid
+                </span>
+
+                <strong>
+                    ${formatMoney(
+                        paid
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Pending
+                </span>
+
+                <strong>
+                    ${formatMoney(
+                        Math.max(
+                            commission -
+                            paid,
+                            0
+                        )
+                    )}
                 </strong>
 
             </div>
@@ -2738,41 +3881,88 @@ function renderReportsModule(content) {
 
         <div class="module-panel">
 
-            <h3>📊 Performance Summary</h3>
+            <h3>
+                📊 Platform Summary
+            </h3>
+
+            <p>
+                Categories:
+                <strong>
+                    ${data.categories.length}
+                </strong>
+            </p>
+
+            <p>
+                Providers:
+                <strong>
+                    ${data.providers.length}
+                </strong>
+            </p>
 
             <p>
                 Programs:
-                <strong>${data.programs.length}</strong>
+                <strong>
+                    ${data.programs.length}
+                </strong>
             </p>
 
             <p>
                 Promoters:
-                <strong>${data.promoters.length}</strong>
+                <strong>
+                    ${data.promoters.length}
+                </strong>
             </p>
 
             <p>
                 Tracking Links:
-                <strong>${data.trackingLinks.length}</strong>
+                <strong>
+                    ${data.trackingLinks.length}
+                </strong>
             </p>
 
             <p>
                 Social Links:
-                <strong>${data.socialLinks.length}</strong>
+                <strong>
+                    ${data.socialLinks.length}
+                </strong>
             </p>
 
         </div>
+
+
+        <div class="module-panel">
+
+            <h3>
+                🔄 Complete Marketing Chain
+            </h3>
+
+            <p>
+                Provider →
+                Program →
+                Promoter →
+                Tracking →
+                Click →
+                Order →
+                Commission →
+                Payment
+            </p>
+
+        </div>
+
     `;
 }
 
 
 /* =========================================================
-   ANIMATED JANJUA BRANDING
+   JANJUA ANIMATED BRAND
    ========================================================= */
 
 function addAnimatedBranding() {
 
     const header =
-        document.querySelector("header");
+        document.querySelector(
+            "header"
+        );
 
     if (!header) {
         return;
@@ -2780,33 +3970,44 @@ function addAnimatedBranding() {
 
 
     const oldBrand =
-        header.querySelector(".brand-area");
+        header.querySelector(
+            ".brand-area"
+        );
 
     if (oldBrand) {
-        oldBrand.style.display = "none";
+
+        oldBrand.style.display =
+            "none";
     }
 
 
     const oldStatus =
-        header.querySelector(".header-status");
+        header.querySelector(
+            ".header-status"
+        );
 
     if (oldStatus) {
-        oldStatus.style.display = "none";
+
+        oldStatus.style.display =
+            "none";
     }
 
 
-    const oldAnimated =
+    const existing =
         document.getElementById(
             "janjuaAnimatedBrand"
         );
 
-    if (oldAnimated) {
-        oldAnimated.remove();
+    if (existing) {
+        existing.remove();
     }
 
 
     const box =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     box.id =
         "janjuaAnimatedBrand";
@@ -2829,9 +4030,11 @@ function addAnimatedBranding() {
                     JANJUA
                 </div>
 
+
                 <div class="brand-subtitle">
                     Janjua Digital Marketing Platform Online
                 </div>
+
 
                 <div class="brand-status">
 
@@ -2844,15 +4047,18 @@ function addAnimatedBranding() {
             </div>
 
         </div>
+
     `;
 
 
-    header.prepend(box);
+    header.prepend(
+        box
+    );
 }
 
 
 /* =========================================================
-   BRAND ANIMATION CSS
+   BRAND CSS
    ========================================================= */
 
 function addBrandAnimationCSS() {
@@ -2867,7 +4073,10 @@ function addBrandAnimationCSS() {
 
 
     const style =
-        document.createElement("style");
+        document.createElement(
+            "style"
+        );
+
 
     style.id =
         "janjuaBrandAnimationCSS";
@@ -2876,97 +4085,96 @@ function addBrandAnimationCSS() {
     style.textContent = `
 
         #janjuaAnimatedBrand {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width:100%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
         }
 
 
         .janjua-brand-animation {
-            position: relative;
-            min-height: 170px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            position:relative;
+            width:100%;
+            min-height:170px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            overflow:hidden;
         }
 
 
         .brand-main {
-            position: relative;
-            z-index: 5;
-            text-align: center;
+            position:relative;
+            z-index:5;
+            text-align:center;
         }
 
 
         .brand-title {
-            font-size: 48px;
-            font-weight: 900;
-            letter-spacing: 8px;
+            font-size:48px;
+            font-weight:900;
+            letter-spacing:8px;
             text-shadow:
                 0 0 10px rgba(255,255,255,.6),
                 0 0 25px rgba(0,200,255,.5);
-            animation: janjuaPulse 2.5s infinite;
+            animation:janjuaPulse 2.5s infinite;
         }
 
 
         .brand-subtitle {
-            font-size: 15px;
-            margin-top: 5px;
-            opacity: .95;
+            font-size:15px;
+            margin-top:5px;
         }
 
 
         .brand-status {
-            margin-top: 10px;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
+            margin-top:10px;
+            font-size:13px;
+            font-weight:bold;
+            letter-spacing:2px;
         }
 
 
         .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 12px #00ff88;
-            margin-right: 7px;
-            animation: statusPulse 1.4s infinite;
+            display:inline-block;
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            background:#00ff88;
+            box-shadow:0 0 12px #00ff88;
+            margin-right:7px;
+            animation:statusPulse 1.4s infinite;
         }
 
 
         .brand-orbit {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            border: 1px solid rgba(255,255,255,.35);
-            border-radius: 50%;
-            transform: translate(-50%,-50%);
+            position:absolute;
+            left:50%;
+            top:50%;
+            border:1px solid rgba(255,255,255,.35);
+            border-radius:50%;
+            transform:translate(-50%,-50%);
         }
 
 
         .orbit-one {
-            width: 250px;
-            height: 80px;
-            animation: orbitSpin 6s linear infinite;
+            width:250px;
+            height:80px;
+            animation:orbitSpin 6s linear infinite;
         }
 
 
         .orbit-two {
-            width: 330px;
-            height: 105px;
-            animation: orbitSpinReverse 9s linear infinite;
+            width:330px;
+            height:105px;
+            animation:orbitReverse 9s linear infinite;
         }
 
 
         .orbit-three {
-            width: 420px;
-            height: 135px;
-            animation: orbitSpin 13s linear infinite;
+            width:420px;
+            height:135px;
+            animation:orbitSpin 13s linear infinite;
         }
 
 
@@ -2986,7 +4194,7 @@ function addBrandAnimationCSS() {
         }
 
 
-        @keyframes orbitSpinReverse {
+        @keyframes orbitReverse {
 
             from {
                 transform:
@@ -3005,11 +4213,11 @@ function addBrandAnimationCSS() {
         @keyframes janjuaPulse {
 
             0%,100% {
-                transform: scale(1);
+                transform:scale(1);
             }
 
             50% {
-                transform: scale(1.04);
+                transform:scale(1.04);
             }
         }
 
@@ -3017,13 +4225,13 @@ function addBrandAnimationCSS() {
         @keyframes statusPulse {
 
             0%,100% {
-                opacity: 1;
-                transform: scale(1);
+                opacity:1;
+                transform:scale(1);
             }
 
             50% {
-                opacity: .45;
-                transform: scale(.75);
+                opacity:.45;
+                transform:scale(.75);
             }
         }
 
@@ -3031,31 +4239,33 @@ function addBrandAnimationCSS() {
         @media(max-width:600px){
 
             .brand-title {
-                font-size: 35px;
-                letter-spacing: 5px;
+                font-size:35px;
+                letter-spacing:5px;
             }
 
             .brand-subtitle {
-                font-size: 12px;
+                font-size:12px;
             }
 
             .orbit-one {
-                width: 200px;
+                width:200px;
             }
 
             .orbit-two {
-                width: 270px;
+                width:270px;
             }
 
             .orbit-three {
-                width: 340px;
+                width:340px;
             }
         }
 
     `;
 
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+        style
+    );
 }
 
 
@@ -3075,7 +4285,10 @@ function addModuleCSS() {
 
 
     const style =
-        document.createElement("style");
+        document.createElement(
+            "style"
+        );
+
 
     style.id =
         "janjuaModuleCSS";
@@ -3084,244 +4297,245 @@ function addModuleCSS() {
     style.textContent = `
 
         .janjua-module-area {
-            width: 100%;
-            margin: 35px 0;
-            display: block;
+            width:100%;
+            margin:25px 0 35px;
+            display:block;
         }
 
 
         #moduleContent {
-            width: 100%;
+            width:100%;
         }
 
 
         .module-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.15);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:15px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.15);
         }
 
 
         .module-header h2 {
-            margin: 0 0 5px;
+            margin:0 0 5px;
         }
 
 
         .module-header p {
-            margin: 0;
-            opacity: .75;
+            margin:0;
+            opacity:.75;
         }
 
 
         .module-header button,
         .list-item button,
         .button-group button {
-            border: none;
-            border-radius: 8px;
-            padding: 9px 13px;
-            cursor: pointer;
+            border:none;
+            border-radius:8px;
+            padding:9px 13px;
+            cursor:pointer;
         }
 
 
         .module-panel {
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            background: rgba(255,255,255,.07);
-            border: 1px solid rgba(255,255,255,.12);
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:15px;
+            background:rgba(255,255,255,.07);
+            border:1px solid rgba(255,255,255,.12);
         }
 
 
         .stats-grid {
-            display: grid;
+            display:grid;
             grid-template-columns:
                 repeat(auto-fit,minmax(160px,1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            gap:15px;
+            margin-bottom:20px;
         }
 
 
         .stat-card {
-            padding: 20px;
-            border-radius: 14px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.12);
+            padding:20px;
+            border-radius:14px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.12);
         }
 
 
         .stat-card span {
-            display: block;
-            opacity: .7;
-            margin-bottom: 8px;
+            display:block;
+            opacity:.7;
+            margin-bottom:8px;
         }
 
 
         .stat-card strong {
-            display: block;
-            font-size: 24px;
+            display:block;
+            font-size:24px;
         }
 
 
         .module-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            margin-top:15px;
         }
 
 
         .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            border-radius: 12px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.1);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            padding:15px;
+            border-radius:12px;
+            background:rgba(255,255,255,.06);
+            border:1px solid rgba(255,255,255,.1);
         }
 
 
         .list-item > div:first-child {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            display:flex;
+            flex-direction:column;
+            gap:5px;
         }
 
 
         .list-item small {
-            opacity: .7;
+            opacity:.7;
         }
 
 
         .form-panel {
-            display: grid;
-            gap: 12px;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 12px;
-            background: rgba(0,0,0,.12);
+            display:grid;
+            gap:12px;
+            padding:15px;
+            margin:15px 0;
+            border-radius:12px;
+            background:rgba(0,0,0,.12);
         }
 
 
         .form-panel input,
         .form-panel select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,.2);
-            background: rgba(255,255,255,.1);
-            color: inherit;
-            box-sizing: border-box;
+            width:100%;
+            padding:12px;
+            border-radius:8px;
+            border:1px solid rgba(255,255,255,.2);
+            background:rgba(255,255,255,.1);
+            color:inherit;
+            box-sizing:border-box;
         }
 
 
         .form-panel option {
-            color: #111;
+            color:#111;
         }
 
 
         .primary-action,
         .secondary-action {
-            display: inline-block;
-            margin: 5px;
-            padding: 11px 16px;
-            border: none;
-            border-radius: 9px;
-            cursor: pointer;
-            font-weight: bold;
+            display:inline-block;
+            margin:5px;
+            padding:11px 16px;
+            border:none;
+            border-radius:9px;
+            cursor:pointer;
+            font-weight:bold;
         }
 
 
         .secondary-action {
-            opacity: .85;
+            opacity:.85;
         }
 
 
         .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
+            display:flex;
+            flex-wrap:wrap;
+            gap:5px;
         }
 
 
         .empty-module,
         .module-placeholder {
-            padding: 30px;
-            text-align: center;
-            border-radius: 14px;
-            background: rgba(255,255,255,.06);
+            padding:30px;
+            text-align:center;
+            border-radius:14px;
+            background:rgba(255,255,255,.06);
         }
 
 
         .paid-label {
-            font-weight: bold;
+            font-weight:bold;
         }
 
 
         .link-text {
-            word-break: break-all;
+            word-break:break-all;
         }
 
 
         .public-link-message {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background: rgba(0,0,0,.82);
+            position:fixed;
+            inset:0;
+            z-index:99999;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+            background:rgba(0,0,0,.82);
         }
 
 
         .public-link-card {
-            width: min(500px,100%);
-            padding: 35px;
-            text-align: center;
-            border-radius: 20px;
-            background: #17202a;
-            box-shadow: 0 20px 60px rgba(0,0,0,.5);
+            width:min(500px,100%);
+            padding:35px;
+            text-align:center;
+            border-radius:20px;
+            background:#17202a;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.5);
         }
 
 
         .public-logo {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            margin-bottom: 15px;
+            font-size:32px;
+            font-weight:900;
+            letter-spacing:5px;
+            margin-bottom:15px;
         }
 
 
         .public-link-button {
-            text-decoration: none;
-            margin-top: 15px;
+            text-decoration:none;
+            margin-top:15px;
         }
 
 
         @media(max-width:650px){
 
             .module-header {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction:column;
+                align-items:flex-start;
             }
 
 
             .list-item {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction:column;
+                align-items:flex-start;
             }
 
 
             .button-group {
-                width: 100%;
+                width:100%;
             }
 
         }
@@ -3329,5 +4543,7 @@ function addModuleCSS() {
     `;
 
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+        style
+    );
 }
