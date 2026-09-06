@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>JANJUA — Redirecting...</title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f5f8;
+            font-family: Arial, sans-serif;
+            color: #222;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 460px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(0,0,0,.10);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        .message {
+            margin-top: 10px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .loader {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #ddd;
+            border-top-color: #111;
+            border-radius: 50%;
+            margin: 25px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        .error {
+            color: #b00020;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: #111;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+
+        <div class="logo">
+            JANJUA
+        </div>
+
+        <div
+            id="title"
+            class="title"
+        >
+            Redirecting...
+        </div>
+
+        <div
+            id="loader"
+            class="loader"
+        ></div>
+
+        <div
+            id="message"
+            class="message"
+        >
+            Please wait while we redirect you.
+        </div>
+
+        <a
+            id="backBtn"
+            class="back-btn"
+            href="./offers.html"
+            style="display:none;"
+        >
+            Back to Offers
+        </a>
+
+    </div>
+
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+        import {
+            getFirestore,
+            collection,
+            query,
+            where,
+            limit,
+            getDocs,
+            updateDoc,
+            increment
+        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+        /* =========================================
+           FIREBASE CONFIG
+        ========================================= */
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyA8_4ArKXAdfKWZ5mi5DaT9qiayL3h_Yzw",
+
+            authDomain:
+                "janjua-traders.firebaseapp.com",
+
+            projectId:
+                "janjua-traders",
+
+            storageBucket:
+                "janjua-traders.firebasestorage.app",
+
+            messagingSenderId:
+                "154904774188",
+
+            appId:
+                "1:154904774188:web:1830f9d533e77dae6a7389"
+        };
+
+
+        /* =========================================
+           FIREBASE
+        ========================================= */
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+
+        /* =========================================
+           DOM
+        ========================================= */
+
+        const titleEl =
+            document.getElementById("title");
+
+        const messageEl =
+            document.getElementById("message");
+
+        const loaderEl =
+            document.getElementById("loader");
+
+        const backBtn =
+            document.getElementById("backBtn");
+
+
+        /* =========================================
+           HELPERS
+        ========================================= */
+
+        function showError(message) {
+
+            loaderEl.style.display = "none";
+
+            titleEl.textContent =
+                "Link Not Available";
+
+            messageEl.textContent =
+                message;
+
+            messageEl.classList.add("error");
+
+            backBtn.style.display =
+                "inline-block";
+        }
+
+
+        function getSlug() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            return (
+                params.get("c") ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
+        }
+
+
+        /* =========================================
+           REDIRECT
+        ========================================= */
+
+        async function redirectUser() {
+
+            try {
+
+                const slug =
+                    getSlug();
+
+
+                if (!slug) {
+
+                    showError(
+                        "This marketing link is incomplete."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Find marketing link
+                 * by slug
+                 */
+
+                const linksRef =
+                    collection(
+                        db,
+                        "marketingLinks"
+                    );
+
+
+                const q =
+                    query(
+                        linksRef,
+
+                        where(
+                            "slug",
+                            "==",
+                            slug
+                        ),
+
+                        limit(1)
+                    );
+
+
+                const snapshot =
+                    await getDocs(q);
+
+
+                if (snapshot.empty) {
+
+                    showError(
+                        "This marketing link does not exist."
+                    );
+
+                    return;
+                }
+
+
+                const linkDoc =
+                    snapshot.docs[0];
+
+
+                const data =
+                    linkDoc.data();
+
+
+                /*
+                 * Check active status
+                 */
+
+                if (
+                    data.active !== true
+                ) {
+
+                    showError(
+                        "This marketing link is currently inactive."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Get affiliate URL
+                 */
+
+                const affiliateLink =
+                    String(
+                        data.affiliateLink ||
+                        ""
+                    ).trim();
+
+
+                if (!affiliateLink) {
+
+                    showError(
+                        "The affiliate destination is not available."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Basic URL validation
+                 */
+
+                let destination;
+
+                try {
+
+                    destination =
+                        new URL(
+                            affiliateLink
+                        );
+
+                } catch (error) {
+
+                    showError(
+                        "The affiliate link is invalid."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Only allow HTTP/HTTPS
+                 */
+
+                if (
+                    destination.protocol !==
+                        "https:" &&
+                    destination.protocol !==
+                        "http:"
+                ) {
+
+                    showError(
+                        "This destination is not supported."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Count click
+                 *
+                 * If Firestore rules allow
+                 * the click increment,
+                 * this will increase clicks by 1.
+                 *
+                 * Redirect will still happen
+                 * even if click counting fails.
+                 */
+
+                try {
+
+                    await updateDoc(
+                        linkDoc.ref,
+                        {
+                            clicks:
+                                increment(1)
+                        }
+                    );
+
+                } catch (clickError) {
+
+                    console.warn(
+                        "Click count update failed:",
+                        clickError
+                    );
+                }
+
+
+                /*
+                 * Update screen
+                 */
+
+                titleEl.textContent =
+                    "Opening Offer...";
+
+                messageEl.textContent =
+                    "Please wait. You are being redirected.";
+
+
+                /*
+                 * Small delay so the page
+                 * does not feel broken.
+                 */
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            destination.href;
+
+                    },
+                    300
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Marketing redirect error:",
+                    error
+                );
+
+
+                showError(
+                    "Something went wrong. Please try again later."
+                );
+            }
+        }
+
+
+        /* =========================================
+           START
+        ========================================= */
+
+        redirectUser();
+
+    </script>
+
+</body>
+</html>
