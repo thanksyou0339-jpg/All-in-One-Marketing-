@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>JANJUA Firebase UID Finder</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: #f1f5f9;
+        color: #17202a;
+    }
+
+    .box {
+        max-width: 600px;
+        margin: 40px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,.10);
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    input,
+    button {
+        width: 100%;
+        padding: 13px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    button {
+        cursor: pointer;
+        background: #17202a;
+        color: white;
+        border: none;
+    }
+
+    button:hover {
+        opacity: .9;
+    }
+
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 10px;
+        word-break: break-all;
+    }
+
+    .success {
+        color: green;
+        font-weight: bold;
+    }
+
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+
+</head><body><div class="box"><h1>JANJUA</h1>
+
+<h2>Firebase UID Finder</h2>
+
+<p>
+    اپنے Firebase Authentication والے Admin Email اور Password سے Login کریں۔
+</p>
+
+<input
+    type="email"
+    id="email"
+    placeholder="Admin Email"
+>
+
+<input
+    type="password"
+    id="password"
+    placeholder="Admin Password"
+>
+
+<button onclick="loginAndGetUID()">
+    Login & Get UID
+</button>
+
+<div id="result" class="result">
+    UID یہاں ظاہر ہوگی۔
+</div>
+
+</div><script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+        getAuth,
+        signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyBpGwssnPxdEVJPiMsrhJNSJc_l_Nj8CME",
+
+        authDomain:
+            "all-in-one-marketing.firebaseapp.com",
+
+        projectId:
+            "all-in-one-marketing",
+
+        storageBucket:
+            "all-in-one-marketing.firebasestorage.app",
+
+        messagingSenderId:
+            "701353417673",
+
+        appId:
+            "1:701353417673:web:903c021d062d66c19fa618"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    window.loginAndGetUID = async function () {
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const result =
+            document.getElementById("result");
+
+
+        if (!email || !password) {
+
+            result.innerHTML =
+                '<span class="error">Email اور Password دونوں لکھیں۔</span>';
+
+            return;
+        }
+
+
+        result.innerHTML =
+            "Login ہو رہا ہے...";
+
+
+        try {
+
+            const userCredential =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const user =
+                userCredential.user;
+
+
+            result.innerHTML = `
+                <div class="success">
+                    Login Successful
+                </div>
+
+                <br>
+
+                <strong>Email:</strong><br>
+                ${user.email}
+
+                <br><br>
+
+                <strong>User UID:</strong><br>
+                ${user.uid}
+
+                <br><br>
+
+                <button onclick="copyUID('${user.uid}')">
+                    Copy UID
+                </button>
+            `;
+
+        }
+
+        catch (error) {
+
+            result.innerHTML = `
+                <span class="error">
+                    Login Failed
+                </span>
+
+                <br><br>
+
+                ${error.message}
+            `;
+
+        }
+
+    };
+
+
+    window.copyUID = async function (uid) {
+
+        try {
+
+            await navigator.clipboard.writeText(uid);
+
+            alert("UID Copy ہو گئی ہے۔");
+
+        }
+
+        catch (error) {
+
+            alert("UID Copy نہیں ہو سکی۔ اسے manually Copy کر لیں۔");
+
+        }
+
+    };
+
+</script></body>
+</html>
