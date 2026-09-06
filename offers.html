@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>JANJUA OFFERS</title>
+
+    <meta
+        name="description"
+        content="Janjua Offers - Food, Shopping and Special Offers"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f8;
+            color: #222;
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 28px 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            color: #ddd;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: auto;
+            padding: 25px 15px 40px;
+        }
+
+        .hero {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,.08);
+            margin-bottom: 25px;
+        }
+
+        .hero h2 {
+            margin: 0 0 10px;
+            font-size: 25px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .offer-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,.08);
+        }
+
+        .offer-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .offer-card h3 {
+            margin: 0 0 8px;
+            font-size: 21px;
+        }
+
+        .offer-card p {
+            color: #666;
+            line-height: 1.6;
+            min-height: 45px;
+        }
+
+        .offer-btn {
+            display: inline-block;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 15px;
+            margin-top: 12px;
+            background: #111;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .offer-btn:hover {
+            opacity: .88;
+        }
+
+        .offer-btn.disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 22px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #111;
+            color: #bbb;
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 30px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 26px;
+            }
+
+            .offers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 25px 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         HEADER
+    =============================== -->
+
+    <header>
+
+        <h1>
+            JANJUA OFFERS
+        </h1>
+
+        <p>
+            Food • Shopping • Special Offers
+        </p>
+
+    </header>
+
+
+
+    <main class="container">
+
+
+        <!-- ==============================
+             HERO
+        =============================== -->
+
+        <section class="hero">
+
+            <h2>
+                Welcome to Janjua Offers
+            </h2>
+
+            <p>
+                ہمارے منتخب Offers اور Affiliate Deals
+                یہاں دیکھیں۔
+            </p>
+
+        </section>
+
+
+
+        <!-- ==============================
+             OFFERS
+        =============================== -->
+
+        <section class="offers-grid">
+
+
+            <!-- FOOD -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🍔
+                </div>
+
+                <h3>
+                    Food Offers
+                </h3>
+
+                <p>
+                    Food delivery اور restaurant offers
+                    دیکھیں۔
+                </p>
+
+                <a
+                    id="foodBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+
+
+            <!-- SHOPPING -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🛒
+                </div>
+
+                <h3>
+                    Shopping Offers
+                </h3>
+
+                <p>
+                    Online shopping اور special deals
+                    دیکھیں۔
+                </p>
+
+                <a
+                    id="shoppingBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+
+
+            <!-- MOTORCYCLE -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🏍️
+                </div>
+
+                <h3>
+                    Motorcycle / Bike
+                </h3>
+
+                <p>
+                    Bike اور motorcycle related offers
+                    دیکھیں۔
+                </p>
+
+                <a
+                    id="motorcycleBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+
+
+            <!-- CARS -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🚗
+                </div>
+
+                <h3>
+                    Cars & Spare Parts
+                </h3>
+
+                <p>
+                    Cars اور spare parts کے offers
+                    دیکھیں۔
+                </p>
+
+                <a
+                    id="carsBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+
+
+            <!-- GENERAL -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🛍️
+                </div>
+
+                <h3>
+                    General Products
+                </h3>
+
+                <p>
+                    مختلف online products اور deals
+                    دیکھیں۔
+                </p>
+
+                <a
+                    id="generalBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+
+
+            <!-- OTHER -->
+
+            <div class="offer-card">
+
+                <div class="offer-icon">
+                    🎁
+                </div>
+
+                <h3>
+                    Special Offers
+                </h3>
+
+                <p>
+                    دیگر special offers اور deals۔
+                </p>
+
+                <a
+                    id="otherBtn"
+                    class="offer-btn disabled"
+                    href="#"
+                >
+                    Loading...
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <div
+            id="pageStatus"
+            class="status"
+        >
+            Offers loading...
+        </div>
+
+
+    </main>
+
+
+
+    <footer>
+
+        JANJUA OFFERS
+
+        <br>
+
+        Food • Shopping • Special Offers
+
+    </footer>
+
+
+
+    <!-- ==============================
+         FIREBASE
+    =============================== -->
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+        import {
+            getFirestore,
+            collection,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+        /* =========================================
+           FIREBASE CONFIG
+        ========================================= */
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyA8_4ArKXAdfKWZ5mi5DaT9qiayL3h_Yzw",
+
+            authDomain:
+                "janjua-traders.firebaseapp.com",
+
+            projectId:
+                "janjua-traders",
+
+            storageBucket:
+                "janjua-traders.firebasestorage.app",
+
+            messagingSenderId:
+                "154904774188",
+
+            appId:
+                "1:154904774188:web:1830f9d533e77dae6a7389"
+        };
+
+
+        /* =========================================
+           FIREBASE
+        ========================================= */
+
+        const app =
+            initializeApp(firebaseConfig);
+
+        const db =
+            getFirestore(app);
+
+
+        /* =========================================
+           DOM
+        ========================================= */
+
+        const pageStatus =
+            document.getElementById(
+                "pageStatus"
+            );
+
+
+        /* =========================================
+           BUTTON MAP
+        ========================================= */
+
+        const buttons = {
+
+            food:
+                document.getElementById(
+                    "foodBtn"
+                ),
+
+            shopping:
+                document.getElementById(
+                    "shoppingBtn"
+                ),
+
+            motorcycle:
+                document.getElementById(
+                    "motorcycleBtn"
+                ),
+
+            cars:
+                document.getElementById(
+                    "carsBtn"
+                ),
+
+            general:
+                document.getElementById(
+                    "generalBtn"
+                ),
+
+            other:
+                document.getElementById(
+                    "otherBtn"
+                )
+        };
+
+
+        /* =========================================
+           CATEGORY → SLUG
+        ========================================= */
+
+        const slugMap = {
+
+            food:
+                "food",
+
+            shopping:
+                "shopping",
+
+            motorcycle:
+                "motorcycle",
+
+            cars:
+                "cars",
+
+            general:
+                "general",
+
+            other:
+                "other"
+        };
+
+
+        /* =========================================
+           CREATE JANJUA LINK
+        ========================================= */
+
+        function getJanjuaLink(slug) {
+
+            const base =
+                window.location.origin +
+                window.location.pathname
+                    .replace(
+                        /offers\.html$/i,
+                        ""
+                    );
+
+            return (
+                base +
+                "go.html?c=" +
+                encodeURIComponent(slug)
+            );
+        }
+
+
+        /* =========================================
+           SET BUTTON
+        ========================================= */
+
+        function activateButton(
+            button,
+            slug,
+            company
+        ) {
+
+            button.href =
+                getJanjuaLink(slug);
+
+            button.textContent =
+                "View " +
+                (company || "Offer");
+
+            button.classList.remove(
+                "disabled"
+            );
+        }
+
+
+        /* =========================================
+           LOAD MARKETING LINKS
+        ========================================= */
+
+        async function loadOffers() {
+
+            try {
+
+                const snapshot =
+                    await getDocs(
+                        collection(
+                            db,
+                            "marketingLinks"
+                        )
+                    );
+
+
+                let activeCount = 0;
+
+
+                snapshot.forEach(
+                    (docSnap) => {
+
+                        const data =
+                            docSnap.data();
+
+
+                        if (
+                            data.active !== true
+                        ) {
+                            return;
+                        }
+
+
+                        const slug =
+                            String(
+                                data.slug || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (!slug) {
+                            return;
+                        }
+
+
+                        activeCount++;
+
+
+                        /*
+                         * Food
+                         */
+
+                        if (
+                            slug === "food" &&
+                            buttons.food
+                        ) {
+
+                            activateButton(
+                                buttons.food,
+                                slug,
+                                data.company
+                            );
+                        }
+
+
+                        /*
+                         * Shopping
+                         */
+
+                        if (
+                            slug === "shopping" &&
+                            buttons.shopping
+                        ) {
+
+                            activateButton(
+                                buttons.shopping,
+                                slug,
+                                data.company
+                            );
+                        }
+
+
+                        /*
+                         * Motorcycle
+                         */
+
+                        if (
+                            slug === "motorcycle" &&
+                            buttons.motorcycle
+                        ) {
+
+                            activateButton(
+                                buttons.motorcycle,
+                                slug,
+                                data.company
+                            );
+                        }
+
+
+                        /*
+                         * Cars
+                         */
+
+                        if (
+                            slug === "cars" &&
+                            buttons.cars
+                        ) {
+
+                            activateButton(
+                                buttons.cars,
+                                slug,
+                                data.company
+                            );
+                        }
+
+
+                        /*
+                         * General
+                         */
+
+                        if (
+                            slug === "general" &&
+                            buttons.general
+                        ) {
+
+                            activateButton(
+                                buttons.general,
+                                slug,
+                                data.company
+                            );
+                        }
+
+
+                        /*
+                         * Other
+                         */
+
+                        if (
+                            slug === "other" &&
+                            buttons.other
+                        ) {
+
+                            activateButton(
+                                buttons.other,
+                                slug,
+                                data.company
+                            );
+                        }
+
+                    }
+                );
+
+
+                pageStatus.textContent =
+                    activeCount > 0
+                        ? "Available offers are ready."
+                        : "Offers are being prepared.";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Offers loading error:",
+                    error
+                );
+
+                pageStatus.textContent =
+                    "Offers could not be loaded right now.";
+            }
+        }
+
+
+        /* =========================================
+           START
+        ========================================= */
+
+        loadOffers();
+
+    </script>
+
+
+</body>
+
+</html>
